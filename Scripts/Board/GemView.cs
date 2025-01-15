@@ -1,17 +1,15 @@
-// FILE: GemView.cs
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
 /// <summary>
-/// Displays a gem visually. Holds reference to GemData & EnhancedBoardManager.
+/// GemView: The visual for a gem. Holds GemData, sets the sprite at runtime.
 /// </summary>
 public class GemView : MonoBehaviour
 {
     [HideInInspector] public GemData gemData;
-    public Image gemImage;
-
     private EnhancedBoardManager boardManager;
+    public Image gemImage;
 
     public void InitGem(GemData data, Sprite sprite, EnhancedBoardManager mgr)
     {
@@ -40,12 +38,11 @@ public class GemView : MonoBehaviour
         transform.localScale = finalScale;
     }
 
-    /// <summary>
-    /// Called by GemInputHandler to swap with another gem.
-    /// </summary>
     public void SwapWith(GemView other)
     {
-        if (boardManager == null) return;
-        boardManager.SwapGems(this.gemData, other.gemData);
+        if (boardManager)
+        {
+            boardManager.SwapGems(this.gemData, other.gemData);
+        }
     }
 }

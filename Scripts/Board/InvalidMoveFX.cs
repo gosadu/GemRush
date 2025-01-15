@@ -9,6 +9,8 @@ public class InvalidMoveFX : MonoBehaviour
 {
     public IEnumerator DoInvalidMove(RectTransform rt, float duration = 0.25f)
     {
+        if (!rt) yield break; // Safety check
+
         Vector2 originalPos = rt.anchoredPosition;
         float time = 0f;
 
@@ -16,11 +18,14 @@ public class InvalidMoveFX : MonoBehaviour
         Color originalColor = (img) ? img.color : Color.white;
         if (img)
         {
+            // briefly tint to gray
             img.color = Color.Lerp(originalColor, Color.gray, 0.5f);
         }
 
         while (time < duration)
         {
+            if (!rt) yield break;
+
             time += Time.deltaTime;
             float t = time / duration;
             float shakeMag = Mathf.Sin(t * 20f) * 10f;
@@ -28,7 +33,8 @@ public class InvalidMoveFX : MonoBehaviour
             yield return null;
         }
 
-        rt.anchoredPosition = originalPos;
+        // restore
+        if (rt) rt.anchoredPosition = originalPos;
         if (img) img.color = originalColor;
     }
 }

@@ -1,9 +1,5 @@
-// FILE: GemData.cs
 using UnityEngine;
 
-/// <summary>
-/// Simple data class for a gem: row, col, colorIndex, isSpecial
-/// </summary>
 [System.Serializable]
 public class GemData
 {

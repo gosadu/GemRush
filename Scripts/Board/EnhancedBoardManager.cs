@@ -1,213 +1,66 @@
-// FILE: EnhancedBoardManager.cs
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-/// <summary>
-/// EnhancedBoardManager: A comprehensive Match-3 board system with:
-///  - Arc tween swaps (ArcSwapEffect)
-///  - Horizontal/vertical match detection
-///  - Bomb & rainbow (wild) gem logic
-///  - No illegal move blocking (any gem can swap with any other)
-///  - Aggregator synergy (aggregatorPoints, AddAggregatorPoints)
-///  - Player HP & HealPlayer
-///  - RemoveGem & SwapGems methods for backward compatibility
-///  - Optional chain reaction & shuffle
-///  - Optional vanish/shatter (AnimationSystem)
-/// 
-/// This merges all changes, ensuring references like HealPlayer, SwapGems, 
-/// RemoveGem, AddAggregatorPoints are included so external scripts won't break.
-/// </summary>
+[RequireComponent(typeof(ArcSwapEffect))]
+[RequireComponent(typeof(InvalidMoveFX))]
+[RequireComponent(typeof(BoardSettleFX))]
 public class EnhancedBoardManager : MonoBehaviour
 {
-    [Header("Board Dimensions")]
+    [Header("Board Size")]
     public int rows = 8;
     public int cols = 8;
     public float cellSize = 100f;
 
     [Header("Gem Settings")]
-    public GameObject gemPrefab;     // Prefab for each gem (must have GemView)
-    public Sprite[] gemSprites;      // Array of gem sprites (0..5 normal, 6..7 bomb, 8..9 rainbow, etc.)
+    public GameObject gemViewPrefab;
+    public Sprite[] gemSprites;
 
     [Header("Aggregator Synergy")]
-    public bool useAggregator = true;   // if true, aggregator synergy accumulates and can damage boss
-    private int aggregatorPoints;       // aggregator synergy total
+    public bool useAggregator = true;
+    private int aggregatorPoints;
+    private bool aggregatorVisible;
 
     [Header("Player HP")]
     public int playerMaxHP = 100;
     private int playerHP;
 
     [Header("References")]
-    public AnimationSystem animationSystem;  // optional vanish/shatter
-    public ArcSwapEffect arcSwapEffect;      // optional arc-based swap tween
-    public SoundManager soundManager;        // if you want swap / match sounds
-    public BossManager bossManager;          // if aggregator synergy deals boss damage
-    public UIManager uiManager;              // if you track moves or UI updates
+    public AnimationSystem animationSystem;
+    public SoundManager soundManager;
+    public UIManager uiManager;
+    public BossManager bossManager;
 
-    [Header("Shuffle Handling")]
-    public bool shuffleIfNoMoves = true;     // auto-shuffle if no matches remain
+    private ArcSwapEffect arcSwap;
+    private InvalidMoveFX invalidMoveFX;
+    private BoardSettleFX boardSettleFX;
 
-    [Header("Debug Options")]
-    public bool logDebug = false;            // if set, logs debug details
+    private GemData[,] board;
+    private bool isBoardReady;
+    private int movesLeft;
+    private bool isSwapping = false;
 
-    private GemData[,] board;                // 2D array of gem logic
-    private bool isBoardBusy;                // lock while swapping/cascading
-    private bool hasBoardInited;             // for one-time init
-    private bool isSwapping;                 // extra lock if needed
-
-    // ---------------------------------------------------------
-    // GemData: The logical info for each gem
-    // ---------------------------------------------------------
-    [System.Serializable]
-    public class GemData
+    void Awake()
     {
-        public int row;
-        public int col;
-        public int spriteIndex;  // index into gemSprites
-        public bool isBomb;      // if true, remove neighbors
-        public bool isRainbow;   // if true, can match any color
-    }
+        arcSwap = GetComponent<ArcSwapEffect>();
+        invalidMoveFX = GetComponent<InvalidMoveFX>();
+        boardSettleFX = GetComponent<BoardSettleFX>();
 
-    // ---------------------------------------------------------
-    // GemView: The visual component (UI image) for each gem
-    // ---------------------------------------------------------
-    [RequireComponent(typeof(RectTransform))]
-    public class GemView : MonoBehaviour
-    {
-        public GemData data;
-        public Image gemImage;
-
-        [HideInInspector] public EnhancedBoardManager boardRef;
-
-        // Initialize gem with data and sprite
-        public void InitGem(GemData gemData, Sprite sprite, EnhancedBoardManager board)
+        // [NEW] Attempt to auto-size the parent Rect so negative offsets are visible
+        RectTransform rt = GetComponent<RectTransform>();
+        if (rt)
         {
-            data = gemData;
-            boardRef = board;
-            if (gemImage && sprite)
+            // If the user never sized it in the Editor, forcibly set an 800x800 center pivot.
+            if (rt.sizeDelta.magnitude < 0.1f) // means basically zero
             {
-                gemImage.sprite = sprite;
-            }
-        }
-
-        // Called externally to swap these two gems
-        public void SwapWith(GemView other)
-        {
-            if (boardRef == null) return;
-            boardRef.DoSwapGems(this, other);
-        }
-    }
-
-    // ---------------------------------------------------------
-    // ArcSwapEffect: optional smooth arc tween for swapping
-    // ---------------------------------------------------------
-    [System.Serializable]
-    public class ArcSwapEffect
-    {
-        [Range(0f,1f)] public float arcHeightFactor = 0.4f;
-        public float swapDuration = 0.3f;
-
-        // actually do the tween
-        public IEnumerator DoArcSwap(RectTransform rt1, RectTransform rt2)
-        {
-            Vector2 startPos1 = rt1.anchoredPosition;
-            Vector2 startPos2 = rt2.anchoredPosition;
-            float distance = Vector2.Distance(startPos1, startPos2);
-            float arcHeight = distance * arcHeightFactor;
-
-            float time = 0f;
-            while (time < swapDuration)
-            {
-                time += Time.deltaTime;
-                float t = Mathf.Clamp01(time / swapDuration);
-                float eased = EaseInOutCubic(t);
-
-                // Lerp base
-                Vector2 newPos1 = Vector2.Lerp(startPos1, startPos2, eased);
-                Vector2 newPos2 = Vector2.Lerp(startPos2, startPos1, eased);
-
-                // Arc offsets
-                float offset1 = Mathf.Sin(Mathf.PI * eased) * arcHeight;
-                float offset2 = Mathf.Sin(Mathf.PI * eased) * arcHeight;
-
-                newPos1.y += offset1;
-                newPos2.y += offset2;
-
-                rt1.anchoredPosition = newPos1;
-                rt2.anchoredPosition = newPos2;
-
-                yield return null;
-            }
-        }
-
-        private float EaseInOutCubic(float x)
-        {
-            if (x < 0.5f)
-                return 4f * x * x * x;
-            else
-                return 1f - Mathf.Pow(-2f*x+2f,3f)/2f;
-        }
-    }
-
-    // ---------------------------------------------------------
-    // AnimationSystem: optional vanish/shatter
-    // ---------------------------------------------------------
-    [System.Serializable]
-    public class AnimationSystem
-    {
-        public float vanishDuration = 0.3f;
-        public GameObject shatterPrefab;
-        public GameObject shockwavePrefab;
-
-        public IEnumerator AnimateRemoval(List<GemView> gemViews)
-        {
-            float time = 0f;
-            while (time < vanishDuration)
-            {
-                time += Time.deltaTime;
-                float alpha = 1f - (time/vanishDuration);
-                foreach (var gv in gemViews)
-                {
-                    if (gv && gv.gemImage)
-                    {
-                        Color c = gv.gemImage.color;
-                        c.a = alpha;
-                        gv.gemImage.color = c;
-                    }
-                }
-                yield return null;
-            }
-
-            // spawn effects
-            foreach (var gv in gemViews)
-            {
-                if (gv)
-                {
-                    if (shatterPrefab)
-                        GameObject.Instantiate(shatterPrefab, gv.transform.position, Quaternion.identity);
-                    if (shockwavePrefab)
-                        GameObject.Instantiate(shockwavePrefab, gv.transform.position, Quaternion.identity);
-                }
+                rt.anchorMin = new Vector2(0.5f, 0.5f);
+                rt.anchorMax = new Vector2(0.5f, 0.5f);
+                rt.pivot = new Vector2(0.5f, 0.5f);
+                rt.sizeDelta = new Vector2(800f, 800f);
             }
         }
     }
 
-    // ---------------------------------------------------------
-    // Unity Lifecycle
-    // ---------------------------------------------------------
-    void Start()
-    {
-        if (!hasBoardInited)
-        {
-            InitBoard();
-            hasBoardInited = true;
-        }
-    }
-
-    /// <summary>
-    /// Clear old objects, spawn new board
-    /// </summary>
     public void InitBoard()
     {
         // Clear old
@@ -216,171 +69,220 @@ public class EnhancedBoardManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        board = new GemData[rows, cols];
         aggregatorPoints = 0;
+        aggregatorVisible = false;
+        isBoardReady = false;
+        movesLeft = 30;
         playerHP = playerMaxHP;
-        isBoardBusy = false;
-        isSwapping = false;
+
+        if (!gemViewPrefab)
+        {
+            Debug.LogError("[EnhancedBoardManager] gemViewPrefab is missing!");
+            return;
+        }
+        if (gemSprites == null || gemSprites.Length == 0)
+        {
+            Debug.LogError("[EnhancedBoardManager] gemSprites is empty!");
+            return;
+        }
+
+        board = new GemData[rows, cols];
 
         for (int r = 0; r < rows; r++)
         {
             for (int c = 0; c < cols; c++)
             {
-                SpawnNewGem(r, c);
+                CreateGem(r, c);
             }
         }
+
+        isBoardReady = true;
+        if (uiManager) uiManager.UpdateMoves(movesLeft);
     }
 
-    private void SpawnNewGem(int r, int c)
+    private void CreateGem(int r, int c)
     {
-        int idx = Random.Range(0, gemSprites.Length);
-        bool bomb = (idx == 6 || idx == 7);    // example bomb
-        bool rainbow = (idx == 8 || idx == 9); // example rainbow
-
-        GemData data = new GemData
-        {
-            row = r,
-            col = c,
-            spriteIndex = idx,
-            isBomb = bomb,
-            isRainbow = rainbow
-        };
+        // pick random color index from 0..gemSprites.Length-1
+        int colorIndex = Random.Range(0, gemSprites.Length);
+        bool isWildcard = (colorIndex >= 9); // e.g., if 9..13 are wildcard
+        GemData data = new GemData(r, c, colorIndex, isWildcard);
         board[r, c] = data;
 
-        // create gem object
-        GameObject gemObj = Instantiate(gemPrefab, transform);
+        Vector2 pos = CalculatePosition(r, c);
+        Debug.Log($"[CreateGem] row={r}, col={c}, pos={pos}");
+
+        GameObject gemObj = Instantiate(gemViewPrefab, this.transform);
         RectTransform rt = gemObj.GetComponent<RectTransform>();
-        rt.anchoredPosition = CalculatePos(r, c);
-
-        GemView gv = gemObj.GetComponent<GemView>();
-        gv.InitGem(data, gemSprites[idx], this);
-        gemObj.name = $"Gem({r},{c})";
-    }
-
-    private Vector2 CalculatePos(int r, int c)
-    {
-        float startX = -(cols * cellSize)/2f + cellSize/2f;
-        float startY = (rows * cellSize)/2f - cellSize/2f;
-        float x = startX + (c * cellSize);
-        float y = startY - (r * cellSize);
-        return new Vector2(x,y);
-    }
-
-    // ---------------------------------------------------------
-    // The *NEW* swap logic (no adjacency restriction)
-    // ---------------------------------------------------------
-    public void DoSwapGems(GemView gv1, GemView gv2)
-    {
-        if (isBoardBusy || isSwapping) return;
-        StartCoroutine(DoSwapCoroutine(gv1, gv2));
-    }
-
-    private IEnumerator DoSwapCoroutine(GemView gv1, GemView gv2)
-    {
-        isBoardBusy = true;
-        isSwapping = true;
-
-        // Arc tween
-        if (arcSwapEffect != null)
+        if (rt)
         {
-            RectTransform r1 = gv1.GetComponent<RectTransform>();
-            RectTransform r2 = gv2.GetComponent<RectTransform>();
-            yield return StartCoroutine(arcSwapEffect.DoArcSwap(r1, r2));
+            rt.anchoredPosition = pos;
         }
         else
         {
-            // direct swap
-            Vector2 p1 = gv1.GetComponent<RectTransform>().anchoredPosition;
-            Vector2 p2 = gv2.GetComponent<RectTransform>().anchoredPosition;
-            gv1.GetComponent<RectTransform>().anchoredPosition = p2;
-            gv2.GetComponent<RectTransform>().anchoredPosition = p1;
+            Debug.LogWarning("[CreateGem] No RectTransform found on gem prefab!");
         }
 
-        // Swap in board
-        GemData d1 = gv1.data;
-        GemData d2 = gv2.data;
-        board[d1.row, d1.col] = d2;
-        board[d2.row, d2.col] = d1;
-        int oldR = d1.row; int oldC = d1.col;
-        d1.row = d2.row; d1.col = d2.col;
-        d2.row = oldR;   d2.col = oldC;
+        GemView gv = gemObj.GetComponent<GemView>();
+        if (gv)
+        {
+            Sprite assignedSprite = gemSprites[colorIndex];
+            gv.InitGem(data, assignedSprite, this);
+        }
+    }
 
-        // optional sound
+    private Vector2 CalculatePosition(int r, int c)
+    {
+        // We'll center the board in the parent's rect:
+        float startX = -(cols * cellSize) / 2f + (cellSize / 2f);
+        float startY = (rows * cellSize) / 2f - (cellSize / 2f);
+        float x = startX + (c * cellSize);
+        float y = startY - (r * cellSize);
+        return new Vector2(x, y);
+    }
+
+    public void SwapGems(GemData g1, GemData g2)
+    {
+        if (!isBoardReady || isSwapping) return;
+        isSwapping = true;
+        StartCoroutine(DoArcSwapGems(g1, g2));
+    }
+
+    private IEnumerator DoArcSwapGems(GemData g1, GemData g2)
+    {
+        GemView gv1 = FindGemView(g1);
+        GemView gv2 = FindGemView(g2);
+        if (!gv1 || !gv2)
+        {
+            Debug.LogWarning("[EnhancedBoardManager] Missing GemView for swap.");
+            isSwapping = false;
+            yield break;
+        }
+
+        RectTransform r1 = gv1.GetComponent<RectTransform>();
+        RectTransform r2 = gv2.GetComponent<RectTransform>();
+
+        float swapDuration = 0.3f;
+        yield return StartCoroutine(arcSwap.DoArcSwap(r1, r2, swapDuration, null));
+
+        bool moveIsValid = CheckIfValidMove(g1, g2);
+        if (!moveIsValid)
+        {
+            // revert
+            yield return StartCoroutine(invalidMoveFX.DoInvalidMove(r1, 0.25f));
+            yield return StartCoroutine(arcSwap.DoArcSwap(r1, r2, 0.2f, null));
+            isSwapping = false;
+            yield break;
+        }
+
+        // finalize data
+        board[g1.row, g1.col] = g2;
+        board[g2.row, g2.col] = g1;
+
+        int oldR = g1.row;
+        int oldC = g1.col;
+        g1.row = g2.row;
+        g1.col = g2.col;
+        g2.row = oldR;
+        g2.col = oldC;
+
+        movesLeft--;
+        if (uiManager) uiManager.UpdateMoves(movesLeft);
+
+        RedrawBoard();
         if (soundManager) soundManager.PlaySwapSound();
 
-        // match/cascade
-        yield return StartCoroutine(CheckAndResolveMatches());
-
+        StartCoroutine(CheckMatches());
         isSwapping = false;
-        isBoardBusy = false;
     }
 
-    /// <summary>
-    /// Finds matches, removes them, cascades, spawns new, repeat. 
-    /// Also handle aggregator synergy & optional boss damage after chain reaction.
-    /// </summary>
-    private IEnumerator CheckAndResolveMatches()
+    private bool CheckIfValidMove(GemData g1, GemData g2)
     {
-        bool anyMatchHappened = false;
-
-        while (true)
+        if (!AreNeighbors(g1, g2))
         {
-            var matches = FindAllMatches();
-            if (matches.Count == 0)
-            {
-                if (logDebug) Debug.Log("[Board] No matches => done chain reaction.");
-                break;
-            }
-
-            // aggregator synergy
-            if (useAggregator)
-            {
-                // e.g. add points for each matched gem
-                aggregatorPoints += matches.Count * 5;
-                Debug.Log($"[Board] aggregatorPoints => {aggregatorPoints}");
-            }
-
-            // remove matches
-            yield return StartCoroutine(RemoveMatches(matches));
-
-            // cascade
-            yield return StartCoroutine(CascadeGemsDown());
-
-            anyMatchHappened = true;
+            return false;
         }
 
-        // aggregator synergy => boss damage if any
-        if (useAggregator && aggregatorPoints > 0 && anyMatchHappened)
-        {
-            if (bossManager)
-            {
-                bossManager.TakeDamage(aggregatorPoints);
-                Debug.Log($"[Board] Dealt {aggregatorPoints} aggregator damage to boss!");
-            }
-            aggregatorPoints = 0;
-        }
+        // simulate swap
+        board[g1.row, g1.col] = g2;
+        board[g2.row, g2.col] = g1;
 
-        // optional shuffle
-        if (shuffleIfNoMoves && !HasAnyMatch())
+        List<GemData> matched = FindMatches();
+
+        // revert
+        board[g1.row, g1.col] = g1;
+        board[g2.row, g2.col] = g2;
+
+        return (matched.Count > 0);
+    }
+
+    private bool AreNeighbors(GemData a, GemData b)
+    {
+        int rowDist = Mathf.Abs(a.row - b.row);
+        int colDist = Mathf.Abs(a.col - b.col);
+        return (rowDist + colDist == 1);
+    }
+
+    private IEnumerator CheckMatches()
+    {
+        yield return new WaitForSeconds(0.2f);
+
+        List<GemData> matched = FindMatches();
+        if (matched.Count > 0)
         {
-            ShuffleBoard();
+            if (animationSystem)
+            {
+                animationSystem.AnimateGemRemoval(matched, board, this);
+            }
+            else
+            {
+                Debug.LogWarning("[EnhancedBoardManager] No AnimationSystem assigned!");
+            }
+
+            if (soundManager) soundManager.PlayMatchSound();
+            if (useAggregator) aggregatorPoints += matched.Count * 10;
+
+            float waitTime = (animationSystem) ? (animationSystem.vanishDuration + 0.3f) : 0.5f;
+            yield return new WaitForSeconds(waitTime);
+
+            CascadeGems();
+            yield return new WaitForSeconds(0.3f);
+            StartCoroutine(CheckMatches());
+        }
+        else
+        {
+            // aggregator logic
+            if (useAggregator && aggregatorPoints > 0 && !aggregatorVisible)
+            {
+                aggregatorVisible = true;
+                yield return new WaitForSeconds(1f);
+                if (bossManager) bossManager.TakeDamage(aggregatorPoints);
+                aggregatorPoints = 0;
+                aggregatorVisible = false;
+            }
+
+            yield return StartCoroutine(DoBoardSettleEffect());
         }
     }
 
-    // ---------------------------------------------------------
-    // MATCH DETECTION
-    // ---------------------------------------------------------
-    private List<GemData> FindAllMatches()
+    private IEnumerator DoBoardSettleEffect()
     {
-        HashSet<GemData> matched = new HashSet<GemData>();
+        GemView[] allGems = FindObjectsOfType<GemView>();
+        yield return StartCoroutine(boardSettleFX.DoBoardExhale(allGems, 0.5f));
+    }
 
-        // horizontal
+    private List<GemData> FindMatches()
+    {
+        List<GemData> matched = new List<GemData>();
+
+        // Horizontal
         for (int r = 0; r < rows; r++)
         {
             int matchCount = 1;
             for (int c = 1; c < cols; c++)
             {
-                if (IsSameType(board[r,c], board[r,c-1]))
+                if (board[r,c] != null && board[r,c-1] != null &&
+                    board[r,c].colorIndex == board[r,c-1].colorIndex &&
+                    !board[r,c].isSpecial && !board[r,c-1].isSpecial)
                 {
                     matchCount++;
                 }
@@ -388,28 +290,41 @@ public class EnhancedBoardManager : MonoBehaviour
                 {
                     if (matchCount >= 3)
                     {
-                        int startC = c - matchCount;
-                        for (int cc = startC; cc < c; cc++)
-                            matched.Add(board[r, cc]);
+                        int startC = (c - 1) - (matchCount - 1);
+                        for (int cc = startC; cc <= (c - 1); cc++)
+                        {
+                            if (!matched.Contains(board[r, cc]))
+                            {
+                                matched.Add(board[r, cc]);
+                            }
+                        }
                     }
                     matchCount = 1;
                 }
             }
+            // edge case
             if (matchCount >= 3)
             {
-                int startC = cols - matchCount;
-                for (int cc = startC; cc < cols; cc++)
-                    matched.Add(board[r, cc]);
+                int startC = (cols - 1) - (matchCount - 1);
+                for (int cc = startC; cc <= (cols - 1); cc++)
+                {
+                    if (!matched.Contains(board[r, cc]))
+                    {
+                        matched.Add(board[r, cc]);
+                    }
+                }
             }
         }
 
-        // vertical
+        // Vertical
         for (int c = 0; c < cols; c++)
         {
             int matchCount = 1;
             for (int r = 1; r < rows; r++)
             {
-                if (IsSameType(board[r,c], board[r-1,c]))
+                if (board[r,c] != null && board[r-1,c] != null &&
+                    board[r,c].colorIndex == board[r-1,c].colorIndex &&
+                    !board[r,c].isSpecial && !board[r-1,c].isSpecial)
                 {
                     matchCount++;
                 }
@@ -417,104 +332,45 @@ public class EnhancedBoardManager : MonoBehaviour
                 {
                     if (matchCount >= 3)
                     {
-                        int startR = r - matchCount;
-                        for (int rr = startR; rr < r; rr++)
-                            matched.Add(board[rr, c]);
+                        int startR = (r - 1) - (matchCount - 1);
+                        for (int rr = startR; rr <= (r - 1); rr++)
+                        {
+                            if (!matched.Contains(board[rr, c]))
+                            {
+                                matched.Add(board[rr, c]);
+                            }
+                        }
                     }
                     matchCount = 1;
                 }
             }
+            // edge case
             if (matchCount >= 3)
             {
-                int startR = rows - matchCount;
-                for (int rr = startR; rr < rows; rr++)
-                    matched.Add(board[rr, c]);
-            }
-        }
-
-        // bombs => remove neighbors
-        List<GemData> bombArea = new List<GemData>();
-        foreach (var g in matched)
-        {
-            if (g.isBomb)
-            {
-                for (int dr = -1; dr <= 1; dr++)
+                int startR = (rows - 1) - (matchCount - 1);
+                for (int rr = startR; rr <= (rows - 1); rr++)
                 {
-                    for (int dc = -1; dc <= 1; dc++)
+                    if (!matched.Contains(board[rr, c]))
                     {
-                        int rr = g.row + dr;
-                        int cc = g.col + dc;
-                        if (InBounds(rr, cc))
-                            bombArea.Add(board[rr, cc]);
+                        matched.Add(board[rr, c]);
                     }
                 }
             }
         }
-        foreach (var b in bombArea)
-        {
-            matched.Add(b);
-        }
 
-        return new List<GemData>(matched);
+        return matched;
     }
 
-    private bool IsSameType(GemData a, GemData b)
-    {
-        if (a == null || b == null) return false;
-        if (a.isRainbow || b.isRainbow) return true; // wildcard
-        return (a.spriteIndex == b.spriteIndex);
-    }
-
-    private bool InBounds(int r, int c)
-    {
-        return (r >= 0 && r < rows && c >= 0 && c < cols);
-    }
-
-    // ---------------------------------------------------------
-    // REMOVAL & CASCADING
-    // ---------------------------------------------------------
-    private IEnumerator RemoveMatches(List<GemData> matched)
-    {
-        List<GemView> gemViews = new List<GemView>();
-        GemView[] allGems = Object.FindObjectsByType<GemView>(
-            FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-        foreach (var v in allGems)
-        {
-            if (matched.Contains(v.data))
-            {
-                gemViews.Add(v);
-            }
-        }
-
-        if (animationSystem != null)
-        {
-            yield return StartCoroutine(animationSystem.AnimateRemoval(gemViews));
-        }
-
-        // destroy
-        foreach (var gv in gemViews)
-        {
-            if (gv) Destroy(gv.gameObject);
-        }
-
-        // remove from board array
-        foreach (var m in matched)
-        {
-            board[m.row, m.col] = null;
-        }
-        yield return null;
-    }
-
-    private IEnumerator CascadeGemsDown()
+    private void CascadeGems()
     {
         for (int c = 0; c < cols; c++)
         {
             List<GemData> stack = new List<GemData>();
             for (int r = rows - 1; r >= 0; r--)
             {
-                if (board[r, c] != null)
+                if (board[r,c] != null)
                 {
-                    stack.Add(board[r, c]);
+                    stack.Add(board[r,c]);
                 }
             }
             for (int r = rows - 1; r >= 0; r--)
@@ -525,177 +381,62 @@ public class EnhancedBoardManager : MonoBehaviour
                     stack.RemoveAt(0);
                     gem.row = r;
                     gem.col = c;
-                    board[r, c] = gem;
+                    board[r,c] = gem;
                 }
                 else
                 {
-                    SpawnNewGem(r, c);
+                    // spawn new gem
+                    CreateGem(r, c);
                 }
             }
         }
-        // visually reposition
         RedrawBoard();
-        yield return new WaitForSeconds(0.2f);
     }
 
-    private bool HasAnyMatch()
-    {
-        var m = FindAllMatches();
-        return (m.Count > 0);
-    }
-
-    private void ShuffleBoard()
-    {
-        if (logDebug) Debug.Log("[Board] Shuffling due to no matches.");
-
-        // gather existing
-        List<GemData> all = new List<GemData>();
-        for (int r = 0; r < rows; r++)
-        {
-            for (int c = 0; c < cols; c++)
-            {
-                if (board[r, c] != null)
-                    all.Add(board[r, c]);
-            }
-        }
-
-        // shuffle
-        for (int i = 0; i < all.Count; i++)
-        {
-            int rnd = Random.Range(i, all.Count);
-            var temp = all[i];
-            all[i] = all[rnd];
-            all[rnd] = temp;
-        }
-
-        // reassign
-        int index = 0;
-        for (int r = 0; r < rows; r++)
-        {
-            for (int c = 0; c < cols; c++)
-            {
-                board[r, c] = (index < all.Count) ? all[index] : null;
-                if (board[r, c] != null)
-                {
-                    board[r, c].row = r;
-                    board[r, c].col = c;
-                }
-                index++;
-            }
-        }
-
-        // destroy old gemViews
-        GemView[] allViews = Object.FindObjectsByType<GemView>(
-            FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-        foreach (var v in allViews)
-        {
-            Destroy(v.gameObject);
-        }
-
-        // re-spawn
-        for (int r = 0; r < rows; r++)
-        {
-            for (int c = 0; c < cols; c++)
-            {
-                if (board[r, c] != null)
-                {
-                    SpawnVisualOnly(board[r, c]);
-                }
-                else
-                {
-                    SpawnNewGem(r, c);
-                }
-            }
-        }
-    }
-
-    private void SpawnVisualOnly(GemData d)
-    {
-        GameObject gemObj = Instantiate(gemPrefab, transform);
-        RectTransform rt = gemObj.GetComponent<RectTransform>();
-        rt.anchoredPosition = CalculatePos(d.row, d.col);
-
-        GemView gv = gemObj.GetComponent<GemView>();
-        gv.InitGem(d, gemSprites[d.spriteIndex], this);
-        gemObj.name = $"Gem({d.row},{d.col})";
-    }
-
-    /// <summary>
-    /// Repositions all gemViews based on row/col
-    /// </summary>
     public void RedrawBoard()
     {
-        GemView[] allViews = Object.FindObjectsByType<GemView>(
-            FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-        foreach (var v in allViews)
+        foreach (Transform child in transform)
         {
-            if (v && v.data != null)
+            GemView gv = child.GetComponent<GemView>();
+            if (gv)
             {
-                RectTransform rt = v.GetComponent<RectTransform>();
+                Vector2 newPos = CalculatePosition(gv.gemData.row, gv.gemData.col);
+                RectTransform rt = child.GetComponent<RectTransform>();
                 if (rt)
-                    rt.anchoredPosition = CalculatePos(v.data.row, v.data.col);
+                {
+                    rt.anchoredPosition = newPos;
+                }
             }
         }
     }
 
-    // ---------------------------------------------------------
-    // Additional Methods to Satisfy External References:
-    // HealPlayer, AddAggregatorPoints, RemoveGem, SwapGems
-    // ---------------------------------------------------------
-
-    /// <summary>
-    /// Heals the player by amt (clamped by playerMaxHP).
-    /// </summary>
-    public void HealPlayer(int amt)
-    {
-        playerHP += amt;
-        if (playerHP > playerMaxHP) playerHP = playerMaxHP;
-        Debug.Log($"[EnhancedBoardManager] Player HP now {playerHP}");
-    }
-
-    /// <summary>
-    /// Manually add aggregator synergy points.
-    /// </summary>
-    public void AddAggregatorPoints(int amt)
-    {
-        if (!useAggregator) return;
-        aggregatorPoints += amt;
-        Debug.Log($"[EnhancedBoardManager] aggregatorPoints = {aggregatorPoints}");
-    }
-
-    /// <summary>
-    /// Remove a gem from the board data so it's no longer recognized.
-    /// (Does not handle destroying the GemView object.)
-    /// </summary>
     public void RemoveGem(GemData data)
     {
-        if (data == null) return;
         if (board[data.row, data.col] == data)
         {
             board[data.row, data.col] = null;
         }
     }
 
-    /// <summary>
-    /// A direct "SwapGems" method to match older references.
-    /// Just calls our new "DoSwapGems" but requires two GemData.
-    /// </summary>
-    public void SwapGems(GemData g1, GemData g2)
+    public void AddAggregatorPoints(int amt)
     {
-        if (g1 == null || g2 == null) return;
-        // find their GemViews
-        GemView[] all = Object.FindObjectsByType<GemView>(
-            FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-        GemView gv1 = null;
-        GemView gv2 = null;
-        foreach (var v in all)
+        aggregatorPoints += amt;
+    }
+
+    public void HealPlayer(int amt)
+    {
+        playerHP += amt;
+        if (playerHP > playerMaxHP) playerHP = playerMaxHP;
+    }
+
+    private GemView FindGemView(GemData data)
+    {
+        GemView[] all = FindObjectsOfType<GemView>();
+        foreach (var gv in all)
         {
-            if (v.data == g1) gv1 = v;
-            else if (v.data == g2) gv2 = v;
+            if (gv.gemData == data)
+                return gv;
         }
-        if (gv1 && gv2)
-        {
-            DoSwapGems(gv1, gv2);
-        }
+        return null;
     }
 }

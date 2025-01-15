@@ -1,39 +1,39 @@
-// FILE: AnimationSystem.cs
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
 /// <summary>
-/// Handles fancy animations or effects for gem removal, shockwaves, etc.
-/// Calls EnhancedBoardManager.RemoveGem and RedrawBoard as needed.
+/// Handles match clearing animations: build-up pulse, vanish/shatter, shockwave, etc.
 /// </summary>
 public class AnimationSystem : MonoBehaviour
 {
     public float vanishDuration = 0.3f;
 
-    public GameObject gemShatterPrefab; 
+    public GameObject gemShatterPrefab;
     public GameObject shockwavePrefab;
 
-    public void AnimateGemRemoval(List<GemData> gemsToRemove, EnhancedBoardManager boardMgr)
+    public void AnimateGemRemoval(List<GemData> gemsToRemove, GemData[,] board, EnhancedBoardManager boardMgr)
     {
-        StartCoroutine(DoFancyRemoval(gemsToRemove, boardMgr));
+        StartCoroutine(DoFancyRemoval(gemsToRemove, board, boardMgr));
     }
 
-    private IEnumerator DoFancyRemoval(List<GemData> gemsToRemove, EnhancedBoardManager boardMgr)
+    private IEnumerator DoFancyRemoval(List<GemData> gemsToRemove, GemData[,] board, EnhancedBoardManager boardMgr)
     {
         // gather gemViews
         List<GemView> gemViews = new List<GemView>();
-        // Instead of FindObjectsOfType, we do:
-        GemView[] allGems = Object.FindObjectsByType<GemView>(
-            FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        GemView[] allGems = FindObjectsOfType<GemView>();
         foreach (var gv in allGems)
         {
-            if (gemsToRemove.Contains(gv.gemData))
+            if (gv != null && gemsToRemove.Contains(gv.gemData))
             {
                 gemViews.Add(gv);
             }
         }
+
+        // build-up
+        float buildUpDur = 0.25f;
+        yield return StartCoroutine(BuildUpEffect(gemViews, buildUpDur));
 
         // vanish + shatter
         yield return StartCoroutine(ShatterAndFade(gemViews));
@@ -43,19 +43,45 @@ public class AnimationSystem : MonoBehaviour
         {
             foreach (var gv in gemViews)
             {
-                Instantiate(shockwavePrefab, gv.transform.position, Quaternion.identity);
+                if (gv)
+                {
+                    Instantiate(shockwavePrefab, gv.transform.position, Quaternion.identity);
+                }
             }
         }
 
         // remove from board
         foreach (var gv in gemViews)
         {
-            boardMgr.RemoveGem(gv.gemData);
-            Destroy(gv.gameObject);
+            if (gv)
+            {
+                boardMgr.RemoveGem(gv.gemData);
+                Destroy(gv.gameObject);
+            }
         }
 
         // redraw
         boardMgr.RedrawBoard();
+    }
+
+    private IEnumerator BuildUpEffect(List<GemView> gemViews, float duration)
+    {
+        float time = 0f;
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float t = time / duration;
+            float scale = 1f + 0.2f * Mathf.Sin(t * Mathf.PI * 2f);
+            foreach (var gv in gemViews)
+            {
+                if (gv) gv.transform.localScale = Vector3.one * scale;
+            }
+            yield return null;
+        }
+        foreach (var gv in gemViews)
+        {
+            if (gv) gv.transform.localScale = Vector3.one;
+        }
     }
 
     private IEnumerator ShatterAndFade(List<GemView> gemViews)
@@ -67,6 +93,8 @@ public class AnimationSystem : MonoBehaviour
             float alpha = 1f - (time / vanishDuration);
             foreach (var gv in gemViews)
             {
+                if (!gv) continue;
+
                 Image img = gv.GetComponent<Image>();
                 if (img)
                 {
@@ -82,7 +110,10 @@ public class AnimationSystem : MonoBehaviour
         {
             foreach (var gv in gemViews)
             {
-                Instantiate(gemShatterPrefab, gv.transform.position, Quaternion.identity);
+                if (gv)
+                {
+                    Instantiate(gemShatterPrefab, gv.transform.position, Quaternion.identity);
+                }
             }
         }
         yield return null;

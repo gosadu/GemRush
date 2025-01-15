@@ -7,40 +7,54 @@ using System.Collections;
 /// </summary>
 public class IdleGemAnimator : MonoBehaviour
 {
-    public float bobAmplitude = 5f;
-    public float bobSpeed = 2f;
+    public float bobAmplitude = 5f;       // Vertical bob range in px
+    public float bobSpeed = 2f;          // Speed of the bobbing
     public float twinkleIntervalMin = 3f;
     public float twinkleIntervalMax = 8f;
 
     private RectTransform rt;
     private Vector2 initPos;
     private float bobTimer = 0f;
+    private bool isReady = false;
 
-    // ----------------------------------------------------------------------------
-    // CHANGES:
-    //  1) We moved "rt = GetComponent<RectTransform>(); initPos = rt.anchoredPosition;"
-    //     into Start() instead of Awake().
-    //  2) We now start the DoRandomTwinkles() in Start(), after position is set.
-    // ----------------------------------------------------------------------------
-
-    void Start()
+    void Awake()
     {
+        // Grab our RectTransform, but don't set initPos yet.
         rt = GetComponent<RectTransform>();
-        // capture correct anchoredPosition now that the gem has been placed
-        initPos = rt.anchoredPosition;
+    }
 
-        // begin random twinkle after we know our real position
-        StartCoroutine(DoRandomTwinkles());
+    IEnumerator Start()
+    {
+        // Wait until the end of the first rendered frame to ensure
+        // EnhancedBoardManager (or other code) has positioned us.
+        yield return new WaitForEndOfFrame();
+
+        if (rt)
+        {
+            // Capture the final anchoredPosition as our idle "base."
+            initPos = rt.anchoredPosition;
+            isReady = true;
+
+            // Start the random twinkle coroutine (optional idle sparkle).
+            StartCoroutine(DoRandomTwinkles());
+        }
     }
 
     void Update()
     {
+        // If we're not ready or lost the RectTransform, do nothing.
+        if (!isReady || !rt) return;
+
+        // Increment a simple timer for the bob animation
         bobTimer += Time.deltaTime * bobSpeed;
+
+        // Apply a vertical offset around initPos
         float offset = Mathf.Sin(bobTimer) * bobAmplitude;
         rt.anchoredPosition = new Vector2(initPos.x, initPos.y + offset);
 
-        float rot = Mathf.Sin(bobTimer * 0.5f) * 5f;
-        rt.localRotation = Quaternion.Euler(0, 0, rot);
+        // Optional gentle rotation
+        float rotZ = Mathf.Sin(bobTimer * 0.5f) * 5f;
+        rt.localRotation = Quaternion.Euler(0, 0, rotZ);
     }
 
     private IEnumerator DoRandomTwinkles()
@@ -50,13 +64,19 @@ public class IdleGemAnimator : MonoBehaviour
 
         while (true)
         {
+            if (!img) yield break;
+
+            // Wait a random interval between twinkles
             float wait = Random.Range(twinkleIntervalMin, twinkleIntervalMax);
             yield return new WaitForSeconds(wait);
 
+            // A short "twinkle" animation modulating the alpha
             float twinkleDur = 0.2f;
             float t = 0f;
             while (t < twinkleDur)
             {
+                if (!img) yield break;
+
                 t += Time.deltaTime;
                 float alpha = 1f + 0.5f * Mathf.Sin((t / twinkleDur) * Mathf.PI * 2f);
                 Color c = img.color;
@@ -64,10 +84,20 @@ public class IdleGemAnimator : MonoBehaviour
                 img.color = c;
                 yield return null;
             }
-            // restore alpha
-            Color rc = img.color;
-            rc.a = 1f;
-            img.color = rc;
+
+            // Restore full alpha
+            if (img)
+            {
+                Color rc = img.color;
+                rc.a = 1f;
+                img.color = rc;
+            }
         }
+    }
+
+    void OnDestroy()
+    {
+        // Stop all coroutines on destruction
+        StopAllCoroutines();
     }
 }

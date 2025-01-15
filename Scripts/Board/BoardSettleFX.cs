@@ -15,8 +15,11 @@ public class BoardSettleFX : MonoBehaviour
             time += Time.deltaTime;
             float t = time / pulseDuration;
             float glow = Mathf.Sin(Mathf.PI * t);
+
             foreach (var gv in allGems)
             {
+                if (!gv) continue; // skip destroyed or missing
+
                 Image img = gv.GetComponent<Image>();
                 if (img)
                 {
@@ -30,6 +33,6 @@ public class BoardSettleFX : MonoBehaviour
             }
             yield return null;
         }
-        // Optionally reset color if needed
+        // optional reset color if needed
     }
 }

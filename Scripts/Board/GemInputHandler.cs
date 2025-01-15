@@ -1,20 +1,16 @@
-// FILE: GemInputHandler.cs
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections;
 
 /// <summary>
-/// Handles user input (pointer down/up/drag) on a gem for swapping in a match-3 game.
-/// Updated to remove obsolete Object.FindObjectOfType calls & avoid unused variable warnings.
+/// GemInputHandler: IPointerDown/Up to detect drag direction for swaps, with a smooth scale effect during drag.
 /// </summary>
 [RequireComponent(typeof(GemView))]
 public class GemInputHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
 {
     private GemView gemView;
     private Vector2 startPos;
-    
-    // We now actually use 'dragging' in OnDrag to remove the CS0414 warning.
-    private bool dragging = false; 
+    private bool dragging = false;
 
     [Header("Drag Animation Settings")]
     public float dragScaleFactor = 1.2f;
@@ -35,10 +31,7 @@ public class GemInputHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (dragging)
-        {
-            // You can add optional drag visuals or gem follow here if you like.
-        }
+        // optional highlight or partial follow
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -55,21 +48,16 @@ public class GemInputHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHan
             int deltaRow = 0;
             int deltaCol = 0;
 
-            // Determine direction
             if (Mathf.Abs(angle) < 45f) deltaCol = 1;
             else if (angle > 45f && angle < 135f) deltaRow = -1;
             else if (Mathf.Abs(angle) > 135f) deltaCol = -1;
             else if (angle < -45f && angle > -135f) deltaRow = 1;
 
-            // Instead of using FindObjectOfType, we do:
-            EnhancedBoardManager bm = Object.FindAnyObjectByType<EnhancedBoardManager>();
+            EnhancedBoardManager bm = FindObjectOfType<EnhancedBoardManager>();
             if (bm != null)
             {
                 int newR = gemView.gemData.row + deltaRow;
                 int newC = gemView.gemData.col + deltaCol;
-
-                // We find the relevant gem via a direct approach 
-                // or a quick search among GemViews:
                 GemView other = FindGemView(newR, newC);
                 if (other) gemView.SwapWith(other);
             }
@@ -78,14 +66,10 @@ public class GemInputHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
     private GemView FindGemView(int r, int c)
     {
-        // No more obsolete calls:
-        GemView[] all = Object.FindObjectsByType<GemView>(
-            FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        GemView[] all = FindObjectsOfType<GemView>();
         foreach (var gv in all)
         {
-            if (gv.gemData != null &&
-                gv.gemData.row == r && gv.gemData.col == c)
-                return gv;
+            if (gv.gemData.row == r && gv.gemData.col == c) return gv;
         }
         return null;
     }

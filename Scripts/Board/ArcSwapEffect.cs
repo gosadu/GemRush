@@ -9,6 +9,9 @@ public class ArcSwapEffect : MonoBehaviour
 {
     public IEnumerator DoArcSwap(RectTransform r1, RectTransform r2, float duration, System.Action onComplete)
     {
+        // Early null-check (if one gem was destroyed mid-swap).
+        if (r1 == null || r2 == null) yield break;
+
         Vector2 startPos1 = r1.anchoredPosition;
         Vector2 startPos2 = r2.anchoredPosition;
 
@@ -17,6 +20,8 @@ public class ArcSwapEffect : MonoBehaviour
 
         while (time < duration)
         {
+            if (r1 == null || r2 == null) yield break;
+
             time += Time.deltaTime;
             float t = Mathf.Clamp01(time / duration);
 
@@ -27,11 +32,9 @@ public class ArcSwapEffect : MonoBehaviour
             Vector2 newPos2 = Vector2.Lerp(startPos2, startPos1, easedT);
 
             // Arc offset
-            float offset1 = Mathf.Sin(Mathf.PI * easedT) * arcHeight;
-            float offset2 = Mathf.Sin(Mathf.PI * easedT) * arcHeight;
-
-            newPos1.y += offset1;
-            newPos2.y += offset2;
+            float offset = Mathf.Sin(Mathf.PI * easedT) * arcHeight;
+            newPos1.y += offset;
+            newPos2.y += offset;
 
             r1.anchoredPosition = newPos1;
             r2.anchoredPosition = newPos2;
@@ -45,10 +48,11 @@ public class ArcSwapEffect : MonoBehaviour
         }
 
         // micro-bounce
+        if (r1 == null || r2 == null) yield break;
         yield return StartCoroutine(DoMicroBounce(r1, r2, 0.05f));
 
-        r1.localScale = Vector3.one;
-        r2.localScale = Vector3.one;
+        if (r1) r1.localScale = Vector3.one;
+        if (r2) r2.localScale = Vector3.one;
 
         if (onComplete != null) onComplete();
     }
@@ -58,6 +62,8 @@ public class ArcSwapEffect : MonoBehaviour
         float t = 0f;
         while (t < bounceTime)
         {
+            if (r1 == null || r2 == null) yield break;
+
             t += Time.deltaTime;
             float ratio = t / bounceTime;
             float scale = 1f + 0.05f * Mathf.Sin(ratio * Mathf.PI * 2f);
