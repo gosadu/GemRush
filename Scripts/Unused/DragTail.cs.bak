@@ -1,0 +1,34 @@
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+public class DragTrail : MonoBehaviour
+{
+    [SerializeField] private GameObject trailCirclePrefab; // The small circle fade-out prefab
+    private float lastAddTime = 0f;
+    private bool active = false;
+
+    public void SetActive(bool isActive)
+    {
+        active = isActive;
+        lastAddTime = Time.time;
+    }
+
+    public void UpdateTrail(Vector2 position)
+    {
+        if (!active) return;
+
+        if (Time.time - lastAddTime > 0.08f)
+        {
+            AddCircle(position);
+            lastAddTime = Time.time;
+        }
+    }
+
+    private void AddCircle(Vector2 position)
+    {
+        if (trailCirclePrefab == null) return;
+        var circle = Instantiate(trailCirclePrefab, transform);
+        circle.transform.position = position;
+    }
+}

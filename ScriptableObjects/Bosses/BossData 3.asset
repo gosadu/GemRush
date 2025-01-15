@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7967c96fb11cfc4a918b81165f8d58f, type: 3}
+  m_Name: BossData 3
+  m_EditorClassIdentifier: 
+  bossName: 4
+  bossHP: 200
+  bossAttack: 5
+  bossSprite: {fileID: 4746802716832275301, guid: 0a7026a9038f9504d946b6da56dc5fae, type: 3}

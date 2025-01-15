@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c914380bb9afaec4ca1c848032d6a997, type: 3}
+  m_Name: MinionDatabase
+  m_EditorClassIdentifier: 
+  allMinions:
+  - {fileID: 11400000, guid: cd2c1d19db17ec34fbc999a0a0eeec2b, type: 2}
+  - {fileID: 11400000, guid: f0023d8a123b7d24d8bd220c0d0527c5, type: 2}
+  - {fileID: 11400000, guid: 5ceda5cad01aa8e499728b2988d2e925, type: 2}
+  - {fileID: 11400000, guid: 2d998d29731f11d408e256360ca9499c, type: 2}
+  - {fileID: 11400000, guid: 836c628fdec0a6342928d5c82db66c05, type: 2}
+  - {fileID: 11400000, guid: 4ff2668b54bb29a4d806f083adc814b2, type: 2}
+  - {fileID: 11400000, guid: 45fb3268f47e94049a354c400bce1733, type: 2}
+  - {fileID: 11400000, guid: 8c0e112bc0d777440a4ee228240cbf52, type: 2}
+  - {fileID: 11400000, guid: 31bfd32c328e5a44a85ab7f2b9309215, type: 2}
+  - {fileID: 11400000, guid: 9f25986f4288d3e4f924ae7424197b2c, type: 2}

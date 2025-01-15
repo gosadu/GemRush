@@ -1,0 +1,110 @@
+[System.Serializable]
+public class GemData
+{
+    public int row;
+    public int col;
+    public int color;
+    public string special;
+    public bool isWildcard;
+}
+
+using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+
+public class GemView : MonoBehaviour
+{
+    [SerializeField] private Image gemImage;
+    private GemData gemData;
+    private Vector3 targetPosition;
+    private Vector3 velocity = Vector3.zero;
+    private float moveDuration = 0.25f;
+    private bool glowActive = false;
+    private float glowTimer = 0f;
+    private float glowSpeed = 1f;
+    private float shakeTimer = 0f;
+    private float shakeDelay = 3.5f;
+
+    public void InitGem(GemData data, Sprite sprite)
+    {
+        gemData = data;
+        if (gemImage != null && sprite != null)
+        {
+            gemImage.sprite = sprite;
+        }
+        transform.localScale = Vector3.one * 0.8f;
+        StartCoroutine(SpawnAnimation());
+        if (data.isWildcard)
+        {
+            StartGlow();
+        }
+    }
+
+    IEnumerator SpawnAnimation()
+    {
+        float duration = 0.2f;
+        float t = 0f;
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            float scale = Mathf.Lerp(0.8f, 1f, t / duration);
+            transform.localScale = Vector3.one * scale;
+            yield return null;
+        }
+    }
+
+    public void SetTargetPosition(Vector3 pos)
+    {
+        targetPosition = pos;
+    }
+
+    void Update()
+    {
+        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, 0.25f);
+
+        shakeTimer += Time.deltaTime;
+        if (shakeTimer > shakeDelay)
+        {
+            shakeTimer = 0f;
+            StartCoroutine(DoShake());
+        }
+
+        if (glowActive)
+        {
+            glowTimer += Time.deltaTime * glowSpeed;
+            float glowScale = 1f + 0.2f * Mathf.Sin(glowTimer);
+            transform.localScale = Vector3.one * glowScale;
+        }
+    }
+
+    IEnumerator DoShake()
+    {
+        if (gemData.isWildcard) yield break; 
+        Vector3 originalPos = transform.position;
+        float magnitude = 3f;
+        float speed = 0.1f;
+        for (int i = 0; i < 3; i++)
+        {
+            transform.position = originalPos + Random.insideUnitSphere * magnitude;
+            yield return new WaitForSeconds(speed);
+        }
+        transform.position = originalPos;
+    }
+
+    private void StartGlow()
+    {
+        glowActive = true;
+    }
+
+    public void ShowInfo()
+    {
+        if (!gemData.isWildcard)
+        {
+            Debug.Log("Gem Info: color #" + gemData.color);
+        }
+        else
+        {
+            Debug.Log("Wildcard gem: " + gemData.special);
+        }
+    }
+}

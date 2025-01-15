@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 517812365e1c11c4e9c2441fc34bd957, type: 3}
+  m_Name: SublocationData
+  m_EditorClassIdentifier: 
+  sublocationName: buh
+  isLocked: 1
+  minions:
+  - {fileID: 11400000, guid: cd2c1d19db17ec34fbc999a0a0eeec2b, type: 2}
+  - {fileID: 11400000, guid: f0023d8a123b7d24d8bd220c0d0527c5, type: 2}
+  - {fileID: 11400000, guid: 5ceda5cad01aa8e499728b2988d2e925, type: 2}
