@@ -2,20 +2,50 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// EnhancedBoardManager manages an 8x8 (or any rows/cols) gem board.
+/// Auto-fits the board to a designated gemBoardContainer RectTransform,
+/// recalculating cell size whenever that container changes dimension.
+///
+/// Also includes an enum BoardScalingMode to specify:
+///  - Square (keep each gem cell equally wide/tall),
+///  - FillWidth (stretch horizontally; gem height can differ),
+///  - FillHeight (stretch vertically; gem width can differ).
+/// 
+/// Attach this script to a GameObject named "EnhancedBoardManager" in your scene.
+/// Then, in the Inspector:
+///  1) Set autoFitGems=true.
+///  2) Assign gemBoardContainer= your "GemBoardContainer" RectTransform.
+///  3) (Optional) Select your BoardScalingMode preference.
+///  4) Provide gemViewPrefab, gemSprites, references to animationSystem, etc.
+///  5) Call InitBoard() after you set everything, e.g., from GameManager.Start().
+/// 
+/// Make sure your "GemBoardContainer" is anchored & sized to fill the center space!
+/// This script then uses container.rect.width/height to compute cellSize.
+/// </summary>
 [RequireComponent(typeof(ArcSwapEffect))]
 [RequireComponent(typeof(InvalidMoveFX))]
 [RequireComponent(typeof(BoardSettleFX))]
 public class EnhancedBoardManager : MonoBehaviour
 {
+    // --------------------------
+    // Board Size
+    // --------------------------
     [Header("Board Size")]
     public int rows = 8;
     public int cols = 8;
-    public float cellSize = 100f;
+    public float cellSize = 100f; // used if autoFitGems=false
 
+    // --------------------------
+    // Gem Settings
+    // --------------------------
     [Header("Gem Settings")]
     public GameObject gemViewPrefab;
     public Sprite[] gemSprites;
 
+    // --------------------------
+    // Aggregator / HP
+    // --------------------------
     [Header("Aggregator Synergy")]
     public bool useAggregator = true;
     private int aggregatorPoints;
@@ -25,45 +55,81 @@ public class EnhancedBoardManager : MonoBehaviour
     public int playerMaxHP = 100;
     private int playerHP;
 
+    // --------------------------
+    // External References
+    // --------------------------
     [Header("References")]
     public AnimationSystem animationSystem;
     public SoundManager soundManager;
     public UIManager uiManager;
     public BossManager bossManager;
 
+    // --------------------------
+    // Auto-Fit
+    // --------------------------
+    public enum BoardScalingMode
+    {
+        Square,    // each gem cell is square, use Mathf.Min(...)
+        FillWidth, // fill horizontal, cell height is (containerHeight/rows) can differ
+        FillHeight // fill vertical, cell width is (containerWidth/cols) can differ
+    }
+
+    [Header("Optional Auto-Fit")]
+    [Tooltip("If true, we compute cellSize from gemBoardContainer's width/height.")]
+    public bool autoFitGems = true;
+
+    [Tooltip("RectTransform that defines the area for the gem board (child of CenterPanel).")]
+    public RectTransform gemBoardContainer;
+
+    [Tooltip("Choose how you want to scale the board if the container is not square.")]
+    public BoardScalingMode scalingMode = BoardScalingMode.Square;
+
+    // --------------------------
+    // Internal
+    // --------------------------
     private ArcSwapEffect arcSwap;
     private InvalidMoveFX invalidMoveFX;
     private BoardSettleFX boardSettleFX;
-
     private GemData[,] board;
     private bool isBoardReady;
     private int movesLeft;
     private bool isSwapping = false;
 
+    // ----------------------------------------------------------
+    // Unity Lifecycle
+    // ----------------------------------------------------------
     void Awake()
     {
         arcSwap = GetComponent<ArcSwapEffect>();
         invalidMoveFX = GetComponent<InvalidMoveFX>();
         boardSettleFX = GetComponent<BoardSettleFX>();
 
-        // [NEW] Attempt to auto-size the parent Rect so negative offsets are visible
+        // Attempt to auto-size this manager's own RectTransform if it was never set,
+        // but typically we rely on gemBoardContainer for actual layout.
         RectTransform rt = GetComponent<RectTransform>();
-        if (rt)
+        if (rt && rt.sizeDelta.magnitude < 0.1f)
         {
-            // If the user never sized it in the Editor, forcibly set an 800x800 center pivot.
-            if (rt.sizeDelta.magnitude < 0.1f) // means basically zero
-            {
-                rt.anchorMin = new Vector2(0.5f, 0.5f);
-                rt.anchorMax = new Vector2(0.5f, 0.5f);
-                rt.pivot = new Vector2(0.5f, 0.5f);
-                rt.sizeDelta = new Vector2(800f, 800f);
-            }
+            rt.anchorMin = new Vector2(0.5f, 0.5f);
+            rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.sizeDelta = new Vector2(800f, 800f);
         }
     }
 
+    // If the container changes (due to safe area or resolution change),
+    // we recalc cellSize if autoFit is true.
+    protected void OnRectTransformDimensionsChange()
+    {
+        if (!autoFitGems || gemBoardContainer == null) return;
+        RecalculateCellSizeAndRedraw();
+    }
+
+    // ----------------------------------------------------------
+    // Board Init
+    // ----------------------------------------------------------
     public void InitBoard()
     {
-        // Clear old
+        // Clear existing gems
         foreach (Transform child in transform)
         {
             Destroy(child.gameObject);
@@ -86,8 +152,16 @@ public class EnhancedBoardManager : MonoBehaviour
             return;
         }
 
+        // Compute cellSize from container if needed
+        if (autoFitGems && gemBoardContainer != null)
+        {
+            RecalculateCellSize();
+        }
+
+        // Create data array
         board = new GemData[rows, cols];
 
+        // Create all gems
         for (int r = 0; r < rows; r++)
         {
             for (int c = 0; c < cols; c++)
@@ -100,27 +174,62 @@ public class EnhancedBoardManager : MonoBehaviour
         if (uiManager) uiManager.UpdateMoves(movesLeft);
     }
 
+    private void RecalculateCellSizeAndRedraw()
+    {
+        RecalculateCellSize();
+        RedrawBoard();
+    }
+
+    private void RecalculateCellSize()
+    {
+        float w = gemBoardContainer.rect.width;
+        float h = gemBoardContainer.rect.height;
+
+        switch (scalingMode)
+        {
+            case BoardScalingMode.Square:
+                {
+                    // Use the smaller dimension for a perfect square cell
+                    float cw = w / cols;
+                    float ch = h / rows;
+                    cellSize = Mathf.Min(cw, ch);
+                    break;
+                }
+            case BoardScalingMode.FillWidth:
+                {
+                    // Fill horizontally, cell height might be smaller/larger
+                    cellSize = w / cols;
+                    break;
+                }
+            case BoardScalingMode.FillHeight:
+                {
+                    // Fill vertically, cell width might differ
+                    cellSize = h / rows;
+                    break;
+                }
+        }
+
+        // Debug to see final result
+        Debug.Log($"[EnhancedBoardManager] autoFit cellSize={cellSize}, container=({w}x{h}), mode={scalingMode}");
+    }
+
+    // ----------------------------------------------------------
+    // Gem Creation
+    // ----------------------------------------------------------
     private void CreateGem(int r, int c)
     {
-        // pick random color index from 0..gemSprites.Length-1
+        // pick random color index from gemSprites
         int colorIndex = Random.Range(0, gemSprites.Length);
-        bool isWildcard = (colorIndex >= 9); // e.g., if 9..13 are wildcard
+        bool isWildcard = (colorIndex >= 9); // example logic if 9.. are wild
         GemData data = new GemData(r, c, colorIndex, isWildcard);
         board[r, c] = data;
 
         Vector2 pos = CalculatePosition(r, c);
-        Debug.Log($"[CreateGem] row={r}, col={c}, pos={pos}");
 
         GameObject gemObj = Instantiate(gemViewPrefab, this.transform);
         RectTransform rt = gemObj.GetComponent<RectTransform>();
-        if (rt)
-        {
-            rt.anchoredPosition = pos;
-        }
-        else
-        {
-            Debug.LogWarning("[CreateGem] No RectTransform found on gem prefab!");
-        }
+        if (rt) rt.anchoredPosition = pos;
+        else Debug.LogWarning("[CreateGem] No RectTransform on gem prefab!");
 
         GemView gv = gemObj.GetComponent<GemView>();
         if (gv)
@@ -130,9 +239,10 @@ public class EnhancedBoardManager : MonoBehaviour
         }
     }
 
+    // E.g., center the board around (0,0). If you prefer top-left,
+    // just remove the offsets so x= c*cellSize, y= -r*cellSize.
     private Vector2 CalculatePosition(int r, int c)
     {
-        // We'll center the board in the parent's rect:
         float startX = -(cols * cellSize) / 2f + (cellSize / 2f);
         float startY = (rows * cellSize) / 2f - (cellSize / 2f);
         float x = startX + (c * cellSize);
@@ -140,6 +250,9 @@ public class EnhancedBoardManager : MonoBehaviour
         return new Vector2(x, y);
     }
 
+    // ----------------------------------------------------------
+    // Board Swapping & Matching
+    // ----------------------------------------------------------
     public void SwapGems(GemData g1, GemData g2)
     {
         if (!isBoardReady || isSwapping) return;
@@ -177,13 +290,9 @@ public class EnhancedBoardManager : MonoBehaviour
         // finalize data
         board[g1.row, g1.col] = g2;
         board[g2.row, g2.col] = g1;
-
-        int oldR = g1.row;
-        int oldC = g1.col;
-        g1.row = g2.row;
-        g1.col = g2.col;
-        g2.row = oldR;
-        g2.col = oldC;
+        int oldR = g1.row, oldC = g1.col;
+        g1.row = g2.row; g1.col = g2.col;
+        g2.row = oldR;   g2.col = oldC;
 
         movesLeft--;
         if (uiManager) uiManager.UpdateMoves(movesLeft);
@@ -197,12 +306,7 @@ public class EnhancedBoardManager : MonoBehaviour
 
     private bool CheckIfValidMove(GemData g1, GemData g2)
     {
-        if (!AreNeighbors(g1, g2))
-        {
-            return false;
-        }
-
-        // simulate swap
+        if (!AreNeighbors(g1, g2)) return false;
         board[g1.row, g1.col] = g2;
         board[g2.row, g2.col] = g1;
 
@@ -229,14 +333,10 @@ public class EnhancedBoardManager : MonoBehaviour
         List<GemData> matched = FindMatches();
         if (matched.Count > 0)
         {
-            if (animationSystem)
-            {
+            if (animationSystem) 
                 animationSystem.AnimateGemRemoval(matched, board, this);
-            }
-            else
-            {
+            else 
                 Debug.LogWarning("[EnhancedBoardManager] No AnimationSystem assigned!");
-            }
 
             if (soundManager) soundManager.PlayMatchSound();
             if (useAggregator) aggregatorPoints += matched.Count * 10;
@@ -250,7 +350,6 @@ public class EnhancedBoardManager : MonoBehaviour
         }
         else
         {
-            // aggregator logic
             if (useAggregator && aggregatorPoints > 0 && !aggregatorVisible)
             {
                 aggregatorVisible = true;
@@ -294,9 +393,7 @@ public class EnhancedBoardManager : MonoBehaviour
                         for (int cc = startC; cc <= (c - 1); cc++)
                         {
                             if (!matched.Contains(board[r, cc]))
-                            {
                                 matched.Add(board[r, cc]);
-                            }
                         }
                     }
                     matchCount = 1;
@@ -309,9 +406,7 @@ public class EnhancedBoardManager : MonoBehaviour
                 for (int cc = startC; cc <= (cols - 1); cc++)
                 {
                     if (!matched.Contains(board[r, cc]))
-                    {
                         matched.Add(board[r, cc]);
-                    }
                 }
             }
         }
@@ -336,9 +431,7 @@ public class EnhancedBoardManager : MonoBehaviour
                         for (int rr = startR; rr <= (r - 1); rr++)
                         {
                             if (!matched.Contains(board[rr, c]))
-                            {
                                 matched.Add(board[rr, c]);
-                            }
                         }
                     }
                     matchCount = 1;
@@ -351,9 +444,7 @@ public class EnhancedBoardManager : MonoBehaviour
                 for (int rr = startR; rr <= (rows - 1); rr++)
                 {
                     if (!matched.Contains(board[rr, c]))
-                    {
                         matched.Add(board[rr, c]);
-                    }
                 }
             }
         }
@@ -369,9 +460,7 @@ public class EnhancedBoardManager : MonoBehaviour
             for (int r = rows - 1; r >= 0; r--)
             {
                 if (board[r,c] != null)
-                {
                     stack.Add(board[r,c]);
-                }
             }
             for (int r = rows - 1; r >= 0; r--)
             {
@@ -393,6 +482,10 @@ public class EnhancedBoardManager : MonoBehaviour
         RedrawBoard();
     }
 
+    /// <summary>
+    /// Repositions existing gemViews after changes in row/col or cellSize.
+    /// Called after CascadeGems, or if dimension changes (OnRectTransformDimensionsChange).
+    /// </summary>
     public void RedrawBoard()
     {
         foreach (Transform child in transform)
@@ -403,19 +496,18 @@ public class EnhancedBoardManager : MonoBehaviour
                 Vector2 newPos = CalculatePosition(gv.gemData.row, gv.gemData.col);
                 RectTransform rt = child.GetComponent<RectTransform>();
                 if (rt)
-                {
                     rt.anchoredPosition = newPos;
-                }
             }
         }
     }
 
+    // ----------------------------------------------------------
+    // Helper Functions
+    // ----------------------------------------------------------
     public void RemoveGem(GemData data)
     {
         if (board[data.row, data.col] == data)
-        {
             board[data.row, data.col] = null;
-        }
     }
 
     public void AddAggregatorPoints(int amt)
@@ -438,5 +530,19 @@ public class EnhancedBoardManager : MonoBehaviour
                 return gv;
         }
         return null;
+    }
+
+    // optional skill / item usage events
+    public event System.Action<int> OnSkillReady;
+    public event System.Action<int> OnItemUsed;
+
+    private void SkillBecameReady(int skillID)
+    {
+        OnSkillReady?.Invoke(skillID);
+    }
+
+    private void ItemWasUsed(int itemSlotIndex)
+    {
+        OnItemUsed?.Invoke(itemSlotIndex);
     }
 }
