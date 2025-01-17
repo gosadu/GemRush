@@ -1,0 +1,90 @@
+using UnityEngine;
+using System.Collections.Generic;
+
+public class WorldMapManager : MonoBehaviour
+{
+    [System.Serializable]
+    public class WorldLocation
+    {
+        public string locationName;
+        public List<MinionData> minions; // e.g., 2-5 minions
+        public BossData boss;            // final encounter
+    }
+
+    public List<WorldLocation> locations = new List<WorldLocation>();
+
+    // We reference these new “databases” to fetch minions/bosses
+    public MinionDatabase minionDatabase; 
+    public BossDatabase bossDatabase;    
+
+    private int currentLocationIndex = 0;
+    private int minionIndex = 0;
+
+    public void InitMap()
+    {
+        Debug.Log("[WorldMapManager] InitMap called.");
+
+        // If no locations are set up in the Inspector, create sample ones
+        if (locations.Count == 0)
+        {
+            // Example: Make 3 locations, each has a few minions + 1 boss
+            for (int i = 0; i < 3; i++)
+            {
+                WorldLocation loc = new WorldLocation();
+                loc.locationName = "Region_" + i;
+                loc.minions = new List<MinionData>();
+
+                // Suppose we pick random minions from the database:
+                loc.minions.Add(minionDatabase.GetMinion(i * 10 + 1)); 
+                loc.minions.Add(minionDatabase.GetMinion(i * 10 + 2));
+
+                loc.boss = bossDatabase.GetBoss(i);  // an example reference
+                locations.Add(loc);
+            }
+        }
+        Debug.Log("[WorldMapManager] Map is ready with " + locations.Count + " locations.");
+    }
+
+    /// <summary> Returns the current encounter (Minion or Boss). </summary>
+    public (MinionData, BossData) GetCurrentEncounter()
+    {
+        if (currentLocationIndex >= locations.Count)
+        {
+            Debug.Log("No more locations. Possibly done with game content!");
+            return (null, null);
+        }
+        WorldLocation loc = locations[currentLocationIndex];
+        if (minionIndex < loc.minions.Count)
+        {
+            return (loc.minions[minionIndex], null);
+        }
+        else
+        {
+            return (null, loc.boss);
+        }
+    }
+
+    /// <summary> Called once a minion is defeated. Moves to next minion or boss. </summary>
+    public void AdvanceMinion()
+    {
+        WorldLocation loc = locations[currentLocationIndex];
+        minionIndex++;
+        if (minionIndex > loc.minions.Count)
+            minionIndex = loc.minions.Count;
+    }
+
+    /// <summary> Called once the boss for a location is defeated. Moves to next location. </summary>
+    public void AdvanceLocation()
+    {
+        currentLocationIndex++;
+        minionIndex = 0;
+        if (currentLocationIndex >= locations.Count)
+        {
+            Debug.Log("[WorldMapManager] All locations cleared. Victory!");
+        }
+        else
+        {
+            Debug.Log("[WorldMapManager] Moved to location index " + currentLocationIndex);
+        }
+    }
+}

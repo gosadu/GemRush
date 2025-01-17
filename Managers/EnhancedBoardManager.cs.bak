@@ -1,0 +1,577 @@
+using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+using System.Collections.Generic;
+
+/// <summary>
+/// Handles synergy from PartyManager, item usage, aggregator multipliers, wildcard gem spawn rates.
+/// Now includes basic vanish animations, UI references for HP, aggregator text, synergy, etc.
+/// </summary>
+public class EnhancedBoardManager : MonoBehaviour
+{
+    [Header("Board Dimensions")]
+    public int rows = 8;
+    public int cols = 8;
+    public bool autoFitGems = true;
+    public float cellSize = 64f;
+
+    [Header("Gem Sprites")]
+    public Sprite[] gemSprites; // index 0..5 normal, 6..7 wildcard (if needed)
+
+    [Header("UI References")]
+    public Slider bossHPSlider;
+    public Text bossHPValue;
+    public Slider playerHPSlider;
+    public Text playerHPValue;
+    public Text aggregatorText;    // displays aggregator points
+    public Text movesText;
+    public Text synergyText;       // displays synergy from party
+
+    [Header("Prefabs")]
+    public GameObject gemViewPrefab;
+    public GameObject aggregatorFlashPrefab;
+    public GameObject floatingScorePrefab;
+    public RectTransform boardContainer;
+
+    // aggregator synergy
+    private int aggregatorPoints = 0;
+    private bool aggregatorVisible = false;
+    private Coroutine aggregatorRoutine;
+
+    // internal references
+    private PartyManager partyManager;
+    private ItemManager itemManager;
+
+    private int currentBossHP = 200;
+    private int currentPlayerHP = 100;
+    private int movesLeft = 15;
+
+    private GemData[,] board;
+    private Dictionary<string, Vector2> gemPositions = new Dictionary<string, Vector2>();
+
+    private string[] WILDCARD_TYPES = { "wild-rainbow", "wild-colorbomb" };
+    private int NUM_COLORS = 6;
+
+    // optional singleton-like reference
+    public static EnhancedBoardManager Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+
+        partyManager = FindObjectOfType<PartyManager>();
+        itemManager = FindObjectOfType<ItemManager>();
+    }
+
+    private void Start()
+    {
+        InitBoard();
+        UpdateUI();
+    }
+
+    public void InitBoard()
+    {
+        board = new GemData[rows, cols];
+
+        float actualCellSize = cellSize;
+        if (autoFitGems && boardContainer != null)
+        {
+            float w = boardContainer.rect.width;
+            float h = boardContainer.rect.height;
+            float cellW = w / cols;
+            float cellH = h / rows;
+            actualCellSize = Mathf.Min(cellW, cellH);
+        }
+
+        // fill board
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < cols; c++)
+            {
+                board[r,c] = CreateGemNoImmediateMerge(r, c);
+            }
+        }
+
+        // spawn visuals
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < cols; c++)
+            {
+                Vector2 pos = CalculateLocalPosition(r, c, actualCellSize);
+                gemPositions[r+"-"+c] = pos;
+                CreateGemView(board[r,c], pos, actualCellSize);
+            }
+        }
+
+        movesLeft = 15;
+        aggregatorPoints = 0;
+        UpdateUI();
+    }
+
+    private GemData CreateGemNoImmediateMerge(int r, int c)
+    {
+        float synergyMultiplier = (partyManager != null) ? partyManager.GetPartySynergy() : 1f;
+        float wildcardChance = 0.10f * synergyMultiplier;
+
+        int tries = 0;
+        while (tries < 10)
+        {
+            bool isWildcard = false;
+            string special = null;
+            int colorIndex = Random.Range(0, NUM_COLORS);
+
+            if (Random.value < wildcardChance)
+            {
+                int randW = Random.Range(0, WILDCARD_TYPES.Length);
+                special = WILDCARD_TYPES[randW];
+                colorIndex = 6 + randW; 
+                isWildcard = true;
+            }
+
+            var candidate = new GemData(r, c, colorIndex, special, isWildcard);
+            board[r,c] = candidate;
+
+            if (!CausesImmediateMatch(candidate, r, c))
+            {
+                board[r,c] = null;
+                return candidate;
+            }
+            board[r,c] = null;
+            tries++;
+        }
+
+        return new GemData(r, c, 0, null, false);
+    }
+
+    private bool CausesImmediateMatch(GemData gem, int r, int c)
+    {
+        board[r,c] = gem;
+        bool result = false;
+
+        // horizontal
+        int countH = 1;
+        for (int cc = c-1; cc >= 0; cc--)
+        {
+            if (board[r,cc] != null && board[r,cc].color == gem.color && !board[r,cc].isWildcard)
+                countH++;
+            else break;
+        }
+        for (int cc = c+1; cc < cols; cc++)
+        {
+            if (board[r,cc] != null && board[r,cc].color == gem.color && !board[r,cc].isWildcard)
+                countH++;
+            else break;
+        }
+        if (countH >= 3) result = true;
+
+        // vertical
+        int countV = 1;
+        for (int rr = r-1; rr >= 0; rr--)
+        {
+            if (board[rr,c] != null && board[rr,c].color == gem.color && !board[rr,c].isWildcard)
+                countV++;
+            else break;
+        }
+        for (int rr = r+1; rr < rows; rr++)
+        {
+            if (board[rr,c] != null && board[rr,c].color == gem.color && !board[rr,c].isWildcard)
+                countV++;
+            else break;
+        }
+
+        board[r,c] = null;
+        return (countH >= 3 || countV >= 3);
+    }
+
+    private Vector2 CalculateLocalPosition(int r, int c, float cellS)
+    {
+        float totalWidth = cols * cellS;
+        float totalHeight = rows * cellS;
+        float startX = -totalWidth / 2f + cellS / 2f;
+        float startY = totalHeight / 2f - cellS / 2f;
+
+        float x = startX + c * cellS;
+        float y = startY - r * cellS;
+        return new Vector2(x, y);
+    }
+
+    private void CreateGemView(GemData gem, Vector2 localPos, float cellS)
+    {
+        if (gemViewPrefab == null) return;
+        var gemGO = Instantiate(gemViewPrefab, boardContainer);
+        var rt = gemGO.GetComponent<RectTransform>();
+        if (rt != null)
+        {
+            rt.anchoredPosition = localPos;
+            rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, cellS);
+            rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, cellS);
+        }
+
+        var gv = gemGO.GetComponent<GemView>();
+        if (gv != null && gem.color < gemSprites.Length)
+        {
+            gv.InitGem(gem, gemSprites[gem.color]);
+        }
+    }
+
+    public void SwapGems(GemData g1, GemData g2)
+    {
+        if (movesLeft <= 0) return;
+
+        board[g1.row, g1.col] = g2;
+        board[g2.row, g2.col] = g1;
+        int oldR = g1.row; int oldC = g1.col;
+        g1.row = g2.row; g1.col = g2.col;
+        g2.row = oldR; g2.col = oldC;
+
+        movesLeft--;
+        UpdateUI();
+
+        StartCoroutine(CheckBoardRoutine());
+    }
+
+    private IEnumerator CheckBoardRoutine()
+    {
+        bool foundMatches = true;
+        int chainMultiplier = 1;
+        while (foundMatches)
+        {
+            var clusters = FindAllClusters();
+            if (clusters.Count == 0)
+            {
+                foundMatches = false;
+            }
+            else
+            {
+                yield return RemoveClusters(clusters, chainMultiplier);
+                yield return new WaitForSeconds(0.3f);
+                yield return CascadeGems();
+                yield return new WaitForSeconds(0.3f);
+                chainMultiplier++;
+            }
+        }
+    }
+
+    private List<List<GemData>> FindAllClusters()
+    {
+        List<List<GemData>> clusters = new List<List<GemData>>();
+        bool[,] visited = new bool[rows, cols];
+
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < cols; c++)
+            {
+                if (board[r,c] == null || visited[r,c]) continue;
+                var cluster = new List<GemData>();
+                Queue<(int,int)> queue = new Queue<(int,int)>();
+                queue.Enqueue((r,c));
+                visited[r,c] = true;
+
+                while (queue.Count > 0)
+                {
+                    var (rr, cc) = queue.Dequeue();
+                    cluster.Add(board[rr, cc]);
+
+                    foreach (var neigh in GetNeighbors(rr, cc))
+                    {
+                        if (!visited[neigh.r, neigh.c] && board[neigh.r, neigh.c] != null)
+                        {
+                            if (IsSameColorOrWildcard(board[rr, cc], board[neigh.r, neigh.c]))
+                            {
+                                visited[neigh.r, neigh.c] = true;
+                                queue.Enqueue((neigh.r, neigh.c));
+                            }
+                        }
+                    }
+                }
+                if (cluster.Count >= 3)
+                {
+                    clusters.Add(cluster);
+                }
+            }
+        }
+        return clusters;
+    }
+
+    private List<(int r, int c)> GetNeighbors(int r, int c)
+    {
+        List<(int,int)> list = new List<(int,int)>();
+        if (r > 0) list.Add((r-1, c));
+        if (r < rows-1) list.Add((r+1, c));
+        if (c > 0) list.Add((r, c-1));
+        if (c < cols-1) list.Add((r, c+1));
+        return list;
+    }
+
+    private bool IsSameColorOrWildcard(GemData a, GemData b)
+    {
+        if (a == null || b == null) return false;
+        if (a.isWildcard || b.isWildcard) return true;
+        return (a.color == b.color);
+    }
+
+    private IEnumerator RemoveClusters(List<List<GemData>> clusters, int chainMultiplier)
+    {
+        int localScore = 0;
+        List<GemData> toRemove = new List<GemData>();
+
+        foreach (var cluster in clusters)
+        {
+            int size = cluster.Count;
+            int points = 10 * size * chainMultiplier; 
+            localScore += points;
+
+            foreach (var gem in cluster)
+            {
+                if (!toRemove.Contains(gem)) toRemove.Add(gem);
+            }
+
+            // optional: show floating text in center
+            var mg = cluster[cluster.Count/2];
+            Vector2 mgPos = gemPositions[mg.row+"-"+mg.col];
+            CreateFloatingScore(points, mgPos);
+        }
+
+        float synergyMult = (partyManager != null) ? partyManager.GetPartySynergy() : 1f;
+        int aggregatorValue = Mathf.RoundToInt(localScore * synergyMult);
+        aggregatorPoints += aggregatorValue;
+        Debug.Log("Aggregator boosted by " + aggregatorValue + ". Total aggregatorPoints = " + aggregatorPoints);
+
+        // update aggregator text on UI
+        if (aggregatorText != null)
+        {
+            aggregatorText.text = "Aggregator: " + aggregatorPoints;
+        }
+
+        yield return AnimateRemoval(toRemove);
+
+        foreach (var gem in toRemove)
+        {
+            board[gem.row, gem.col] = null;
+        }
+    }
+
+    /// <summary>
+    /// Fade out gems instead of abruptly removing them
+    /// </summary>
+    private IEnumerator AnimateRemoval(List<GemData> gems)
+    {
+        float duration = 0.3f;
+        float time = 0f;
+
+        // gather GemView references
+        List<GemView> gemViews = new List<GemView>();
+        foreach (var g in gems)
+        {
+            // find the spawned gem
+            string key = g.row + "-" + g.col;
+            // we can't simply do this from board, we need to find the child in boardContainer that has this GemData
+            // simpler approach: have a dictionary from GemData -> GemView if you prefer. We'll brute force for now:
+        }
+
+        // We'll do a simple approach: each gem is a child under boardContainer. We'll check the GemView's gemData
+        List<GameObject> childList = new List<GameObject>();
+        foreach (Transform child in boardContainer)
+        {
+            childList.Add(child.gameObject);
+        }
+
+        foreach (GameObject child in childList)
+        {
+            var gv = child.GetComponent<GemView>();
+            if (gv != null)
+            {
+                if (gems.Contains(gv.GetGemData()))
+                {
+                    gemViews.Add(gv);
+                }
+            }
+        }
+
+        // fade out (alpha or scale)
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float t = time / duration;
+
+            foreach (var gv in gemViews)
+            {
+                gv.SetAlpha(1f - t); // fade from alpha 1 to 0
+                // optionally also scale
+                gv.SetScale(Mathf.Lerp(1f, 0.5f, t));
+            }
+            yield return null;
+        }
+
+        // destroy gemViews
+        foreach (var gv in gemViews)
+        {
+            if (gv != null) Destroy(gv.gameObject);
+        }
+    }
+
+    private IEnumerator CascadeGems()
+    {
+        for (int c = 0; c < cols; c++)
+        {
+            List<GemData> stack = new List<GemData>();
+            for (int r = rows-1; r >= 0; r--)
+            {
+                if (board[r,c] != null)
+                {
+                    stack.Add(board[r,c]);
+                }
+            }
+            for (int r = rows-1; r >= 0; r--)
+            {
+                if (stack.Count > 0)
+                {
+                    var gem = stack[0];
+                    stack.RemoveAt(0);
+                    gem.row = r;
+                    gem.col = c;
+                    board[r,c] = gem;
+                }
+                else
+                {
+                    board[r,c] = CreateGemNoImmediateMerge(r,c);
+                }
+            }
+        }
+
+        RedrawBoard();
+        yield return new WaitForSeconds(0.3f);
+
+        if (!aggregatorVisible && aggregatorPoints > 0)
+        {
+            aggregatorVisible = true;
+            if (aggregatorRoutine != null) StopCoroutine(aggregatorRoutine);
+            aggregatorRoutine = StartCoroutine(AggregatorRoutine());
+        }
+    }
+
+    private void RedrawBoard()
+    {
+        // remove children
+        List<GameObject> childList = new List<GameObject>();
+        foreach (Transform child in boardContainer)
+        {
+            childList.Add(child.gameObject);
+        }
+        foreach (var c in childList)
+        {
+            Destroy(c);
+        }
+
+        float actualCellSize = cellSize;
+        if (autoFitGems && boardContainer != null)
+        {
+            float w = boardContainer.rect.width;
+            float h = boardContainer.rect.height;
+            float cellW = w / cols;
+            float cellH = h / rows;
+            actualCellSize = Mathf.Min(cellW, cellH);
+        }
+
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < cols; c++)
+            {
+                if (board[r,c] != null)
+                {
+                    Vector2 pos = CalculateLocalPosition(r, c, actualCellSize);
+                    gemPositions[r+"-"+c] = pos;
+                    CreateGemView(board[r,c], pos, actualCellSize);
+                }
+            }
+        }
+    }
+
+    private void CreateFloatingScore(int points, Vector2 pos)
+    {
+        if (floatingScorePrefab == null) return;
+        var go = Instantiate(floatingScorePrefab, boardContainer.parent);
+        go.transform.position = boardContainer.TransformPoint(pos);
+        var fs = go.GetComponent<FloatingScore>();
+        fs.Init(points, go.transform.position);
+    }
+
+    private IEnumerator AggregatorRoutine()
+    {
+        yield return new WaitForSeconds(1.0f);
+        if (aggregatorFlashPrefab != null)
+        {
+            var aggregatorFX = Instantiate(aggregatorFlashPrefab, boardContainer.parent);
+            aggregatorFX.SetActive(true);
+            yield return new WaitForSeconds(0.8f);
+            Destroy(aggregatorFX);
+        }
+
+        int finalDamage = aggregatorPoints;
+        aggregatorPoints = 0;
+        aggregatorVisible = false;
+        aggregatorRoutine = null;
+
+        currentBossHP -= finalDamage;
+        if (currentBossHP < 0) currentBossHP = 0;
+        Debug.Log("Boss took " + finalDamage + " aggregator damage. Boss HP = " + currentBossHP);
+
+        UpdateUI();
+
+        if (currentBossHP <= 0)
+        {
+            Debug.Log("Boss defeated!");
+            if (partyManager != null)
+            {
+                partyManager.AwardXPToParty(50);
+            }
+        }
+    }
+
+    public void AddAggregatorPoints(int amount)
+    {
+        aggregatorPoints += amount;
+        Debug.Log("[EnhancedBoardManager] aggregatorPoints += " + amount + " => " + aggregatorPoints);
+
+        // update aggregator text
+        if (aggregatorText != null)
+        {
+            aggregatorText.text = "Aggregator: " + aggregatorPoints;
+        }
+    }
+
+    private void UpdateUI()
+    {
+        if (bossHPSlider != null) bossHPSlider.value = currentBossHP;
+        if (bossHPValue != null) bossHPValue.text = currentBossHP + "/200";
+
+        if (playerHPSlider != null) playerHPSlider.value = currentPlayerHP;
+        if (playerHPValue != null) playerHPValue.text = currentPlayerHP + "/100";
+
+        if (movesText != null) movesText.text = "Moves: " + movesLeft;
+
+        if (partyManager != null && synergyText != null)
+        {
+            synergyText.text = "Synergy: x" + partyManager.GetPartySynergy().ToString("F2");
+        }
+
+        if (aggregatorText != null)
+        {
+            aggregatorText.text = "Aggregator: " + aggregatorPoints;
+        }
+    }
+
+    public void HealPlayer(int amount)
+    {
+        currentPlayerHP += amount;
+        if (currentPlayerHP > 100) currentPlayerHP = 100;
+        UpdateUI();
+    }
+
+    public GemData GetGemData(int r, int c)
+    {
+        if (r < 0 || r >= rows || c < 0 || c >= cols) return null;
+        return board[r,c];
+    }
+}

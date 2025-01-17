@@ -1,0 +1,50 @@
+/**************************************************************
+ * FILE: Assets/Scripts/GameManager.cs
+ **************************************************************/
+using UnityEngine;
+using System.Collections;
+
+public class GameManager : MonoBehaviour
+{
+    [Header("References")]
+    public WorldMapManager worldMapManager;        // Assign in Inspector
+    public BoardManager boardManager;              // Assign in Inspector
+    public ProgressionSystem progressionSystem;    // Assign in Inspector
+
+    private static GameManager instance;
+    public static GameManager Instance => instance;
+
+    private bool isAllSystemsReady = false;
+
+    private void Awake()
+    {
+        // Singleton pattern
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+    }
+
+    private void Start()
+    {
+        InitializeAll();
+    }
+
+    private void InitializeAll()
+    {
+        Debug.Log("[GameManager] Initializing All Systems...");
+
+        if (progressionSystem != null) progressionSystem.Init();
+        if (worldMapManager != null) worldMapManager.InitMap();
+        if (boardManager != null) boardManager.InitBoard();
+
+        isAllSystemsReady = true;
+        Debug.Log("[GameManager] All Systems Ready.");
+    }
+}

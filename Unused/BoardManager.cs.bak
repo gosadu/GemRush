@@ -1,0 +1,871 @@
+using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
+public class BoardManager : MonoBehaviour
+{
+    [Header("Board Dimensions")]
+    public int rows = 8;
+    public int cols = 8;
+    public float cellSize = 64f;
+
+    [Header("Gem Sprites")]
+    public Sprite[] gemSprites;
+
+    [Header("UI References")]
+    public LoadingScreen loadingScreen;
+    public DailyBonusModal dailyBonusModal;
+    public DailyQuestsModal dailyQuestsModal;
+    public PauseMenu pauseMenu;
+    public ShopModal shopModal;
+
+    [Header("Boss UI")]
+    public Image bossImage;
+    public Slider bossHPSlider;
+    public Text bossNameText;
+    public Text bossHPValue;
+
+    [Header("Player UI")]
+    public Image playerImage;
+    public Slider playerHPSlider;
+    public Text playerHPValue;
+    public Text currencyText;
+    public Text offenseText;
+    public Text defenseText;
+    public Text movesText;
+    public Text timerText;
+
+    [Header("Powerup Icons")]
+    public Button hammerButton;
+    public Button shuffleButton;
+    public Button shopButton;
+    public Button pauseButton;
+
+    [Header("Prefabs")]
+    public GameObject gemViewPrefab;
+    public GameObject dragGemPrefab;
+    public GameObject floatingScorePrefab;
+    public GameObject sparkPrefab;
+    public GameObject shatterEffectPrefab;
+    public GameObject confettiEffectPrefab;
+    public GameObject comboAnnouncementPrefab;
+    public GameObject aggregatorFlashPrefab;
+
+    [Header("Board Layout")]
+    public RectTransform boardContainer;
+
+    [System.Serializable]
+    public class BossData
+    {
+        public string name;
+        public int hp;
+        public int attack;
+        public int difficulty;
+        public Sprite bossSprite;
+    }
+    public List<BossData> bossList;
+    private int currentBossIndex = 0;
+    private int bossHP;
+    private int bossMaxHP;
+
+    private int playerHP = 100;
+    private int playerMaxHP = 100;
+    private bool isPlayerImmune = false;
+    private int offenseBoost = 0;
+    private int defenseBoost = 0;
+
+    private int currency = 100;
+    private bool isPaused = false;
+
+    private GemData[,] board;
+    private Dictionary<string, Vector3> gemPositions = new Dictionary<string, Vector3>();
+
+    private int movesLeft = 15;
+    private bool timedMode = false;
+    private float timerSeconds = 60f;
+    private int chainMultiplier = 1;
+    private float lastMergeTime = 0f;
+
+    private string[] WILDCARD_TYPES = 
+    {
+        "wild-rainbow", "wild-explosive", "wild-line", "wild-teleport", "wild-colorbomb"
+    };
+    private int NUM_COLORS = 6;
+    private int BASE_SCORE = 10;
+
+    private List<QuestData> dailyQuests = new List<QuestData>();
+
+    private bool aggregatorVisible = false;
+    private int aggregatorPoints = 0;
+    private Coroutine aggregatorRoutine;
+
+    private int hammerCount = 1;
+    private int shuffleCount = 1;
+    private bool hammerActive = false;
+
+    void Start()
+    {
+        StartCoroutine(GameInitializeRoutine());
+    }
+
+    private IEnumerator GameInitializeRoutine()
+    {
+        loadingScreen.Show("Initializing...", true);
+        yield return new WaitForSeconds(0.5f);
+
+        loadingScreen.UpdateStatus("Loading audio...");
+        yield return new WaitForSeconds(0.8f);
+
+        loadingScreen.UpdateStatus("Building board...");
+        InitBoard();
+        yield return new WaitForSeconds(0.5f);
+
+        loadingScreen.UpdateStatus("Checking daily bonus...");
+        CheckDailyBonus();
+        yield return new WaitForSeconds(0.5f);
+
+        loadingScreen.UpdateStatus("Starting boss attacks...");
+        InitBoss();
+        InvokeRepeating("BossAttacks", 1.5f, 1.5f);
+
+        loadingScreen.UpdateStatus("Ready!");
+        yield return new WaitForSeconds(0.5f);
+        loadingScreen.Hide();
+    }
+
+    void Update()
+    {
+        if (timedMode && !isPaused)
+        {
+            timerSeconds -= Time.deltaTime;
+            if (timerSeconds <= 0f)
+            {
+                timerSeconds = 0f;
+                Debug.Log("Time Up!");
+                CancelInvoke("BossAttacks");
+            }
+            if (timerText != null) timerText.text = "Timer: " + Mathf.CeilToInt(timerSeconds) + "s";
+        }
+    }
+
+    private void CheckDailyBonus()
+    {
+        dailyBonusModal.Init(1, "Enjoy some free currency!", () => {
+            currency += 50;
+            UpdatePlayerUI();
+            dailyBonusModal.Hide();
+        });
+    }
+
+    private void InitBoss()
+    {
+        BossData boss = bossList[currentBossIndex];
+        bossHP = boss.hp;
+        bossMaxHP = boss.hp;
+        if (bossImage != null && boss.bossSprite != null)
+        {
+            bossImage.sprite = boss.bossSprite;
+        }
+        if (bossNameText != null) bossNameText.text = boss.name + " (Lv. " + boss.difficulty + ")";
+        UpdateBossHPUI();
+    }
+
+    private void BossAttacks()
+    {
+        if (isPaused) return;
+        if (bossHP <= 0 || playerHP <= 0) return;
+
+        BossData boss = bossList[currentBossIndex];
+        int rawDamage = boss.attack;
+        int finalDamage = Mathf.Max(0, rawDamage - defenseBoost);
+        if (isPlayerImmune) return;
+        int newHP = playerHP - finalDamage;
+        if (newHP <= 0)
+        {
+            playerHP = 0;
+            UpdatePlayerUI();
+            CancelInvoke("BossAttacks");
+            Debug.Log("Defeat!");
+        }
+        else
+        {
+            playerHP = newHP;
+        }
+        UpdatePlayerUI();
+    }
+
+    private void InitBoard()
+    {
+        board = new GemData[rows, cols];
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < cols; c++)
+            {
+                GemData gem = CreateGemNoImmediateMerge(r, c);
+                board[r, c] = gem;
+            }
+        }
+
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < cols; c++)
+            {
+                Vector3 pos = GetBoardPosition(r, c);
+                string key = r + "-" + c;
+                gemPositions[key] = pos;
+
+                CreateGemView(board[r,c], pos);
+            }
+        }
+
+        movesLeft = 15;
+        chainMultiplier = 1;
+        UpdatePlayerUI();
+    }
+
+    private GemData CreateGemNoImmediateMerge(int r, int c)
+    {
+        int tries = 0;
+        while (tries < 10)
+        {
+            bool isWildcard = false;
+            string special = null;
+            int colorIndex = Random.Range(0, NUM_COLORS);
+
+            if (Random.value < 0.15f)
+            {
+                int randW = Random.Range(0, WILDCARD_TYPES.Length);
+                special = WILDCARD_TYPES[randW];
+                colorIndex = 6 + randW; 
+                isWildcard = true;
+            }
+
+            var candidate = new GemData() {
+                row = r,
+                col = c,
+                color = colorIndex,
+                special = special,
+                isWildcard = isWildcard
+            };
+
+            if (!CausesImmediateMatch(candidate, r, c))
+            {
+                return candidate;
+            }
+            tries++;
+        }
+        return new GemData() {
+            row = r,
+            col = c,
+            color = 0,
+            special = null,
+            isWildcard = false
+        };
+    }
+
+    private bool CausesImmediateMatch(GemData gem, int r, int c)
+    {
+        board[r,c] = gem;
+        bool result = false;
+        int countH = 1;
+        for (int cc = c - 1; cc >= 0; cc--)
+        {
+            if (board[r, cc] != null && board[r, cc].color == gem.color && !board[r, cc].isWildcard)
+                countH++;
+            else
+                break;
+        }
+        for (int cc = c + 1; cc < cols; cc++)
+        {
+            if (board[r, cc] != null && board[r, cc].color == gem.color && !board[r, cc].isWildcard)
+                countH++;
+            else
+                break;
+        }
+        if (countH >= 3) result = true;
+
+        int countV = 1;
+        for (int rr = r - 1; rr >= 0; rr--)
+        {
+            if (board[rr, c] != null && board[rr, c].color == gem.color && !board[rr, c].isWildcard)
+                countV++;
+            else
+                break;
+        }
+        for (int rr = r + 1; rr < rows; rr++)
+        {
+            if (board[rr, c] != null && board[rr, c].color == gem.color && !board[rr, c].isWildcard)
+                countV++;
+            else
+                break;
+        }
+        if (countV >= 3) result = true;
+
+        board[r,c] = null;
+        return result;
+    }
+
+    private Vector3 GetBoardPosition(int r, int c)
+{
+    float startX = -(cols * cellSize) / 2f + cellSize / 2f;
+    float startY = (rows * cellSize) / 2f - cellSize / 2f;
+    float x = startX + c * cellSize;
+    float y = startY - r * cellSize;
+    return new Vector3(x, y, 0); // local space
+}
+
+    private void CreateGemView(GemData gem, Vector3 position)
+    {
+        if (gemViewPrefab == null) return;
+        var gemGO = Instantiate(gemViewPrefab, boardContainer);
+        gemGO.transform.localPosition = position;
+        var gv = gemGO.GetComponent<GemView>();
+        if (gv != null && gem.color < gemSprites.Length)
+        {
+            gv.InitGem(gem, gemSprites[gem.color]);
+        }
+    }
+
+    public void SwapGems(GemData g1, GemData g2)
+    {
+        if (movesLeft <= 0) return;
+        var tempR = g1.row;
+        var tempC = g1.col;
+        board[g1.row, g1.col] = g2;
+        board[g2.row, g2.col] = g1;
+        g1.row = g2.row; 
+        g1.col = g2.col;
+        g2.row = tempR;
+        g2.col = tempC;
+
+        movesLeft--;
+        UpdatePlayerUI();
+
+        if (!CheckSynergy(g1, g2))
+        {
+            if (!HasCluster())
+            {
+                board[g1.row, g1.col] = g2;
+                board[g2.row, g2.col] = g1;
+                var rtemp = g1.row; var ctemp = g1.col;
+                g1.row = g2.row; g1.col = g2.col;
+                g2.row = rtemp; g2.col = ctemp;
+                movesLeft++;
+                UpdatePlayerUI();
+            }
+            else
+            {
+                StartCoroutine(HandleChainMerges());
+            }
+        }
+        else
+        {
+            StartCoroutine(HandleChainMerges());
+        }
+    }
+
+    private bool CheckSynergy(GemData g1, GemData g2)
+    {
+        if (g1.isWildcard && g2.isWildcard)
+        {
+            List<GemData> allGems = new List<GemData>();
+            for (int r = 0; r < rows; r++)
+            {
+                for (int c = 0; c < cols; c++)
+                {
+                    if (board[r,c] != null) allGems.Add(board[r,c]);
+                }
+            }
+            StartCoroutine(RemoveClusters(new List<List<GemData>>() { allGems }));
+            CreateComboAnnouncement(99);
+            return true;
+        }
+        return false;
+    }
+
+    private bool HasCluster()
+    {
+        var clusters = FindAllClusters();
+        return clusters.Count > 0;
+    }
+
+    private List<List<GemData>> FindAllClusters()
+    {
+        List<List<GemData>> clusters = new List<List<GemData>>();
+        bool[,] visited = new bool[rows, cols];
+
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < cols; c++)
+            {
+                if (board[r,c] == null || visited[r,c]) continue;
+                var cluster = new List<GemData>();
+                Queue<(int,int)> queue = new Queue<(int,int)>();
+                queue.Enqueue((r,c));
+                visited[r,c] = true;
+
+                while (queue.Count > 0)
+                {
+                    var (rr, cc) = queue.Dequeue();
+                    cluster.Add(board[rr, cc]);
+                    foreach (var neigh in GetNeighbors(rr, cc))
+                    {
+                        if (!visited[neigh.r, neigh.c] && board[neigh.r, neigh.c] != null)
+                        {
+                            if (IsSameColorOrWildcard(board[rr, cc], board[neigh.r, neigh.c]))
+                            {
+                                visited[neigh.r, neigh.c] = true;
+                                queue.Enqueue((neigh.r, neigh.c));
+                            }
+                        }
+                    }
+                }
+                if (cluster.Count >= 3)
+                {
+                    clusters.Add(cluster);
+                }
+            }
+        }
+        return clusters;
+    }
+
+    private bool IsSameColorOrWildcard(GemData a, GemData b)
+    {
+        if (a == null || b == null) return false;
+        if (a.isWildcard || b.isWildcard) return true;
+        return (a.color == b.color);
+    }
+
+    private List<(int r,int c)> GetNeighbors(int r, int c)
+    {
+        List<(int,int)> list = new List<(int,int)>();
+        if (r > 0) list.Add((r-1, c));
+        if (r < rows-1) list.Add((r+1, c));
+        if (c > 0) list.Add((r, c-1));
+        if (c < cols-1) list.Add((r, c+1));
+        return list;
+    }
+
+    private IEnumerator HandleChainMerges()
+    {
+        float now = Time.time;
+        if (now - lastMergeTime < 2f && lastMergeTime > 0f)
+        {
+            chainMultiplier++;
+        }
+        else
+        {
+            chainMultiplier = 1;
+        }
+        lastMergeTime = now;
+
+        bool mergesFound = false;
+        do
+        {
+            var clusters = FindAllClusters();
+            if (clusters.Count == 0)
+            {
+                mergesFound = false;
+            }
+            else
+            {
+                mergesFound = true;
+                yield return RemoveClusters(clusters);
+                yield return new WaitForSeconds(0.3f);
+                yield return CascadeGems();
+                yield return new WaitForSeconds(0.25f);
+            }
+        }
+        while (mergesFound);
+    }
+
+    private IEnumerator RemoveClusters(List<List<GemData>> clusters)
+    {
+        if (clusters == null || clusters.Count == 0) yield break;
+
+        int localScore = 0;
+        List<GemData> toRemove = new List<GemData>();
+
+        foreach (var cluster in clusters)
+        {
+            int size = cluster.Count;
+            int points = BASE_SCORE * (int)Mathf.Pow(2, (size - 3)) * chainMultiplier;
+            localScore += points;
+
+            foreach (var gem in cluster)
+            {
+                if (!toRemove.Contains(gem)) toRemove.Add(gem);
+            }
+
+            var mg = cluster[cluster.Count / 2];
+            Vector3 mgPos = gemPositions[mg.row + "-" + mg.col];
+            CreateFloatingScore(points, mgPos);
+        }
+
+        if (localScore > 0)
+        {
+            int totalDamage = localScore + offenseBoost;
+            StartAggregator(totalDamage);
+        }
+
+        yield return AnimateGemRemoval(toRemove);
+
+        foreach (var gem in toRemove)
+        {
+            board[gem.row, gem.col] = null;
+        }
+    }
+
+    private IEnumerator AnimateGemRemoval(List<GemData> gems)
+    {
+        yield return new WaitForSeconds(0.2f);
+    }
+
+    private IEnumerator CascadeGems()
+    {
+        for (int c = 0; c < cols; c++)
+        {
+            List<GemData> stack = new List<GemData>();
+            for (int r = rows - 1; r >= 0; r--)
+            {
+                if (board[r,c] != null) stack.Add(board[r,c]);
+            }
+            for (int r = rows - 1; r >= 0; r--)
+            {
+                if (stack.Count > 0)
+                {
+                    var gem = stack[0];
+                    stack.RemoveAt(0);
+                    gem.row = r;
+                    gem.col = c;
+                    board[r,c] = gem;
+                }
+                else
+                {
+                    var gem = CreateGemNoImmediateMerge(r,c);
+                    board[r,c] = gem;
+                }
+            }
+        }
+
+        float rowDelay = 0f;
+        for (int r = rows - 1; r >= 0; r--)
+        {
+            for (int c = 0; c < cols; c++)
+            {
+                if (board[r,c] != null)
+                {
+                    string key = r + "-" + c;
+                    var pos = GetBoardPosition(r,c);
+                    gemPositions[key] = pos;
+                }
+            }
+            rowDelay += 0.03f;
+        }
+        yield return new WaitForSeconds(rowDelay + 0.25f);
+    }
+
+    private void CreateFloatingScore(int points, Vector3 pos)
+    {
+        if (floatingScorePrefab == null) return;
+        var fsGO = Instantiate(floatingScorePrefab, boardContainer.parent);
+        var fs = fsGO.GetComponent<FloatingScore>();
+        fs.Init(points, pos);
+    }
+
+    private void CreateComboAnnouncement(int multiplier)
+    {
+        if (comboAnnouncementPrefab == null) return;
+        var caGO = Instantiate(comboAnnouncementPrefab, boardContainer.parent);
+        var combo = caGO.GetComponent<ComboAnnouncement>();
+        if (combo != null)
+        {
+            combo.Show(multiplier);
+        }
+    }
+
+    private void StartAggregator(int amount)
+    {
+        aggregatorPoints += amount;
+        if (!aggregatorVisible)
+        {
+            aggregatorVisible = true;
+            if (aggregatorRoutine != null) StopCoroutine(aggregatorRoutine);
+            aggregatorRoutine = StartCoroutine(AggregatorRoutine());
+        }
+    }
+
+    private IEnumerator AggregatorRoutine()
+    {
+        float displayTime = 1.5f;
+        float elapsed = 0f;
+        while (elapsed < displayTime)
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        aggregatorVisible = false;
+        aggregatorRoutine = null;
+        var aggregatorFlashGO = Instantiate(aggregatorFlashPrefab, boardContainer.parent);
+        aggregatorFlashGO.SetActive(true);
+
+        yield return new WaitForSeconds(0.8f);
+        Destroy(aggregatorFlashGO);
+
+        int finalDamage = aggregatorPoints;
+        aggregatorPoints = 0;
+        InflictDamage(finalDamage);
+    }
+
+    private void InflictDamage(int damage)
+    {
+        bossHP = Mathf.Max(0, bossHP - damage);
+        UpdateBossHPUI();
+        if (bossHP <= 0)
+        {
+            CancelInvoke("BossAttacks");
+            Debug.Log("Victory!");
+            AdvanceToNextBoss();
+        }
+    }
+
+    private void AdvanceToNextBoss()
+    {
+        currentBossIndex++;
+        if (currentBossIndex >= bossList.Count)
+        {
+            Debug.Log("All bosses defeated!");
+        }
+        else
+        {
+            BossData b = bossList[currentBossIndex];
+            bossHP = b.hp;
+            bossMaxHP = b.hp;
+            playerHP = playerMaxHP;
+            offenseBoost = 0;
+            defenseBoost = 0;
+            isPlayerImmune = false;
+
+            ClearBoard();
+            InitBoard();
+            InitBoss();
+            InvokeRepeating("BossAttacks", 1.5f, 1.5f);
+        }
+    }
+
+    private void ClearBoard()
+    {
+        foreach (Transform child in boardContainer)
+        {
+            Destroy(child.gameObject);
+        }
+        board = new GemData[rows, cols];
+    }
+
+    private void UpdateBossHPUI()
+    {
+        if (bossHPSlider != null)
+        {
+            bossHPSlider.maxValue = bossMaxHP;
+            bossHPSlider.value = bossHP;
+        }
+        if (bossHPValue != null)
+        {
+            bossHPValue.text = bossHP + "/" + bossMaxHP;
+        }
+    }
+
+    private void UpdatePlayerUI()
+    {
+        if (playerHPSlider != null)
+        {
+            playerHPSlider.maxValue = playerMaxHP;
+            playerHPSlider.value = playerHP;
+        }
+        if (playerHPValue != null)
+        {
+            playerHPValue.text = playerHP + "/" + playerMaxHP;
+        }
+        if (currencyText != null)
+        {
+            currencyText.text = "Currency: " + currency;
+        }
+        if (offenseText != null)
+        {
+            offenseText.text = "+DMG: " + offenseBoost;
+        }
+        if (defenseText != null)
+        {
+            defenseText.text = "-DMG: " + defenseBoost;
+        }
+        if (movesText != null)
+        {
+            movesText.text = "Moves: " + movesLeft;
+        }
+    }
+
+    public void OnHammerButton()
+    {
+        if (hammerCount <= 0) return;
+        hammerActive = true;
+        hammerCount--;
+        Debug.Log("Hammer active! Tap a gem to destroy it.");
+    }
+
+    public void DestroyGemAt(int r, int c)
+    {
+        board[r, c] = null;
+        foreach (Transform child in boardContainer)
+        {
+            Destroy(child.gameObject);
+        }
+        for (int rr = 0; rr < rows; rr++)
+        {
+            for (int cc = 0; cc < cols; cc++)
+            {
+                if (board[rr, cc] != null)
+                {
+                    var pos = GetBoardPosition(rr, cc);
+                    string key = rr + "-" + cc;
+                    gemPositions[key] = pos;
+                    CreateGemView(board[rr, cc], pos);
+                }
+            }
+        }
+        hammerActive = false;
+    }
+
+    public void OnShuffleButton()
+    {
+        if (shuffleCount <= 0) return;
+        shuffleCount--;
+        List<GemData> all = new List<GemData>();
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < cols; c++)
+            {
+                if (board[r,c] != null) all.Add(board[r,c]);
+            }
+        }
+        for (int i = 0; i < all.Count; i++)
+        {
+            var temp = all[i];
+            int randIndex = Random.Range(i, all.Count);
+            all[i] = all[randIndex];
+            all[randIndex] = temp;
+        }
+        int idx = 0;
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < cols; c++)
+            {
+                if (idx < all.Count)
+                {
+                    board[r,c] = all[idx];
+                    board[r,c].row = r;
+                    board[r,c].col = c;
+                    idx++;
+                }
+                else
+                {
+                    board[r,c] = CreateGemNoImmediateMerge(r,c);
+                }
+            }
+        }
+        ClearBoard();
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < cols; c++)
+            {
+                if (board[r,c] != null)
+                {
+                    var pos = GetBoardPosition(r, c);
+                    string key = r + "-" + c;
+                    gemPositions[key] = pos;
+                    CreateGemView(board[r,c], pos);
+                }
+            }
+        }
+    }
+
+    public void OnShopButton()
+    {
+        List<ShopItem> items = new List<ShopItem>() {
+            new ShopItem() { id="offense10", name="+10 Damage Boost", cost=50, type="offense", amount=10 },
+            new ShopItem() { id="offense25", name="+25 Damage Boost", cost=100, type="offense", amount=25 },
+            new ShopItem() { id="defense10", name="Reduce Incoming Damage by 10", cost=50, type="defense", amount=10 },
+            new ShopItem() { id="immunity", name="Brief Immunity (5s)", cost=75, type="immunity", amount=0 },
+        };
+        shopModal.Init(currency, items, OnBuyItem, () => {
+            shopModal.Hide();
+        });
+    }
+
+    private void OnBuyItem(ShopItem item)
+    {
+        if (currency < item.cost)
+        {
+            Debug.Log("Not enough currency!");
+            return;
+        }
+        currency -= item.cost;
+        if (item.type == "offense")
+        {
+            offenseBoost += item.amount;
+            Debug.Log("Purchased offense boost: +" + item.amount);
+        }
+        else if (item.type == "defense")
+        {
+            defenseBoost += item.amount;
+            Debug.Log("Purchased defense boost: +" + item.amount);
+        }
+        else if (item.type == "immunity")
+        {
+            Debug.Log("Purchased immunity for 5s!");
+            StartCoroutine(DoImmunity(5f));
+        }
+        UpdatePlayerUI();
+    }
+
+    private IEnumerator DoImmunity(float seconds)
+    {
+        isPlayerImmune = true;
+        yield return new WaitForSeconds(seconds);
+        isPlayerImmune = false;
+    }
+
+    public void OnPauseButton()
+    {
+        isPaused = !isPaused;
+        if (isPaused)
+        {
+            pauseMenu.Init(() => {
+                OnPauseButton();
+            },
+            () => {
+                isPaused = false;
+            },
+            () => {
+                dailyQuests.Clear();
+                dailyQuests.Add(new QuestData("Clear 100 red gems", 0, 100));
+                dailyQuests.Add(new QuestData("Trigger 2 Teleport gems", 0, 2));
+                dailyQuests.Add(new QuestData("Earn 5 combos", 0, 5));
+                dailyQuestsModal.Init(dailyQuests, () => {
+                    dailyQuestsModal.Hide();
+                });
+            },
+            () => {
+                Debug.Log("Leaderboards placeholder");
+            },
+            () => {
+                OnShopButton();
+            });
+        }
+        else
+        {
+            pauseMenu.Hide();
+        }
+    }
+}
