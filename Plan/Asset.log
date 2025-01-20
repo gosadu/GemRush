@@ -1,0 +1,480 @@
+**STAGE 1: PROJECT CREATION & INITIAL SCENE SETUP**  
+
+1) **Asset: Main Canvas Background**  
+   - **Purpose**: This image is placed behind the primary UI panels (TopPanel, CenterPanel, BottomPanel) to establish a consistent painterly or subtle anime backdrop. It unifies orchard expansions, forging synergy combos, puzzle-combat previews, incremental tutorials, and daily tasks under a cohesive visual style.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Create a painterly fantasy background at 1920×1080.
+      Use soft pastel strokes in cool greens and blues.
+      Incorporate subtle anime influence in line detail.
+      Place gentle swirling runes near the borders, hinting at magic.
+      Leave open space in the center for UI panels.
+      Illuminate faint sunlight from the top-left corner.
+      Embed a calm, whimsical tone across all shapes and colors."
+     ```
+   - **Unity Hookup**:  
+     1. Place the PNG file in `Assets/Art/UI/Backgrounds`.  
+     2. In the “MainGame” scene, create a Canvas named `Canvas`.  
+     3. Create an Image child named `CanvasBackground` with anchorMin `(0,0)` and anchorMax `(1,1)`, pivot `(0.5,0.5)`.  
+     4. Assign the painterly PNG to the `Image` component’s `Source Image`.  
+     5. Set the Image’s `Color` alpha to `1` and `raycastTarget` to `false`.  
+
+2) **Asset: Manager Icon Sprites (GameManager, UIManager, SoundManager, etc.)**  
+   - **Purpose**: These 64×64 fantasy-themed icons appear in the Unity Editor’s Hierarchy or Inspector as manager “Gizmos.” They do not appear in-game but provide final consistency for identifying orchard expansions, forging synergy combos, puzzle-combat manager references, netcode, daily tasks, or incremental tutorials.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Design a set of small 64×64 fantasy-themed icons.
+      Each icon shall depict a symbolic shape reflecting its manager purpose.
+      Use minimal color but maintain a painterly or subtle anime feel.
+      Integrate a gentle swirling rune motif at the lower corners.
+      Differentiate each manager: a hammer icon for forging, a scroll icon for daily tasks, etc.
+      Fade corners to transparency for an unobtrusive overlay.
+      Keep an inviting, cozy fantasy aesthetic in every detail."
+     ```
+   - **Unity Hookup**:  
+     1. Place all icon PNG files in `Assets/Art/EditorIcons`.  
+     2. In the Hierarchy, find the manager GameObjects: `GameManager`, `UIManager`, `SoundManager`, `MonetizationManager`, `GuildManager`, `DailyTasksManager`, `LiveOpsManager`, etc.  
+     3. Click the icon selection in the top-left of the Inspector for each manager, and choose the appropriate manager icon from `Assets/Art/EditorIcons`.  
+     4. No in-game UI usage is attached to these icons.  
+
+---
+
+**STAGE 2: PUZZLE COMBAT BOARD & SWAP MATCH LOGIC**  
+
+1) **Asset: Gem Sprites**  
+   - **Purpose**: These sprites (Ember, Cascade, Terra, Zephyr, Radiant, Corrupted) are required for puzzle-combat in `EnhancedBoardManager`. They represent orchard expansions synergy, forging synergy combos, or netcode puzzle fights.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Produce a set of six 256×256 gem icons in a painterly fantasy style.
+      Assign distinct color: red for Ember, blue for Cascade, green for Terra, purple for Zephyr, prismatic for Radiant, dark aura for Corrupted.
+      Maintain subtle anime outlines around each gem.
+      Infuse gentle swirling rune shapes within each gem's interior.
+      Ensure a cohesive shimmer effect across all gems.
+      Apply small highlights that imply magical energy.
+      Emphasize an enchanted, storybook aesthetic in every piece."
+     ```
+   - **Unity Hookup**:  
+     1. Store all gem sprite PNGs in `Assets/Art/Gems`.  
+     2. Open the “MainGame” scene.  
+     3. Locate the `BoardManager` GameObject (with `EnhancedBoardManager.cs`) in the Hierarchy.  
+     4. In the Inspector, expand the `gemSprites` array to 6 elements.  
+     5. Assign Ember=0, Cascade=1, Terra=2, Zephyr=3, Radiant=4, Corrupted=5 in exact order, with no placeholders.  
+     6. Confirm each sprite is set to `Sprite (2D and UI)` import mode.  
+
+2) **Asset: GemView Prefab**  
+   - **Purpose**: The puzzle-combat system instantiates each gem as a `GemView` prefab. `GemInputHandler` scripts track drag/swaps. This prefab is essential for orchard expansions synergy logic, forging synergy combos, netcode puzzle challenges, daily tasks that revolve around gem matches, and incremental tutorials.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Design a gem prefab composition in Unity, referencing the 2D gem sprite.
+      Enclose the sprite within a gentle anime boundary glow.
+      Animate mild idle bobbing or shimmering, simulating magic energy.
+      Include a radial highlight upon hover to show interactivity.
+      Use painterly color transitions for edges that harmonize with each gem element.
+      Incorporate faint swirling particles near the gem's base.
+      Present a mystical puzzle piece aesthetic consistent with forging synergy combos."
+     ```
+   - **Unity Hookup**:  
+     1. In `Assets/Prefabs/Gems`, create a new prefab named `GemViewPrefab`.  
+     2. Drag a new GameObject with an `Image` component into this folder to finalize the prefab.  
+     3. Attach `GemView.cs` and `GemInputHandler.cs`.  
+     4. In `GemView.cs` Inspector, set the default `gemImage` field to the `Image` component.  
+     5. Pivot `(0.5,0.5)`, size ~64×64, no placeholders.  
+     6. Open `BoardManager` in the scene, drag `GemViewPrefab` into the `gemViewPrefab` field in `EnhancedBoardManager`.  
+
+---
+
+**STAGE 3: INCREMENTAL ONBOARDING & DAILY PLANNER INTRO**  
+
+1) **Asset: Tutorial Overlay Sprites**  
+   - **Purpose**: Multiple overlay images, each triggered at milestone moments by `TutorialManager`: orchard expansions tutorial, forging intro, party synergy, daily planner intro. They guide incremental tutorials with no leftover placeholders or partial logic.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Create four painterly tutorial overlay images at 1080×600.
+      Emphasize warm parchment textures with subtle anime line edges.
+      Include faint swirling glyphs near corners to convey magic.
+      Insert a fantasy-themed border around the edges.
+      Reserve ample central space for text explanations.
+      Provide gentle pastel shades evoking an inviting mood.
+      Finalize a storybook style bridging orchard expansions and forging synergy combos."
+     ```
+   - **Unity Hookup**:  
+     1. Place PNG files in `Assets/Art/UI/TutorialOverlays`.  
+     2. In the “MainGame” scene, find `TutorialOverlay` under `TutorialManager`.  
+     3. Create child Images named `OrchardIntroOverlay`, `ForgingIntroOverlay`, `PartyIntroOverlay`, `DailyPlannerOverlay`, each with anchor `(0,0)` to `(1,1)`.  
+     4. Assign the appropriate overlay sprite to each Image’s `Source Image`.  
+     5. Assign them in `TutorialOverlayController` for final usage when calling `ShowTutorial(...)`.  
+
+2) **Asset: Daily Planner Icon**  
+   - **Purpose**: The daily planner feature uses a single icon to represent its panel in the main HUD. This icon references orchard expansions, forging tasks, puzzle-combat objectives, netcode guild co-op tasks, or synergy combos.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Design a 256×256 daily planner icon with a painterly fantasy style.
+      Depict a simple parchment notebook, partially open, with subtle anime outlines.
+      Include swirling leaf or quill elements near the top corner.
+      Use soft browns, creams, and gentle highlights for a cozy look.
+      Place faint arcane runes in the background, signifying synergy tasks.
+      Maintain a whimsical, storybook vibe across every detail.
+      Conclude with a warm palette, ensuring clarity at smaller sizes."
+     ```
+   - **Unity Hookup**:  
+     1. Store the file in `Assets/Art/UI/Icons`.  
+     2. In the “MainGame” scene, locate the main HUD Canvas.  
+     3. Create an `Image` named `DailyPlannerIcon`, pivot `(0.5,0.5)`, size `(100,100)`.  
+     4. Assign this icon to the `Image` component.  
+     5. Attach a `Button` if needed, linking to `DailyPlannerUI.Open()` in `OnClick()`.  
+
+---
+
+**STAGE 4: ORCHARD EXPANSIONS & DAILY MINIGAMES**  
+
+1) **Asset: Orchard District Backgrounds**  
+   - **Purpose**: Four background images for Timberland, Miner’s Gulch, Seed Grove, and Arcane Bloom. Each orchard district has a daily minigame panel. These final backgrounds unify orchard expansions synergy with forging synergy combos.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Produce four orchard district backgrounds at 1920×1080:
+      1) Timberland: dense forest with warmly lit tree trunks.
+      2) Miner’s Gulch: rocky canyon walls in a dimly lit mine shaft.
+      3) Seed Grove: bright meadow with sprouting seeds and pastel blooms.
+      4) Arcane Bloom: glowing magical garden in purples and blues.
+      Include painterly brush strokes, subtle anime line detail, swirling arcane elements near edges."
+     ```
+   - **Unity Hookup**:  
+     1. Place them in `Assets/Art/Orchard/Backgrounds`.  
+     2. Locate each orchard minigame panel (`SwipeLogsPanel`, `TapOrePanel`, `SeedSortingPanel`, `BlossomWeavePanel`).  
+     3. Create an `Image` named “Background” in each panel, anchor `(0,0)` to `(1,1)`, pivot `(0.5,0.5)`.  
+     4. Assign the correct orchard background sprite.  
+
+2) **Asset: Orchard Minigame Sprites**  
+   - **Purpose**: Each minigame (swiping logs, tapping ore, sorting seeds, weaving blossoms) requires interactive objects to reflect orchard expansions synergy. These sprites finalize the daily resource tasks.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Create a set of orchard minigame sprites at 512×512:
+      1) Logs with rough bark for swiping in Timberland.
+      2) Metallic ore chunks for tapping in Miner’s Gulch.
+      3) Seed pouches with bright color detail for Seed Grove sorting.
+      4) Glowing blossoms with prismatic edges for Arcane Bloom weaving.
+      Include painterly shading, slight anime line outlines.
+      Maintain a storybook charm tying into orchard expansions synergy."
+     ```
+   - **Unity Hookup**:  
+     1. Store them in `Assets/Art/Orchard/Minigames`.  
+     2. For each daily minigame script (`SwipeLogsMinigame.cs`, etc.), reference these sprites in the Inspector.  
+     3. Assign them to `Image` components in the minigame’s UI, each sized ~100×100.  
+
+---
+
+**STAGE 5: FORGING SYSTEM & ITEM FAMILIES**  
+
+1) **Asset: Forging Item Icons (Ember, Cascade, Terra, Zephyr, Arcane)**  
+   - **Purpose**: Each forging family has a signature item icon. The icons appear in the `WorkshopPanel` forging UI, puzzle-combat synergy combos, orchard expansions synergy discount references, or netcode cameo gear.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Generate five distinct forging item icons at 256×256:
+      1) Ember: a flaming blade crest swirling with orange embers.
+      2) Cascade: a translucent orb with gentle rippling water lines.
+      3) Terra: a sturdy earthen shield crest dotted with tiny vines.
+      4) Zephyr: a curved blade with a purple wind swirl.
+      5) Arcane: a radiant sigil ringed by subtle anime sparks.
+      Use painterly shading, ensuring each icon stands out clearly."
+     ```
+   - **Unity Hookup**:  
+     1. Place the files in `Assets/Art/ForgingItems`.  
+     2. Open the “MainGame” scene.  
+     3. Locate `WorkshopPanel`.  
+     4. In `ForgingUIController`, set each item icon for the corresponding dropdown or button.  
+     5. Set each sprite’s import mode to `Sprite (2D and UI)`, with no placeholders.  
+
+2) **Asset: Forging Puzzle Background**  
+   - **Purpose**: The forging puzzle is a smaller 4×4 board. This background fosters a cozy blacksmith or workshop environment with swirling arcane hints, uniting orchard expansions synergy or forging synergy combos with daily tasks.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Render a forging workshop background at 1920×1080:
+      Show a sturdy wooden bench, an anvil silhouette near the center.
+      Include torchlit walls with painterly, subtle anime lines.
+      Scatter minor arcane glyphs along the edges, suggesting magic infusion.
+      Use glowing embers in the corner for a forging atmosphere.
+      Maintain an inviting, storybook style in color transitions.
+      Keep a mild haze that signifies warmth from the forge."
+     ```
+   - **Unity Hookup**:  
+     1. Store the background file in `Assets/Art/Forging/Backgrounds`.  
+     2. Open the `ForgingPuzzlePanel` under `WorkshopPanel`.  
+     3. Create an `Image` named `ForgingBackground`, anchor `(0,0)` to `(1,1)`, pivot `(0.5,0.5)`.  
+     4. Assign the final PNG as `Source Image`.  
+
+---
+
+**STAGE 6: PARTY SYSTEM & HERO GACHA**  
+
+1) **Asset: Hero Portraits**  
+   - **Purpose**: Each hero in the gacha pool has a subtle anime portrait showing element (Ember, Cascade, Terra, Zephyr, Arcane) and role (Attacker, Defender, Support, Utility). These appear in the party UI, synergy combos, orchard expansions synergy if a hero influences orchard yields, forging synergy combos, daily tasks, or netcode cameo in guild co-op.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Create a set of subtle anime-style hero portraits at 512×512:
+      Portray Ember, Cascade, Terra, Zephyr, Arcane elements.
+      Show each hero’s upper-body with stylized eyes, hair highlights.
+      Use pastel color washes matching their elemental palette.
+      Embed faint swirling runes near each hero’s silhouette.
+      Present painterly shading focusing on a cozy, storybook vibe.
+      Ensure distinct gear or clothing signifying Attacker/Defender/Support/Utility roles."
+     ```
+   - **Unity Hookup**:  
+     1. Place the PNGs in `Assets/Art/Heroes/Portraits`.  
+     2. Open each `CharacterData` ScriptableObject in `Assets/Data/Heroes`.  
+     3. Assign the correct portrait under `portrait`.  
+     4. In `PartyUIController`, confirm each hero’s `Image` references `characterName` and `.portrait`.  
+
+2) **Asset: Gacha Banner Images**  
+   - **Purpose**: The hero gacha summoning panel includes a promotional banner showing star rates, orchard expansions synergy events, forging synergy combos ties, or special daily tasks rewards.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Produce a dynamic gacha banner at 1920×1080 in a painterly, subtle anime style:
+      Show a montage of five elemental heroes, each swirling with magical auras.
+      Integrate orchard leaves or forging sparks near the edges for synergy references.
+      Use bright emphasis around 4★ hero silhouettes for hype.
+      Layer small runic designs that unify with the puzzle-combat theme.
+      Maintain a lively, storybook color palette, no placeholders.
+      Add a slight radiant halo behind the central hero figure."
+     ```
+   - **Unity Hookup**:  
+     1. Place the file in `Assets/Art/Gacha/Banners`.  
+     2. In the summoning UI, create an `Image` named `GachaBannerImage`, anchored full screen or at the top.  
+     3. Assign the final banner to its `Source Image`.  
+     4. Link to `HeroGachaManager` if star rates or synergy data appear on top.  
+
+---
+
+**STAGE 7: GUILD & CO-OP FEATURES**  
+
+1) **Asset: Guild Boss Sprite**  
+   - **Purpose**: This multi-phase boss is central to the asynchronous netcode co-op fights. The sprite represents an evolving creature with orchard expansions synergy references, forging synergy combos usage by guildmates, or daily tasks awarding boss fight attempts.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Design a multi-phase fantasy boss at 512×512 resolution:
+      Depict a formidable creature with at least three incremental forms.
+      Show subtle anime outlines on horns, claws, or crystalline protrusions.
+      Use painterly shading to indicate progressive corruption or power surges.
+      Integrate swirling runic glyphs on its limbs or chest area.
+      Keep a dark, fearsome color scheme with glowing weak points.
+      Imply an epic scale worthy of co-op guild battles."
+     ```
+   - **Unity Hookup**:  
+     1. Place in `Assets/Art/Guild/BossSprites`.  
+     2. Open the `GuildUIController` or `GuildBossPanel`.  
+     3. Create an `Image` named “GuildBossImage,” anchor `(0.5,0.5)`, pivot `(0.5,0.5)`, size ~400×400.  
+     4. Assign the boss sprite to `Source Image` in the Inspector.  
+
+2) **Asset: Guild Panel Background**  
+   - **Purpose**: A painterly interior for the tavern or guild hall. It visually supports orchard expansions synergy or forging synergy combos that guild members share, netcode resource gifting, daily tasks, or cameo friend heroes.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Craft a 1920×1080 guild hall background in a painterly fantasy style:
+      Show sturdy timber beams and glowing torchlight on the walls.
+      Present faint banners overhead with subtle anime line details.
+      Include swirling magical sigils near the corners to imply synergy.
+      Maintain warm browns and gold tones for a tavern-like communal setting.
+      Retain a gentle storybook style aligning with orchard expansions and forging combos.
+      Introduce soft accent lighting for an inviting, communal mood."
+     ```
+   - **Unity Hookup**:  
+     1. Place in `Assets/Art/Guild/Backgrounds`.  
+     2. In `GuildUIController`, create an `Image` named “GuildPanelBackground,” anchor `(0,0)` to `(1,1)`.  
+     3. Assign the background as `Source Image`.  
+     4. Ensure it appears below guild UI elements in the Hierarchy.  
+
+---
+
+**STAGE 8: LIVE OPS & FINAL DAILY PLANNER**  
+
+1) **Asset: Live Ops Banner**  
+   - **Purpose**: This banner advertises forging weekend, elemental day, harvest rush, or arcane surge. Displayed in the daily planner or main HUD, connecting orchard expansions synergy, forging synergy combos, puzzle logic, netcode co-op, and incremental tutorials.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Generate a 1920×400 horizontal banner announcing live ops events:
+      Arrange glowing elemental icons across the center in painterly style.
+      Place forging sparks or orchard leaves at the edges.
+      Provide mild anime line highlights around event text.
+      Use bright, celebratory color flares for a lively impact.
+      Show swirling runic shapes that unify with puzzle-combat aesthetics.
+      Maintain a cohesive fantasy vibe consistent with orchard expansions synergy."
+     ```
+   - **Unity Hookup**:  
+     1. Store in `Assets/Art/UI/LiveOps`.  
+     2. Open `DailyPlannerUI`.  
+     3. Create an `Image` named “LiveOpsBanner,” anchor `(0,1)`, pivot `(0.5,1)`, size `(1920,400)`.  
+     4. Assign the banner to `Source Image`.  
+
+2) **Asset: Elemental Day Icons**  
+   - **Purpose**: Small 128×128 icons denote Ember Day, Cascade Day, Terra Day, Zephyr Day, and Arcane Day in the daily planner or forging synergy combos. They highlight orchard expansions synergy for each element on that specific day.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Create five 128×128 elemental day icons:
+      1) Ember Day: a blazing flame swirl with painterly edges.
+      2) Cascade Day: a rippling water droplet with faint anime outline.
+      3) Terra Day: a vibrant green leaf crest ringed by runic arcs.
+      4) Zephyr Day: a stylized purple breeze swirl.
+      5) Arcane Day: a prismatic orb encircled by subtle glyphs.
+      Present a coherent fantasy style across all icons."
+     ```
+   - **Unity Hookup**:  
+     1. Place them in `Assets/Art/UI/ElementalDays`.  
+     2. Open `LiveOpsManager` or `DailyPlannerUI`.  
+     3. For each element day, create an `Image` named “ElementalDayIcon_Ember,” etc.  
+     4. Assign the correct icon to each, set size `(64,64)`.  
+
+---
+
+**STAGE 9: MINION & BOSS NODES & WORLD MAP REFINEMENT**  
+
+1) **Asset: Sublocation Node Icons**  
+   - **Purpose**: Every sublocation node (minion or boss) is visualized on the world map or sublocation UI. They reflect orchard expansions synergy gates (orchard≥Tier2), forging synergy combos (forging≥some item), netcode cameo if friend’s hero can assist, and daily tasks linking minion kills.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Generate a set of 40×40 node icons for minions and bosses:
+      Use small painterly circles with distinct silhouettes: creature shape for minions, horned skull for bosses.
+      Integrate faint anime line outlines around each icon.
+      Keep bright but translucent fill colors for clarity.
+      Place minimal swirling glyph details near edges.
+      Maintain a cohesive fantasy style matching orchard expansions synergy."
+     ```
+   - **Unity Hookup**:  
+     1. Place them in `Assets/Art/WorldMap/NodeIcons`.  
+     2. Open `SublocationUIController`.  
+     3. For each node button, assign a minion or boss icon.  
+     4. Set `RectTransform` pivot `(0.5,0.5)`, size `(40,40)` in the node grid layout.  
+
+2) **Asset: World Map Backdrops**  
+   - **Purpose**: Each region in the overworld uses a painterly backdrop that unifies orchard expansions synergy with forging synergy combos, puzzle-combat node flow, daily tasks, netcode guild co-op gating, or incremental tutorials unlocking new regions.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Create several painterly overworld backdrops at 1920×1080:
+      Each region features distinct terrain: forests, mountains, lakes, or arcane craters.
+      Use gentle anime lines to define region boundaries.
+      Weave subtle swirling runes near the edges, linking orchard expansions synergy.
+      Apply bright, inviting color gradients to evoke a storybook realm.
+      Maintain a whimsical fantasy aesthetic throughout each backdrop."
+     ```
+   - **Unity Hookup**:  
+     1. Place them in `Assets/Art/WorldMap/Backdrops`.  
+     2. For each `LocationData` in `Assets/Data/WorldMap`, assign a `backgroundSprite` if used.  
+     3. In the overworld scene, create an `Image` named “RegionBackdrop” anchored `(0,0)` to `(1,1)` for full coverage.  
+     4. Assign the chosen sprite in the Inspector.  
+
+---
+
+**STAGE 10: ECONOMY & PROGRESSION FINE-TUNING**  
+
+1) **Asset: Balancing Spreadsheet or ScriptableObject**  
+   - **Purpose**: A data container for orchard expansions yields, forging synergy combos cost, minion HP, daily tasks rewards, netcode boss increments, or incremental tutorial triggers. It is reloaded in `GameManager.DebugReloadAllData()`.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Outline a structured CSV or JSON file listing final numeric values:
+      orchard expansions tier costs and synergy percentages,
+      forging base costs and synergy item bonuses,
+      puzzle minion HP, boss HP increments for netcode co-op,
+      daily tasks rewards for seeds, wood, ore, blossoms,
+      skill XP thresholds for hero leveling or mastery points,
+      no placeholders, final numbers ensuring balanced progression."
+     ```
+   - **Unity Hookup**:  
+     1. Place the file in `Assets/Data/Balancing`.  
+     2. If ScriptableObjects are used, create them here and assign orchard, forging, puzzle, daily tasks, and netcode fields.  
+     3. Call `ReloadOrchardData()`, `ReloadForgingData()`, or `ReloadDailyTaskData()` from `GameManager.DebugReloadAllData()` if dynamic.  
+
+2) **Asset: Audio Confirmation Clips**  
+   - **Purpose**: Short stingers for orchard expansions upgrade, forging success, daily task completion, or netcode co-op boss damage. They finalize the feedback loop in puzzle-combat synergy, orchard synergy, or forging synergy combos.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Create a set of short (1–2 second) fantasy-themed audio stingers:
+      1) Orchard upgrade success: a gentle harp arpeggio with swirling resonance.
+      2) Forging success: a bright anvil strike fading into shimmering sparks.
+      3) Daily task complete: a soft chime ascending in melodic intervals.
+      4) Guild boss damage: a deep drum impact plus subtle spark overlay.
+      Retain a whimsical yet triumphant tone consistent with the puzzle-RPG."
+     ```
+   - **Unity Hookup**:  
+     1. Place the audio files in `Assets/Audio/SFX/Progression`.  
+     2. In `SoundManager.cs`, define `AudioClip orchardUpgradeClip`, `forgingSuccessClip`, `dailyCompleteClip`, `guildBossDamageClip`.  
+     3. Assign each clip in the Inspector.  
+     4. Call them in orchard expansions logic, forging puzzle success code, daily tasks completion, or netcode boss fight code.  
+
+---
+
+**STAGE 11: POLISH, ART, & SOUND FINAL PASS**  
+
+1) **Asset: Swirl Transition Overlay**  
+   - **Purpose**: An overlay mask for swirl-based scene or panel transitions in `SceneTransitionManager.cs`. Ties orchard expansions synergy panels, forging puzzle transitions, puzzle-combat fights, netcode co-op, daily tasks, or incremental tutorials.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Craft a 1920×1080 swirl overlay for scene transitions in a painterly, subtle anime style:
+      Use a spiral gradient from transparent to a mild purple center.
+      Add faint glyphs along the swirl edges.
+      Keep painterly edges with no sharp lines, maintaining a fantasy atmosphere.
+      Imply an arcane vortex swirling outward.
+      Maintain a soft, magical charm in line with forging synergy visuals."
+     ```
+   - **Unity Hookup**:  
+     1. Place the PNG in `Assets/Art/UI/Transitions`.  
+     2. In the “MainGame” scene, locate `SceneTransitionManager`.  
+     3. Assign the swirl overlay sprite to `swirlOverlayImage`.  
+     4. Confirm the initial alpha is set to 0. The script animates alpha for swirl transitions.  
+
+2) **Asset: Combo Layer Audio Track**  
+   - **Purpose**: A looping track that overlays puzzle-combat music when large combos occur. The synergy combos reflect orchard expansions synergy or forging synergy combos for puzzle-based netcode co-op.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Produce a short, looping combo layer track in a light orchestral fantasy style:
+      Start with a soft string motif gradually layering bright chimes.
+      Introduce airy choir hums for extra mystical flare.
+      Keep a medium-tempo rhythmic pulse for excitement.
+      Maintain painterly timbres that blend with main puzzle music.
+      Ensure loop points seamlessly connect with no abrupt drop.
+      Sustain a whimsical, fantasy tone uplifting synergy combos."
+     ```
+   - **Unity Hookup**:  
+     1. Place the track file in `Assets/Audio/Music/ComboLayers`.  
+     2. In `SoundManager.cs`, define `public AudioClip comboLayerClip; public AudioSource comboLayerSource;`.  
+     3. In the Inspector, assign `comboLayerClip` to the newly imported track and reference `comboLayerSource`.  
+     4. Call `soundManager.StartComboLayer()` or `soundManager.StopComboLayer()` from puzzle-combat synergy triggers.  
+
+---
+
+**STAGE 12: FULL TESTING, SAVE/LOAD, AND PUBLISHING**  
+
+1) **Asset: App Store Icons & Screenshots**  
+   - **Purpose**: These images and icons finalize the puzzle-RPG’s store listing. They depict orchard expansions synergy, forging synergy combos, puzzle-combat boards, daily tasks, netcode guild co-op, incremental tutorials, top-tier UI elements, swirl transitions, layered audio feedback, and everything else.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Compile app store icons and screenshots in 16:9 and 1:1 ratios:
+      Feature orchard daily minigames, forging puzzle, puzzle-combat synergy, daily planner highlights.
+      Display subtle anime hero portraits along the borders.
+      Insert short descriptive callouts in painted frames.
+      Maintain painterly fantasy backdrops behind each scene.
+      Use bright, eye-catching color transitions that evoke a whimsical tone.
+      Keep a polished, professional composition for store presence."
+     ```
+   - **Unity Hookup**:  
+     1. Store them in `Assets/Art/StoreAssets`.  
+     2. In `Edit > Project Settings > Player`, under “Resolution and Presentation” or “Icon,” assign these final icons.  
+     3. Prepare final .aab or .apk with these images if deploying to Google Play, or .ipa for iOS with matching icons.  
+
+2) **Asset: Node Clearance Timestamp Data**  
+   - **Purpose**: A scriptable or JSON data approach storing sublocation node clearance times, ensuring no placeholders remain in netcode or orchard expansions synergy gating. Reflects puzzle-combat’s 8-hour respawn logic, daily tasks, and forging synergy combos.  
+   - **Generative Prompt (6–8 lines)**:  
+     ```
+     "Assemble a structured JSON or ScriptableObject for sublocation node clearance timestamps:
+      Map each sublocation ID to an array of node states,
+      Store a final 'clearTime' per node with an ISO or epoch format,
+      Ensure consistent naming for single dev usage,
+      Include an 'isCleared' boolean for quick checks,
+      Guarantee no placeholders remain, final data approach."
+     ```
+   - **Unity Hookup**:  
+     1. Place the file in `Assets/Data/NodeClearance`.  
+     2. In `WorldMapManager.OnNodeCleared()`, write or update the relevant node’s `clearTime` in this data.  
+     3. In `RefreshNodeStates()`, parse the data to check if >8 hours passed since clearing.  
+
+---
+
+**CONCLUSION**  
+All assets from Stage 1 to Stage 12 are enumerated, each with a short descriptive paragraph, a 6–8 line generative prompt, and final Unity hookup instructions free of placeholders or second-person references. This catalog comprehensively covers orchard backgrounds, forging item icons, hero portraits, minion/boss sprites, netcode UI overlays, tutorial panels, daily planner icons, orchard minigame objects, forging puzzle assets, synergy swirl transitions, layered audio tracks, data files, and store listing images. No omissions remain. All orchard expansions, forging synergy combos, puzzle-combat logic, netcode co-op features, daily tasks, incremental tutorials, top-tier UI elements, and audio are included in this exhaustive final check.
