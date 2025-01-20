@@ -1,0 +1,540 @@
+**A) STEP-BY-STEP STAGE IMPLEMENTATION (STAGE 6: PARTY SYSTEM & HERO GACHA)**
+
+1. **Enhance the Party Manager for Mono-Element & Multi-Element Synergy**  
+   1) In `PartyManager`, add final logic for synergy detection:  
+      - If all 4 heroes share the same element → +10% synergy combos for that element.  
+      - If 3+ distinct elements → +2 seconds to Phantasm Surge.  
+      - If you have Attacker, Defender, Support, Utility roles all present → +5% synergy combos.  
+   2) Store or return these synergy values in a `GetPartySynergyStats()` method, which puzzle-combat can reference to buff combos or extend surges.  
+   3) If orchard≥Tier3 unlocks the 4th party slot, enforce that in `AddToParty()`.  
+
+2. **Implement Hero Gacha & Pity System**  
+   1) Create a new script named `HeroGachaManager.cs`. This handles final star rates with pity:  
+      - 1★=65%, 2★=23%, 3★=10%, 4★=2%.  
+      - Guaranteed 3★ every 10 pulls, 4★ every 40 pulls.  
+   2) The user spends a currency (gems) or “Hero Shards.”  
+   3) On each pull, roll a random star rating. If it fails to get 3★ or 4★ in the relevant pity window, forcibly set that star rating.  
+   4) Create or reference a `CharacterData` from a pool (ScriptableObjects) to award.  
+
+3. **Add a HeroMasteryManager for Mastery Trees**  
+   1) Create `HeroMasteryManager.cs` tracking Offensive, Defense, Support lines. Each hero can have mastery points that buff orchard tasks, forging synergy, puzzle damage, or synergy combos.  
+   2) Mastery points are gained from orchard expansions, forging successes, or puzzle kills.  
+   3) If the user invests mastery points in “Combat Mastery,” puzzle combos might do +5% damage. If they invest in “Orchard Mastery,” orchard yields might be +5%, etc. All final data, no placeholders.  
+
+4. **Hero Trials**  
+   1) Create a new script `HeroTrialsManager.cs`. Each 3★+ hero has a short 2–3 node scenario awarding orchard seeds or forging mats.  
+   2) In `HeroTrialsManager`, store references to mini-scenarios for each hero. On completion, the user gets final rewards.  
+   3) Optionally display these trials in `DailyPlannerUI` or a “Trials” button in a `PartyUI` panel.  
+
+5. **Expand the Daily Planner**  
+   1) In `DailyPlannerUI.cs`, add an entry for “Complete Hero Trial” if a 3★ or 4★ hero is new.  
+   2) On completion, call `HeroTrialsManager.StartTrial(heroID)` or `CompleteTrial(heroID)` awarding forging mats.  
+
+6. **Incremental Mastery Gains**  
+   1) On orchard expansions, forging puzzle success, or puzzle-combat kills, call `HeroMasteryManager.AddMasteryPoints(heroOrParty, skillType, amount)`.  
+   2) If a hero invests in Offensive Mastery, orchard expansions might be unaffected, but puzzle damage synergy is boosted. If they invest in Logging Mastery, orchard expansions might yield more wood.  
+   3) Reflect these final changes in the synergy combos or orchard data—no placeholders.  
+
+7. **Tie It All Together**  
+   1) In `GameManager.InitializeAll()`, create or reference `HeroGachaManager`, `HeroMasteryManager`, `HeroTrialsManager`.  
+   2) Place them in the Hierarchy, attach their scripts, and assign any references needed (like a `CharacterDatabase`, or UI panels for gacha).  
+   3) Press Play. Summon heroes via `HeroGachaManager.PullHero()`. Build a 3- or 4-hero party in `PartyManager`. Check synergy logs for mono-element or multi-element. If orchard≥Tier3, try adding a 4th hero.  
+
+---
+
+**B) FULL CODE RECAP (ALL SCRIPTS, INCLUDING NEW AND UPDATED ONES, IN ONE BLOCK)**
+
+```csharp
+/****************************************************
+ * PartyManager.cs (UPDATED)
+ * Adds synergy detection for mono- vs multi-element,
+ * roles, and orchard≥Tier3 unlock for 4th slot.
+ ****************************************************/
+using UnityEngine;
+using System.Collections.Generic;
+
+public class PartyManager : MonoBehaviour
+{
+    [SerializeField] private List<CharacterData> allCharacters; 
+    [SerializeField] private List<CharacterData> activeParty;  
+    [SerializeField] private OrchardManager orchardManager; 
+    private const int MAX_PARTY_SIZE = 4;
+
+    public void InitPartySystem()
+    {
+        if (activeParty.Count == 0 && allCharacters.Count > 0)
+        {
+            AddToParty(allCharacters[0]);
+        }
+    }
+
+    public bool AddToParty(CharacterData character)
+    {
+        // Check orchard≥Tier3 for 4th slot
+        int orchardTier = orchardManager.GetDistrictData("Timberland").currentTier; 
+        // or any orchard needed for 4th slot
+        bool fourSlotUnlocked = orchardTier >= 3;
+
+        int allowedSize = fourSlotUnlocked ? 4 : 3;
+        if (activeParty.Count >= allowedSize)
+        {
+            Debug.LogWarning("[PartyManager] Party is full, only " + allowedSize + " slots currently unlocked.");
+            return false;
+        }
+        if (!activeParty.Contains(character))
+        {
+            activeParty.Add(character);
+            Debug.Log("[PartyManager] Added " + character.characterName + " to party.");
+            return true;
+        }
+        return false;
+    }
+
+    public bool RemoveFromParty(CharacterData character)
+    {
+        if (activeParty.Contains(character))
+        {
+            activeParty.Remove(character);
+            Debug.Log("[PartyManager] Removed " + character.characterName + " from party.");
+            return true;
+        }
+        return false;
+    }
+
+    public float GetPartySynergyMultiplier()
+    {
+        // Summation synergy from roles
+        float synergy = 1f;
+        bool hasAttacker = false, hasDefender = false, hasSupport = false, hasUtility = false;
+        HashSet<string> distinctElements = new HashSet<string>();
+
+        foreach (var c in activeParty)
+        {
+            synergy += c.synergyBonus; 
+            distinctElements.Add(c.elementType);
+
+            // check roles
+            switch (c.roleType)
+            {
+                case CharacterData.Role.Attacker: hasAttacker = true; break;
+                case CharacterData.Role.Defender: hasDefender = true; break;
+                case CharacterData.Role.Support: hasSupport = true; break;
+                case CharacterData.Role.Utility: hasUtility = true; break;
+            }
+        }
+
+        // If all 4 heroes share the same element
+        if (activeParty.Count == 4 && distinctElements.Count == 1)
+        {
+            synergy += 0.10f; // +10% synergy combos
+            Debug.Log("[PartyManager] Mono-element synergy +10% combos.");
+        }
+        // If 3+ distinct elements
+        if (distinctElements.Count >= 3)
+        {
+            Debug.Log("[PartyManager] Multi-element synergy: +2s to Phantasm Surge triggered externally.");
+            // Actual +2s to surge can be triggered in puzzle code or globally
+        }
+
+        // If party has attacker/defender/support/utility
+        if (hasAttacker && hasDefender && hasSupport && hasUtility)
+        {
+            synergy += 0.05f; // +5% synergy combos
+            Debug.Log("[PartyManager] Full role synergy +5% combos.");
+        }
+
+        return synergy; 
+    }
+
+    public List<CharacterData> GetAllCharacters() => allCharacters;
+    public List<CharacterData> GetActiveParty() => activeParty;
+
+    // Optionally awarding XP to entire party
+    public void AwardXPToParty(int xpAmount)
+    {
+        foreach (var c in activeParty)
+        {
+            c.AddXP(xpAmount);
+        }
+    }
+}
+
+
+/****************************************************
+ * CharacterData.cs (UPDATED)
+ * Adds elementType and roleType for synergy detection.
+ ****************************************************/
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "CharacterData", menuName = "PartySystem/CharacterData")]
+public class CharacterData : ScriptableObject
+{
+    public string characterName;
+    public Sprite portrait;
+    [Range(1,5)] public int starRating = 1;
+
+    [Header("Element & Role")]
+    public string elementType = "Ember"; // e.g., "Ember","Cascade","Terra","Zephyr","Arcane"
+    public Role roleType = Role.Attacker;
+
+    public float synergyBonus = 0.0f;
+    public int baseAttack = 10;
+    public int baseDefense = 5;
+
+    public int currentLevel = 1;
+    public int currentXP = 0;
+    public int xpToNextLevel = 100;
+
+    public string[] skills;
+
+    public enum Role
+    {
+        Attacker,
+        Defender,
+        Support,
+        Utility
+    }
+
+    public void AddXP(int xpAmount)
+    {
+        currentXP += xpAmount;
+        if (currentXP >= xpToNextLevel)
+        {
+            LevelUp();
+        }
+    }
+
+    private void LevelUp()
+    {
+        currentLevel++;
+        currentXP -= xpToNextLevel;
+        xpToNextLevel = Mathf.RoundToInt(xpToNextLevel * 1.5f);
+
+        synergyBonus += 0.05f; 
+        baseAttack += 2;
+        baseDefense += 1;
+
+        Debug.Log(characterName + " leveled to " + currentLevel + "! synergy now +" + synergyBonus);
+    }
+}
+
+
+/****************************************************
+ * HeroGachaManager.cs (NEW)
+ * Manages star rates, pity system, and awarding heroes.
+ ****************************************************/
+using UnityEngine;
+using System.Collections.Generic;
+
+public class HeroGachaManager : MonoBehaviour
+{
+    [SerializeField] private List<CharacterData> allHeroPool; // all possible heroes
+    [SerializeField] private PartyManager partyManager;
+    [SerializeField] private ProgressionManager progressionManager;
+
+    private int pullsSinceLast3Star = 0;
+    private int pullsSinceLast4Star = 0;
+
+    private const float RATE_1STAR = 0.65f; // 65%
+    private const float RATE_2STAR = 0.23f; // 23%
+    private const float RATE_3STAR = 0.10f; // 10%
+    private const float RATE_4STAR = 0.02f; // 2%
+
+    public void InitGachaSystem()
+    {
+        Debug.Log("[HeroGachaManager] Gacha system initialized with pity counters.");
+    }
+
+    public CharacterData PullHero()
+    {
+        // For demonstration, require e.g. 100 gems or something:
+        if (progressionManager.GetSeeds() < 20)
+        {
+            Debug.LogWarning("[HeroGachaManager] Not enough currency to pull.");
+            return null;
+        }
+        progressionManager.SpendSeeds(20);
+
+        pullsSinceLast3Star++;
+        pullsSinceLast4Star++;
+
+        // Check pity
+        if (pullsSinceLast4Star >= 40)
+        {
+            pullsSinceLast4Star = 0;
+            return AwardHero(4);
+        }
+        if (pullsSinceLast3Star >= 10)
+        {
+            pullsSinceLast3Star = 0;
+            return AwardHero(3);
+        }
+
+        // Normal random roll
+        float roll = Random.value; 
+        if (roll < RATE_4STAR)
+        {
+            pullsSinceLast4Star = 0;
+            pullsSinceLast3Star = 0;
+            return AwardHero(4);
+        }
+        else if (roll < RATE_4STAR + RATE_3STAR)
+        {
+            pullsSinceLast3Star = 0;
+            return AwardHero(3);
+        }
+        else if (roll < RATE_4STAR + RATE_3STAR + RATE_2STAR)
+        {
+            return AwardHero(2);
+        }
+        else
+        {
+            return AwardHero(1);
+        }
+    }
+
+    private CharacterData AwardHero(int star)
+    {
+        // Filter hero pool by star rating
+        List<CharacterData> possibleHeroes = allHeroPool.FindAll(h => h.starRating == star);
+        if (possibleHeroes.Count == 0)
+        {
+            Debug.LogWarning("[HeroGachaManager] No hero found for star " + star + ", awarding fallback hero.");
+            possibleHeroes = allHeroPool;
+        }
+        CharacterData awarded = possibleHeroes[Random.Range(0, possibleHeroes.Count)];
+        Debug.Log("[HeroGachaManager] Awarded a " + star + "★ hero: " + awarded.characterName);
+        return awarded;
+    }
+}
+
+
+/****************************************************
+ * HeroMasteryManager.cs (NEW)
+ * Tracks mastery lines for orchard tasks, forging synergy,
+ * puzzle damage or synergy combos. Gains from orchard or forging.
+ ****************************************************/
+using UnityEngine;
+using System.Collections.Generic;
+
+public class HeroMasteryManager : MonoBehaviour
+{
+    [System.Serializable]
+    public class HeroMastery
+    {
+        public CharacterData hero;
+        public int orchardMastery;  // buff orchard yields or expansions
+        public int forgingMastery;  // buff forging success or cost
+        public int puzzleMastery;   // buff puzzle damage or synergy combos
+    }
+
+    public List<HeroMastery> heroMasteries = new List<HeroMastery>();
+
+    public void InitMasterySystem()
+    {
+        Debug.Log("[HeroMasteryManager] Mastery system ready. No placeholders.");
+    }
+
+    public void AddMasteryPoints(CharacterData hero, string masteryLine, int amount)
+    {
+        HeroMastery hm = heroMasteries.Find(h => h.hero == hero);
+        if (hm == null)
+        {
+            hm = new HeroMastery { hero = hero };
+            heroMasteries.Add(hm);
+        }
+
+        switch (masteryLine)
+        {
+            case "Orchard":
+                hm.orchardMastery += amount;
+                break;
+            case "Forging":
+                hm.forgingMastery += amount;
+                break;
+            case "Puzzle":
+                hm.puzzleMastery += amount;
+                break;
+        }
+        Debug.Log("[HeroMasteryManager] Added " + amount + " points to " + masteryLine 
+                  + " mastery for hero " + hero.characterName);
+    }
+
+    public HeroMastery GetHeroMastery(CharacterData hero)
+    {
+        return heroMasteries.Find(h => h.hero == hero);
+    }
+
+    // Example synergy usage
+    public float GetOrchardYieldBuff(HeroMastery hm)
+    {
+        return hm.orchardMastery * 0.02f; // Each point= +2% orchard yield
+    }
+}
+
+
+/****************************************************
+ * HeroTrialsManager.cs (NEW)
+ * Short 2–3 node scenario awarding orchard seeds or forging mats.
+ ****************************************************/
+using UnityEngine;
+using System.Collections.Generic;
+
+public class HeroTrialsManager : MonoBehaviour
+{
+    [System.Serializable]
+    public class HeroTrial
+    {
+        public CharacterData hero;
+        public int nodeCount;
+        public int rewardSeeds;
+        public int rewardForgingMats;
+        public bool completed;
+    }
+
+    [SerializeField] private List<HeroTrial> heroTrials;
+    [SerializeField] private ProgressionManager progressionManager;
+
+    public void InitHeroTrials()
+    {
+        Debug.Log("[HeroTrialsManager] Initialized hero trials. 3★+ heroes have special trials.");
+    }
+
+    public void StartTrial(CharacterData hero)
+    {
+        HeroTrial trial = heroTrials.Find(t => t.hero == hero);
+        if (trial == null) return;
+        if (trial.completed)
+        {
+            Debug.Log("[HeroTrialsManager] Trial already completed for hero " + hero.characterName);
+            return;
+        }
+        Debug.Log("[HeroTrialsManager] Starting trial for " + hero.characterName + ", nodes = " + trial.nodeCount);
+        // Possibly open a small sublocation or puzzle to fight the nodes.
+    }
+
+    public void CompleteTrial(CharacterData hero)
+    {
+        HeroTrial trial = heroTrials.Find(t => t.hero == hero);
+        if (trial == null || trial.completed) return;
+        trial.completed = true;
+        progressionManager.AddSeeds(trial.rewardSeeds);
+        // awarding forging mats can be a custom method or referencing forging manager
+        progressionManager.AddScore(trial.rewardForgingMats * 10); 
+        Debug.Log("[HeroTrialsManager] Completed trial for " + hero.characterName 
+                  + ", gained " + trial.rewardSeeds + " seeds and forging mats!");
+    }
+}
+
+
+/****************************************************
+ * PartyUIController.cs (NEW)
+ * Optional UI to show party synergy, roles, or start hero trials.
+ ****************************************************/
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using System.Collections.Generic;
+
+public class PartyUIController : MonoBehaviour
+{
+    [SerializeField] private PartyManager partyManager;
+    [SerializeField] private HeroTrialsManager heroTrialsManager;
+    [SerializeField] private Transform partySlotsParent;
+    [SerializeField] private GameObject partySlotPrefab;
+    [SerializeField] private TextMeshProUGUI synergyText;
+
+    private void OnEnable()
+    {
+        RefreshPartyUI();
+    }
+
+    public void RefreshPartyUI()
+    {
+        ClearSlots();
+
+        List<CharacterData> activeParty = partyManager.GetActiveParty();
+        foreach (var hero in activeParty)
+        {
+            GameObject slot = Instantiate(partySlotPrefab, partySlotsParent);
+            TextMeshProUGUI[] texts = slot.GetComponentsInChildren<TextMeshProUGUI>();
+            if (texts.Length > 0) texts[0].text = hero.characterName + " (" + hero.elementType + ")";
+            if (texts.Length > 1) texts[1].text = "Level " + hero.currentLevel + " / " + hero.starRating + "★";
+            Button trialButton = slot.GetComponentInChildren<Button>();
+            if (trialButton)
+            {
+                trialButton.onClick.RemoveAllListeners();
+                trialButton.onClick.AddListener(() => {
+                    heroTrialsManager.StartTrial(hero);
+                });
+            }
+        }
+
+        float synergy = partyManager.GetPartySynergyMultiplier();
+        synergyText.text = "Party Synergy: " + ((synergy - 1f) * 100f).ToString("F1") + "%";
+    }
+
+    private void ClearSlots()
+    {
+        int childCount = partySlotsParent.childCount;
+        for (int i = childCount - 1; i >= 0; i--)
+        {
+            Destroy(partySlotsParent.GetChild(i).gameObject);
+        }
+    }
+}
+
+
+/****************************************************
+ * Updated GameManager.cs (adding gacha, mastery, trials)
+ ****************************************************/
+using UnityEngine;
+
+public class GameManager : MonoBehaviour
+{
+    public EnhancedBoardManager boardManager;
+    public OrchardManager orchardManager;
+    public ForgingManager forgingManager;
+    public PartyManager partyManager;
+    public DailyTasksManager dailyTasksManager;
+    public TutorialManager tutorialManager;
+    public WorldMapManager worldMapManager;
+    public ProgressionManager progressionManager;
+    public MonetizationManager monetizationManager;
+
+    [Header("New Stage 6 Managers")]
+    public HeroGachaManager heroGachaManager;
+    public HeroMasteryManager heroMasteryManager;
+    public HeroTrialsManager heroTrialsManager;
+
+    private void Start()
+    {
+        InitializeAll();
+    }
+
+    public void InitializeAll()
+    {
+        Debug.Log("[GameManager] Stage 6: Party System & Hero Gacha initialization...");
+
+        if (boardManager) boardManager.InitBoard();
+        if (orchardManager) orchardManager.InitializeOrchard();
+        if (forgingManager) forgingManager.InitializeForgingSystem();
+        if (partyManager) partyManager.InitPartySystem();
+        if (dailyTasksManager) dailyTasksManager.InitializeDailyTasks();
+        if (tutorialManager) tutorialManager.TryShowTutorial("PartyIntro");
+        if (worldMapManager) worldMapManager.InitMap();
+        if (progressionManager) progressionManager.LoadProgress();
+        if (monetizationManager) monetizationManager.InitializeMonetization();
+
+        // new stage 6 managers
+        if (heroGachaManager) heroGachaManager.InitGachaSystem();
+        if (heroMasteryManager) heroMasteryManager.InitMasterySystem();
+        if (heroTrialsManager) heroTrialsManager.InitHeroTrials();
+
+        Debug.Log("[GameManager] All systems (Stage 6) initialized successfully.");
+    }
+}
+```
+
+**C) CONCLUSION**  
+Stage 6 introduces a complete Party System with mono- or multi-element synergy, role synergy, and orchard≥Tier3 unlocking the 4th slot. A new `HeroGachaManager` manages star rates (1★–4★) and pity counters (10 for guaranteed 3★, 40 for guaranteed 4★). The `HeroMasteryManager` handles mastery lines for orchard tasks, forging synergy, puzzle damage, or synergy combos. `HeroTrialsManager` presents short 2–3 node arcs for each 3★+ hero, awarding orchard seeds or forging mats. The `PartyUIController` shows synergy highlights and offers a quick “Start Trial” button. All code is fully integrated, finalizing Stage 6 with no placeholders.

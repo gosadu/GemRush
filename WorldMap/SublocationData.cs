@@ -6,7 +6,10 @@ public class SublocationData : ScriptableObject
 {
     public string sublocationName;
     public bool isLocked = true;
-    public List<MinionData> minions; // up to 2-5 minions, for example
+    public List<MinionData> minions;
+
+    // NEW: Node list (combat, gathering, events, etc.)
+    public List<NodeData> nodes = new List<NodeData>();
 
     public void LockSublocation()
     {
