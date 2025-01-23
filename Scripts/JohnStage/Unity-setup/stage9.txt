@@ -1,0 +1,113 @@
+**STAGE 9 UNITY INSTRUCTIONS (EXTREMELY DETAILED, NO CODE)**
+
+Below are the **Unity setup steps** for **Stage 9** of the puzzle-RPG blueprint, which introduces **Branching Story & Quest System**. This covers **QuestManager**, **Daily/Weekly Quests**, **QuestData** assets, synergy references, cameo illusions usage hooking on quest completion, etc. **No code** or designer commentary—**only** step-by-step instructions for a complete Unity beginner. After reading, say “Next” for Stage 10.
+
+---
+
+## 1. **Scene Choice & Managers**
+
+1. You can integrate quests in your main **TownHubScene** or create a new “QuestScene.unity.”  
+2. Either way, ensure you have a `[Managers]` object (or `[QuestManagers]` if you prefer), where you’ll attach **QuestManager**.
+
+---
+
+## 2. **Attach QuestManager**
+
+1. Select the `[Managers]` object in your scene’s **Hierarchy**.  
+2. **Add Component** → type “QuestManager.”  
+3. In the **Inspector**, you’ll see a field for `allQuests` (a list of `QuestData`), plus references to `resourceManager` or `cameoManager` (ProjectionSummonManager) if relevant.
+
+### Linking Resource & Cameo
+1. If your code references `resourceManager` to reward resources at quest completion, drag your **ResourceManager** object there.  
+2. If you allow cameo illusions usage hooking on quest completion, drag your `ProjectionSummonManager` to the cameo manager field.
+
+---
+
+## 3. **QuestData Scriptable Objects**
+
+1. In the **Project** window, create a folder `Assets/Data/Quests/`.  
+2. Right-click → **Create → PuzzleRPG → QuestData** (assuming that’s your creation path).  
+3. Name it `BigBoarLair.asset`, or anything relevant.
+
+### Editing Quest Fields
+1. Select the `.asset`—in the Inspector you see:
+   - `questID` = e.g., `"Q101"`.
+   - `questTitle` = e.g., `"Big Boar Lair."`
+   - `questDescription` = short text.
+   - `isBranching` = check if it branches.
+   - `objectives` (list of `QuestObjective`).  
+   - `rewardResource`, `rewardAmount`.  
+   - `cameoID` if cameo illusions usage hooking triggers upon completion.  
+2. For each **QuestObjective** in `objectives`, set:
+   - `objectiveType` = e.g., `DefeatEnemy`, `ForgeItem`, `CollectResource`.  
+   - `resourceType` or `enemyID` or `forgeItemName` if the type is relevant.  
+   - `requiredCount` = e.g., 1 or 5.  
+   - `currentProgress` = 0 by default, `isCompleted` = false.
+
+3. **Add more** quest `.asset` files for additional storyline arcs.
+
+---
+
+## 4. **Populate QuestManager**  
+
+1. Select your `[Managers]` object again.  
+2. In **QuestManager**'s Inspector, under `allQuests`, click the **+** button for each quest.  
+3. Drag your newly created `.asset` file(s) into each element slot.  
+   - E.g., element 0: `BigBoarLair.asset`; element 1: `Q202_DragonSighting.asset`, etc.
+
+---
+
+## 5. **UI for Quests (Optional)**  
+
+1. Create a **Canvas** or a panel in **TownHubCanvas** named “QuestUI.”  
+2. Inside, you can have a list or scroll view to display the available quests from `QuestManager.allQuests`.  
+   - Each quest can show `questTitle`, `questDescription`, current objective progress.  
+3. For daily/weekly quests, you might have a separate “DailyQuestPanel.”  
+   - The code (omitted here) would fetch daily tasks or branch logic.  
+4. If you want a **QuestDetail** button, you can connect it to a bridging script that calls code like `QuestManager.Instance.RecordProgress(...)`.
+
+---
+
+## 6. **Branching Quests & cameo illusions usage hooking**  
+
+1. If `isBranching = true` and your quest has `nextQuestID` or `alternateQuestID`, ensure those quest IDs exist in the **QuestManager**.  
+2. If your quest has `cameoID`, drag the **ProjectionSummonManager** into `cameoManager` on **QuestManager** so that cameo illusions usage hooking triggers after quest completion.  
+3. Check in Play mode that upon completing the quest objectives, cameo illusions usage hooking spawns if the code calls `cameoManager.SummonProjection(quest.cameoID)`.
+
+---
+
+## 7. **Linking Objectives to Gameplay**  
+
+1. Typically, objective progress is updated in code by calling `QuestManager.RecordProgress(...)`.  
+2. For example, if a user defeats a “Boar” enemy, your enemy script might call `(Code omitted—focusing solely on instructions).`  
+3. Or if forging an item “ArcaneUnity,” you call `QuestManager.RecordProgress(QuestObjectiveType.ForgeItem, "ArcaneUnity", 1).`  
+
+*(All hooking is done in code, which we’re not posting here. Unity side: ensure relevant references to QuestManager exist in your forging or combat managers.)*
+
+---
+
+## 8. **Testing Quest Flow**  
+
+1. Save your scene. Press **Play**.  
+2. Suppose you have a quest objective “DefeatEnemy: Boar, requiredCount=1.”  
+3. If your code triggers `QuestManager.RecordProgress(QuestObjectiveType.DefeatEnemy, "Boar", 1)`, watch the console logs or the quest UI.  
+4. Once the objective is done, see if “Quest completed” logs appear, resources are rewarded, cameo illusions usage hooking triggers if set.
+
+---
+
+## 9. **Daily vs. Main Quests**  
+
+1. If you have daily or weekly quests, you can store them similarly in `allQuests` or create a separate manager for daily tasks referencing the same logic.  
+2. In the Inspector, the approach is the same—`.asset` files, drag them into `QuestManager`.
+
+---
+
+## 10. **Version Control**  
+
+1. `git add .`  
+2. `git commit -m "Stage 9: Branching Story & Quest System Setup"`  
+
+---
+
+**End of Stage 9 Unity instructions.**  
+Say “Next” for Stage 10.

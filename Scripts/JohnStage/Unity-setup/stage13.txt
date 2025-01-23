@@ -1,0 +1,92 @@
+**STAGE 13 UNITY INSTRUCTIONS (EXTREMELY DETAILED, NO CODE)**
+
+Below are the **Unity setup steps** for **Stage 13** of the puzzle-RPG blueprint, which covers **Leaderboards & PvP System**. This involves setting up **LeaderboardManager** for local or global high scores, plus **PvPManager** for asynchronous defense logic. We’ll reference synergy expansions, cameo illusions usage hooking if relevant, forging synergy combos if your PvP system factors them in. **No code** or designer text—**only** step-by-step instructions. After reading, say “Next” for Stage 14.
+
+---
+
+## 1. **Scene / Manager Setup**
+
+1. Open your **TownHubScene** or create a new “PvPScene.unity” if you prefer isolating PvP.  
+2. Ensure you have a `[Managers]` object or create a new `[LeaderboardsAndPvPManagers]`.
+
+---
+
+## 2. **Leaderboards & LeaderboardManager**
+
+1. On the `[Managers]` object, **Add Component** → **“LeaderboardManager.”**  
+2. The Inspector typically shows:
+   - A `leaderboard` list (with `LeaderboardEntry` objects).
+   - A `maxEntries` integer.  
+3. You can leave `leaderboard` empty at first. The code typically populates it when you call `(Code omitted—focusing solely on instructions).SubmitScore(...)`.
+
+### UI for Leaderboard
+1. Create a **Canvas** or a panel named “LeaderboardUI.”  
+2. Inside it, add a **Text** or a **ScrollView** to display top entries.  
+3. You might have a “RefreshLeaderboardButton” that calls your bridging script to do `(Code omitted—focusing solely on instructions).GetTopEntries(10)` and updates the UI text.  
+4. No code is posted here, but ensure your UI flow can show each entry’s `playerID` and `score`.
+
+---
+
+## 3. **PvPManager Setup**
+
+1. On the same `[Managers]` or a new object, **Add Component** → “PvPManager.”  
+2. The Inspector might show:
+   - A list `defenseList` of “PvPDefenseSetup,” each with `playerID, synergyMultiplier, realmTierFactor, puzzleHazardRate`.  
+3. Typically, you can set up a default defense for your own test user:
+   - e.g., “PlayerID=Alice, synergyMultiplier=1.0f, realmTierFactor=1.0f, puzzleHazardRate=10.”
+
+### UI for PvP
+1. If you want a separate panel “PvPUI,” create a Canvas object named “PvPUI.”  
+2. Inside, you might have:
+   - An InputField for `playerIDField`.
+   - A button “SetDefense.”  
+   - Another InputField “challengeDefenderField.”  
+   - A “Challenge” button.  
+3. In **OnClick**, the bridging script calls `(Code omitted—focusing solely on instructions).SetDefense(...)` or `(Code omitted—focusing solely on instructions).ChallengeDefense(...)`.  
+   - The code ensures synergy expansions references or cameo illusions usage hooking if triggered.
+
+---
+
+## 4. **Linking LeaderboardManager and PvPManager**
+
+1. If code calls “LeaderboardManager.Instance.SubmitScore(challengerID, finalScore)” inside PvP logic, ensure both managers are in the scene.  
+2. For test purposes:
+   - In **PvPManager** Inspector, you might keep the `defenseList` empty except for one or two test defenders.  
+   - Then “Challenge” them, watch logs to see if `LeaderboardManager` is updated.
+
+---
+
+## 5. **Cameo illusions usage hooking in PvP** (Optional)
+
+1. If you want cameo illusions usage hooking on big PvP wins, you can pass cameo illusions usage hooking references in code.  
+2. Unity side: just confirm `ProjectionSummonManager` is in your scene, and **PvPManager** has the cameo illusions usage hooking field assigned if the code requires it.  
+3. Tweak synergy expansions references if your code sets synergy multipliers or cameo illusions usage hooking triggers at high realmTierFactor.
+
+---
+
+## 6. **Testing Leaderboard**
+
+1. **Save** your scene, press **Play**.  
+2. In the UI, set your defense: “playerID=Alice, synergyMultiplier=1.2, puzzleHazardRate=15.”  
+3. Another user (like “Bob”) challenges “Alice,” yielding a final score.  
+4. Check the **Console** for logs about “SubmitScore(bob, finalScore).”  
+5. If you have a “RefreshLeaderboard” button, confirm you see Bob’s score. Possibly “1. Bob - 68.”
+
+---
+
+## 7. **Balance & Gating**
+
+1. If synergy expansions or cameo illusions usage hooking affects PvP logic (like `realmTierFactor` or forging synergy combos), ensure you have the correct references.  
+2. For local testing, you might set `maxEntries=10` in LeaderboardManager or auto-challenge yourself.
+
+---
+
+## 8. **Version Control**
+
+1. **Save** your scene.  
+2. `git add .`, then `git commit -m "Stage 13: Leaderboards & PvP System Setup"`.
+
+---
+
+**End of Stage 13 Unity instructions.**  
+Say “Next” for Stage 14.

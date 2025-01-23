@@ -1,0 +1,109 @@
+**STAGE 11 UNITY INSTRUCTIONS (EXTREMELY DETAILED, NO CODE)**
+
+Below are the **Unity setup steps** for **Stage 11** of the puzzle-RPG blueprint, which introduces **AI/Procedural Tools & Single-Developer Feasibility**. This includes the **ProceduralHazardGenerator**, **ProceduralNodeGenerator**, **ProceduralQuestGenerator**, and the **SingleDevFeasibilityManager** for quick data toggles. **No code** or designer text—**only** step-by-step instructions. After this, say “Next” for Stage 12.
+
+---
+
+## 1. **Scene Choice & Managers**
+
+1. You can integrate these procedural managers into your **TownHubScene** or **EncounterScene**.  
+2. Typically, place them on your `[Managers]` object or a specialized `[ProceduralManagers]`.
+
+---
+
+## 2. **ProceduralHazardGenerator Setup**
+
+1. Select `[Managers]` (or create a new empty GameObject “ProceduralGenerators”).  
+2. Click **Add Component** → type **ProceduralHazardGenerator**.  
+3. In the Inspector, note fields like `baseCorruptedChance=0.05f` and `synergyCorruptedModifier=0.01f`.  
+   - You can adjust these values if synergy expansions or realm tiers affect corrupted gem spawn rates.  
+4. If you want the puzzle code to use this generator, ensure the puzzle script references **ProceduralHazardGenerator**. For example, you might drag `[Managers]` into a field in the puzzle manager (assuming the code has such a reference).
+
+---
+
+## 3. **ProceduralNodeGenerator Setup**
+
+1. On the same `[Managers]` or a new object, **Add Component** → “ProceduralNodeGenerator.”  
+2. Inspector shows `nodeTemplates` (a list) and `maxNodes`.  
+3. Create a folder `Assets/Data/Procedural/NodeTemplates/`.  
+4. If the code references a `NodeTemplate` structure, you might manually define these in code or store them as ScriptableObjects. If it’s just an array in the component:
+   - Expand `nodeTemplates`. For each element, you see:
+     - `nodeID` (string).
+     - `possibleMinions` (list of MinionDefinition).
+     - `possibleBoss` (bool).
+     - `bossDef` (BossDefinition).  
+5. If you want a “GoblinNode” with possibleMinions = `[GoblinDefinition.asset]`, set that here.  
+6. This means when you call `(Code omitted—focusing solely on instructions).GenerateNodes(realmTier)`, it picks random entries from `nodeTemplates`.
+
+---
+
+## 4. **ProceduralQuestGenerator Setup**
+
+1. Also on `[Managers]`, add **ProceduralQuestGenerator**.  
+2. Inspector might show:
+   - `possibleEnemies` (list of strings)
+   - `possibleForgeItems`
+   - `sublocationNames`
+   - `minObjectiveCount`, `maxObjectiveCount`.  
+3. Populate these arrays with strings, e.g.,:
+   - `possibleEnemies = ["Goblin","Slime","Boar"]`
+   - `possibleForgeItems = ["FlamingSword","ArcaneStaff"]`
+   - `sublocationNames = ["CavernEntrance","SunkenGrove"]`  
+4. That means the generator can create daily or random quests pulling from these lists.
+
+---
+
+## 5. **SingleDevFeasibilityManager Setup**
+
+1. Still in `[Managers]`, add **SingleDevFeasibilityManager**.  
+2. Inspector fields might be:
+   - `puzzleDamageScale=1f`
+   - `forgingSuccessScale=1f`
+   - `realmResourceRate=1f`
+   - `cameoEnabled=true`  
+3. Toggling these at runtime in the Inspector (while in Play mode) can let you quickly see how synergy expansions or cameo illusions usage hooking might behave at different scales.
+
+---
+
+## 6. **Hooking Up Procedural Generators**
+
+1. If your puzzle or realm system references the hazard generator, drag `[Managers]` with **ProceduralHazardGenerator** into that system’s field.  
+2. If your code calls `ProceduralNodeGenerator.GenerateNodes(...)` to fill sublocations, ensure the code references it. In Unity, you might drag `[Managers]` into a field named `nodeGen` in **WorldManager** or **SublocationManager**.  
+3. If your code calls `ProceduralQuestGenerator.GenerateDailyQuest()`, ensure you have a UI or script that triggers it. For instance, a “GenerateQuestButton” in the Inspector calling `(Code omitted—focusing solely on instructions)`.
+
+---
+
+## 7. **Testing Hazard Generation**
+
+1. **Save** your scene. Press **Play**.  
+2. If your puzzle spawner references `ProceduralHazardGenerator`, it might log a “final corrupted spawn chance.”  
+3. Adjust `baseCorruptedChance` or `synergyCorruptedModifier` in the Inspector during Play mode to see changes.  
+4. Check console to confirm puzzle spawns more or fewer corrupted gems.
+
+---
+
+## 8. **Testing Procedural Nodes**
+
+1. If you have a function or button to “Generate New Nodes,” ensure the code calls `ProceduralNodeGenerator.GenerateNodes(realmTier)`.  
+2. You might see console logs like “Generated 7 random nodes for realmTier=2.”  
+3. If each node references possibleMinions, check if your code or UI lists those minions.
+
+---
+
+## 9. **Testing Procedural Quests**
+
+1. If you have a button “GenerateDailyQuest,” it calls `(Code omitted—focusing solely on instructions).GenerateDailyQuest()`.  
+2. Check console logs showing a new quest ID, randomly assigned enemies or forging items.  
+3. Potentially add that new quest to `QuestManager.allQuests` for actual usage.
+
+---
+
+## 10. **Version Control**
+
+1. **Save** your scene.  
+2. `git add .` → `git commit -m "Stage 11: AI/Procedural Tools & Single-Dev Feasibility Setup"`.  
+
+---
+
+**End of Stage 11 Unity instructions.**  
+Say “Next” for Stage 12.

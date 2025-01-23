@@ -1,0 +1,111 @@
+**STAGE 10 UNITY INSTRUCTIONS (EXTREMELY DETAILED, NO CODE)**
+
+Below are the **Unity setup steps** for **Stage 10** of the puzzle-RPG blueprint, focusing on **Minion & Boss Encounters** and **Player Customization & Avatars**. This includes creating **EncounterManager** logic for minions/boss, cameo illusions usage hooking if boss phases, synergy expansions references if needed, plus **AvatarManager** for player-leveling or customization. **No code**, only step-by-step instructions. After this, say “Next” for Stage 11.
+
+---
+
+## 1. **Decide on an Encounter Scene**
+1. You can:
+   - Integrate encounters into the same puzzle scene if you want wave-based logic.  
+   - Or create a separate **EncounterScene.unity** for wave fights.  
+
+2. If you’re also setting up a **Player Room** or **Avatar** screen, that can be in **TownHubScene** or a new scene named “PlayerRoomScene.”
+
+---
+
+## 2. **Attach EncounterManager**
+1. In the desired scene (Puzzle scene or a separate “EncounterScene”):
+   - Create an empty object named **“[EncounterManager]”** in the Hierarchy.
+   - **Add Component** → type **EncounterManager**.  
+2. **Inspector** for EncounterManager might have:
+   - `minionWave` (a list of MinionDefinition)
+   - `bossDef` (a BossDefinition)
+   - `resourceManager`, cameo illusions usage hooking references, synergy expansions references, etc.
+3. Drag your **ResourceManager** to `resourceManager` if code references it.  
+4. If cameo illusions usage hooking triggers on boss phases, drag the `ProjectionSummonManager` to cameo manager fields.
+
+---
+
+## 3. **MinionDefinition & BossDefinition Assets**
+1. In **Project** window, create a folder `Assets/Data/Minions/` for `MinionDefinition` assets.
+   - Right-click → Create → PuzzleRPG → MinionDefinition (if that’s your custom path).  
+   - Name it e.g. **“GoblinDefinition.asset”**.  
+   - In the Inspector: set `maxHP=30`, `attackPower=3`, etc.  
+   - If using an advanced animator prefab, set `minionPrefab` to a 2D or 3D prefab (we’ll set that next).
+2. Similarly for bosses: `Assets/Data/Bosses/`.
+   - Right-click → Create → PuzzleRPG → BossDefinition.  
+   - Name it e.g. **“DragonBossDef.asset”**.  
+   - Set `bossHP=500`, `bossAttack=15`, and `phaseThresholds` if multi-phase.  
+   - If cameo illusions usage hooking triggers in certain phases, set `cameoOnPhase=true` and `cameoID="BossRageSpirit"`.
+
+---
+
+## 4. **Minion & Boss Prefabs**
+1. Create folders: `Assets/Prefabs/Minions/`, `Assets/Prefabs/Bosses/`.  
+2. For each minion or boss, you can:
+   - Right-click → Create Empty Prefab → name it “GoblinPrefab” or “DragonBossPrefab.”  
+   - Open in Prefab Mode. Add a **SpriteRenderer** (if 2D) or a model with a **MeshRenderer** (if 3D).  
+   - If using advanced animations, add an **Animator** and link a “MinionAnim.controller” or “BossAnim.controller.”  
+   - Save prefab.  
+3. In your `.asset` file (GoblinDefinition.asset), drag **GoblinPrefab** into the `minionPrefab` field.  
+   - Or in BossDefinition, drag **DragonBossPrefab** into the `bossPrefab` field.
+
+---
+
+## 5. **Assign to EncounterManager**
+1. Select `[EncounterManager]` in your scene.  
+2. In the Inspector, expand `minionWave` if it’s a list—add references to your minion `.asset` files.  
+   - E.g., element 0: `GoblinDefinition.asset`.  
+3. If `includeBoss=true`, drag `DragonBossDef.asset` into `bossDef`.  
+
+---
+
+## 6. **Spawn Points**
+1. The code often references a transform like `minionSpawnPoint` or `bossSpawnPoint`.  
+2. Create empty objects in the Hierarchy:
+   - `MinionSpawnPoint`, set position e.g. `(0,0,0)` or visible in your scene.  
+   - `BossSpawnPoint`, somewhere else.  
+3. Drag those objects from the Hierarchy into the corresponding fields on **EncounterManager**.
+
+---
+
+## 7. **AvatarManager Setup**
+*(Player Customization & Avatars)*
+
+1. In the same or separate manager object, **Add Component** → “AvatarManager.”  
+2. Inspector shows `avatarName= "DefaultHero"`, `avatarSprite`, `avatarLevel`, etc.  
+3. If you have a **UI** panel for customization:
+   - Create a Canvas named “AvatarCanvas.”  
+   - Add an **InputField** for the avatar name.  
+   - Add a UI `Image` for the avatar portrait (or sprite).  
+   - Possibly a script that calls `(Code omitted—focusing solely on instructions)` to update `AvatarManager.avatarName` or `avatarSprite`.
+
+---
+
+## 8. **Testing Minion & Boss Fight**
+1. **Save** the scene. Press **Play**.  
+2. If your code calls something like `EncounterManager.StartEncounter()`, do so via a UI button or at scene load.  
+3. Observe the logs: 
+   - Spawning minions from `minionWave`.  
+   - Then the boss if `includeBoss=true`.  
+   - If cameo illusions usage hooking triggers on boss phase thresholds, confirm the swirl/spirit cameo.  
+4. Check that resource drops or synergy expansions references appear in logs (like minion drops 10 Wood).
+
+---
+
+## 9. **Testing Avatar Level & XP**
+1. If you want to test the player avatar:
+   - For example, you might add a button “AddXP(50).” 
+   - OnClick -> calls `(Code omitted—focusing solely on instructions)`.
+2. In the **Console**, see logs from `AvatarManager` if you surpass the XP needed for next level.
+
+---
+
+## 10. **Version Control**
+1. `git add .`  
+2. `git commit -m "Stage 10: Minion & Boss Encounters + Player Avatars Setup"`
+
+---
+
+**End of Stage 10 Unity instructions.**  
+Say “Next” for Stage 11.

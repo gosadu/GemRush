@@ -1,0 +1,109 @@
+**STAGE 8 UNITY INSTRUCTIONS (EXTREMELY DETAILED, NO CODE)**
+
+Below are the **Unity setup steps** for **Stage 8** of the puzzle-RPG blueprint, which introduces **Monetization, Shops, & Economy Management**. This includes the **PremiumCurrencyManager**, **ShopManager**, **SkipTokenManager**, **PassSystemManager**, and **PaymentIntegration**, referencing synergy expansions or cameo illusions usage hooking if relevant. **No code** or designer commentary, only step-by-step instructions. After this, say “Next” for Stage 9.
+
+---
+
+## 1. **Project Preparation**
+1. Open your main scene (e.g., **TownHubScene**) or a dedicated “MonetizationScene.”  
+2. Locate or create `[Managers]` if you haven’t done so already.
+
+---
+
+## 2. **PremiumCurrencyManager Setup**
+1. On `[Managers]`, **Add Component** → search “PremiumCurrencyManager.”  
+2. In the Inspector, you’ll see `premiumCurrencyBalance` for tracking user’s premium currency (e.g., Gems or Crystals).  
+3. If you want to start the player with some currency for testing, set `premiumCurrencyBalance` to, say, `200`.
+
+---
+
+## 3. **ShopManager** Setup
+1. On `[Managers]`, **Add Component** → search “ShopManager.”  
+2. In the Inspector, you see:
+   - `shopItems` (a list of `ShopItemData`).  
+   - references for `premiumManager`, `resourceManager`, `skipTokenManager`, and `passSystemManager`.  
+3. **Assign** each field appropriately:
+   - `premiumManager`: drag your PremiumCurrencyManager from the same `[Managers]` object.  
+   - `resourceManager`: if you want to grant normal resources, drag your ResourceManager object.  
+   - `skipTokenManager`: create or assign if you plan to sell skip tokens.  
+   - `passSystemManager`: create or assign if you plan to handle forging pass or orchard expansions synergy pass.
+
+---
+
+## 4. **SkipTokenManager & PassSystemManager**
+1. **SkipTokenManager**:
+   - If not already present, add it to `[Managers]`.  
+   - Inspector might show `skipTokenBalance=0`.  
+2. **PassSystemManager**:
+   - Also add to `[Managers]`.  
+   - Inspector shows a list of `activePasses`. Usually empty on start.  
+3. The **ShopManager** references them to add skip tokens or activate passes upon purchase.
+
+---
+
+## 5. **Create ShopItemData Assets**  
+1. In **Project** window, add a folder `Assets/Data/ShopItems/`.  
+2. Right-click → **Create → PuzzleRPG → ShopItemData** (or whichever custom creation menu).  
+3. Examples:
+   - “ForgePassItem.asset”  
+     - In Inspector: `itemName= "ForgePass"`, `costPremium=200`, `isBattlePass=true`, `passDurationDays=7`  
+   - “SkipTokenPack.asset”  
+     - `itemName= "SkipTokenPack"`, `costPremium=50`, `isSkipToken=true`, `skipTokenCount=5`  
+   - “WoodBundle.asset”  
+     - `itemName= "WoodBundle"`, `costPremium=20`, `grantedResource= Wood`, `grantedAmount=100`  
+4. Add these `.asset` files to **ShopManager** → `shopItems` list:
+   - e.g., click “+”, drag “ForgePassItem.asset” in the first slot, “SkipTokenPack.asset” in the second slot, etc.
+
+---
+
+## 6. **PaymentIntegration** (Real-Money Stub)
+1. Still on `[Managers]`, **Add Component** → “PaymentIntegration.”  
+2. Inspector might show a `currencyManager` field.  
+3. Drag your PremiumCurrencyManager into that field.  
+4. This allows an in-game button to simulate “Buy Currency Pack,” which calls `paymentIntegration.BuyCurrencyPack(amount)`—no actual real store code, just a final stub.
+
+---
+
+## 7. **UI for Shop & Purchases**
+1. In your **TownHubCanvas** or a new **ShopCanvas**:
+   - Create a Panel named “ShopUI.”  
+   - Inside it, have a ScrollView or vertical layout for items.  
+2. For each **ShopItemData** (like “ForgePassItem.asset” or “SkipTokenPack.asset”):
+   - You can create a prefab “ShopItemEntry.prefab” with:
+     - A **Text** for the itemName and cost.
+     - A **Button** for purchase.  
+3. In **OnClick** of that Button, call **ShopManager** → `PurchaseItem(ShopItemData item)` (through a bridging script if needed, since we’re not posting code).  
+4. Confirm that on purchase, it logs success or “not enough premium currency.”  
+   - If it’s a pass item, **PassSystemManager** is triggered.  
+   - If skip tokens, **SkipTokenManager** increments tokens.  
+   - If a resource bundle, **ResourceManager** modifies resource amounts.  
+
+---
+
+## 8. **Testing the Purchase Flow**
+1. **Save** your scene.  
+2. Press **Play**.  
+3. Open the Shop UI.  
+4. Check your **PremiumCurrencyManager.premiumCurrencyBalance**. If you have enough to buy an item, the purchase succeeds.  
+5. Watch the **Console** logs that the item was purchased, skip tokens were added, or pass was activated.  
+   - If you’re short on currency, you see a log: “Not enough premium currency.”
+
+---
+
+## 9. **Micro-Pass / Battle Pass Activation**
+1. If “ForgePassItem.asset” was purchased, the **ShopManager** calls `passSystemManager.ActivatePass(...)`.  
+2. In the **PassSystemManager** Inspector, you’ll see an added `ActivePass` entry with an expiry date.  
+3. If you want forging synergy combos or orchard expansions synergy references boosted during the pass, your code can do that.  
+   - Unity side: ensure references to `PassSystemManager` are accessible in forging or orchard expansions synergy scripts.  
+
+---
+
+## 10. **Version Control**  
+1. `git add .`  
+2. `git commit -m "Stage 8: Monetization, Shops & Economy Management"`  
+3. That records Stage 8 in your version history.
+
+---
+
+**End of Stage 8 Unity instructions.**  
+Say “Next” for Stage 9.

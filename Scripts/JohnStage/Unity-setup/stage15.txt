@@ -1,0 +1,97 @@
+**STAGE 15 UNITY INSTRUCTIONS (EXTREMELY DETAILED, NO CODE)**
+
+Below are the **Unity setup steps** for **Stage 15** of the puzzle-RPG blueprint, focusing on **Incremental Tutorial & Onboarding Sequence**. This involves configuring **TutorialFlowManager**, **TutorialStepData** assets, cameo illusions usage hooking or synergy expansions references if relevant, plus hooking up UI panels for tutorials. **No code** or designer commentary—**only** step-by-step instructions. After reading, say “Next” for Stage 16.
+
+---
+
+## 1. **Scene / Manager Setup**
+
+1. Open your **TownHubScene** or main scene (where you want tutorials to show).  
+2. Find your `[Managers]` object. If you haven’t added **TutorialFlowManager**, do so now.
+
+---
+
+## 2. **Attach TutorialFlowManager**
+
+1. On `[Managers]`, click **Add Component** → search “TutorialFlowManager.”  
+2. In the Inspector, you’ll see fields like:
+   - `tutorialSteps` (a list of `TutorialStepData`)
+   - `tutorialPanel` (a GameObject reference)
+   - `tutorialText` (a Text or TMP reference)
+   - `confirmButton` (a Button reference)
+   - `cameoManager` if cameo illusions usage hooking triggers during a tutorial step.
+
+3. Drag your **ProjectionSummonManager** into the `cameoManager` field if cameo illusions usage hooking is used in tutorials.
+
+---
+
+## 3. **TutorialStepData Assets**
+
+1. In the **Project** window, create a folder `Assets/Data/TutorialSteps/`.  
+2. Right-click → **Create → PuzzleRPG → TutorialStepData** if that’s your custom creation path.  
+3. Name it something like “TownHubIntro.asset.”  
+   - In its Inspector, set:
+     - `stepKey= "TownHubIntro"`
+     - `displayText= "Welcome to the Town Hub!"`
+     - `requiresConfirmation= true` (if you want an OK button)
+     - `triggersCameo= false` (or true if cameo illusions usage hooking triggers)
+     - `cameoID= ""` or set if you want cameo illusions usage hooking.  
+4. Create more steps as needed.
+
+### Populating tutorialSteps
+1. Select `[Managers]` with **TutorialFlowManager** attached.  
+2. Under `tutorialSteps` in the Inspector, add elements for each `.asset` you made.  
+3. Drag “TownHubIntro.asset” into element 0, etc.
+
+---
+
+## 4. **Tutorial UI Panel Setup**
+
+1. Create a new **Canvas** named “TutorialCanvas” if you want the tutorial overlay separate from main UI.  
+2. Inside it, create a Panel named “TutorialPanel.”  
+3. On that panel, place a **Text** (or TextMeshProUGUI) named “TutorialText.”  
+4. Also place a **Button** named “ConfirmButton.”  
+   - The script references these if you set them in the **TutorialFlowManager** Inspector: `tutorialPanel`, `tutorialText`, `confirmButton`.  
+5. If your panel has a background image, ensure it blocks other input while showing. You might want a semi-transparent color.
+
+---
+
+## 5. **Link UI Elements to TutorialFlowManager**
+
+1. In the Hierarchy, find the **TutorialFlowManager** script on `[Managers]`.  
+2. Drag the **“TutorialPanel”** from the Hierarchy into the `tutorialPanel` field.  
+3. Drag the “TutorialText” object into the `tutorialText` field.  
+4. Drag the “ConfirmButton” into the `confirmButton` field.  
+
+---
+
+## 6. **TutorialManager or TutorialTriggerer** (Optional)
+
+1. If you have a **TutorialManager** from Stage 1 or 2, it might call `TutorialFlowManager.Instance.ShowTutorialStep(key)`.  
+2. You might also have **TutorialTriggerer** components on certain objects:
+   - e.g., a **TutorialTriggerer** with `tutorialKeyToTrigger= "TownHubIntro"` calls `TutorialFlowManager.ShowTutorialStep("TownHubIntro")` when OnEnable.  
+3. Unity side:
+   - Add **TutorialTriggerer** to a scene object, set `tutorialKeyToTrigger= "TownHubIntro"`, `triggerOnce= true`.
+
+---
+
+## 7. **Testing the Tutorial Flow**
+
+1. Press **Play** in Unity.  
+2. If the code triggers “TownHubIntro” on scene load, see if the panel appears:
+   - “Welcome to the Town Hub!” with a confirm button.  
+3. If you set `triggersCameo= true` and a cameoID, check if cameo illusions usage hooking swirl spawns.  
+4. After confirming or waiting 2 seconds (if `requiresConfirmation= false`), the panel hides.  
+5. If you create multiple steps, verify each triggers when appropriate.
+
+---
+
+## 8. **Version Control**
+
+1. **Save** your scene.  
+2. `git add .` → `git commit -m "Stage 15: Incremental Tutorial & Onboarding Sequence Setup"`
+
+---
+
+**End of Stage 15 Unity instructions.**  
+Say “Next” for Stage 16.

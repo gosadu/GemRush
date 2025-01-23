@@ -1,0 +1,112 @@
+**STAGE 17 UNITY INSTRUCTIONS (EXTREMELY DETAILED, NO CODE)**
+
+Below are the **Unity setup steps** for **Stage 17** of the puzzle-RPG blueprint, focusing on **Final Integration & Full Gameplay Loop**. This consolidates **all** systems—daily tasks, forging synergy combos, cameo illusions usage hooking, synergy expansions realm gating, puzzle-combat, netcode, tutorials—into a smooth experience. **No code** or designer commentary, only step-by-step instructions for a Unity beginner.
+
+---
+
+## 1. **Main or Final Scene Confirmation**
+
+1. Choose your **main** or “TownHubScene” as the central scene containing nearly all managers.  
+2. If you have additional scenes (PuzzleScene, ForgeScene, GuildScene, etc.), they can be loaded additively or opened from your main scene with transitions.  
+3. Ensure `[Managers]` or a similar object references every manager from previous stages (Realm, Resource, Gacha, Quest, Surge, etc.).
+
+---
+
+## 2. **FinalGameLoopManager Setup**
+
+1. On the `[Managers]` object (or a separate object named “[FinalGameLoopManager]”), attach the **FinalGameLoopManager** script.  
+2. In the Inspector, you’ll see references like:
+   - `lastDailyReset`
+   - `dailyTaskManager`
+   - `questManager`
+   - `townHub`
+   - `puzzleBoard`
+   - `forgeManager`
+   - `resourceManager`
+   - `netcodeManager`
+   - `liveOpsManager`
+   - `guildManager`
+   - `passSystemManager`
+   - `realmProgress`
+   - `partySystem`
+   - `leaderboard`
+   - `pvpManager`
+3. **Drag** each relevant manager or object from the Hierarchy into these fields:
+   - For `dailyTaskManager`, drag the object containing **DailyTaskManager**.  
+   - For `townHub`, drag the object containing **TownHubManager**.  
+   - For `puzzleBoard`, drag the **PuzzleBoardManager** object, etc.  
+
+*(Be sure you fill them all, so no NullReference errors occur at runtime.)*
+
+---
+
+## 3. **Daily Reset & Live Ops Checking**
+
+1. If **FinalGameLoopManager** calls `DoDailyReset()` on Start, it uses `dailyTaskManager.ResetDailyResources()` and `liveOpsManager.CheckLiveOps()`.  
+2. Unity side: confirm your **DailyTaskManager** is assigned. If you have a separate “LiveOpsManager,” link it in the Inspector.  
+3. Optionally, create a **Button** in your UI named “ManualDailyReset” that calls `(Code omitted—focusing solely on instructions).DoDailyReset()` for testing.  
+4. Pressing **Play**: you should see logs like “[FinalGameLoopManager] Daily reset done” if your code is wired properly.
+
+---
+
+## 4. **Puzzle Node Completion Hook**
+
+1. The manager might have a method like `CompletePuzzleNode(string nodeID, float damageDealt, float comboAchieved)`.  
+2. In your puzzle UI or code, whenever a puzzle node is cleared, it calls that method to do resource rewards, quest updates, netcode events.  
+3. If you want a **Button** “SimulatePuzzleSuccess,” you could link it to a bridging script that calls `(Code omitted—focusing solely on instructions).CompletePuzzleNode("Node01", 80f, 45f).`
+
+---
+
+## 5. **ForgeItemFlow**
+
+1. If your forging puzzle calls `ForgeItemFlow(itemName, puzzlePerformance)` in **FinalGameLoopManager**, ensure you have a UI that triggers it:
+   - e.g., a button “ForgeFlamingSword” calling your bridging code which then references the manager.  
+2. The manager, in turn, calls `(Code omitted—focusing solely on instructions).MysticForgeManager.AttemptForge(...)` or `WorkshopManager.CompleteForgePuzzle(...)`.
+
+---
+
+## 6. **Scene Linking & Transitions**
+
+1. **SceneTransitionManager** (Stage 1 or 2) should be in the same scene for final hooking.  
+2. If **TownHubManager** has UI buttons “Go to Puzzle,” “Go to Forge,” “Go to Guild,” each might do `(Code omitted—focusing solely on instructions).SceneTransitionManager.PlaySceneTransition( ()=> { SceneManager.LoadScene("PuzzleScene"); } )`.  
+3. Confirm that each scene also has the required managers or references persistent objects if you’re using `DontDestroyOnLoad`.
+
+---
+
+## 7. **Monetization & Netcode Final Checks**
+
+1. If your **FinalGameLoopManager** calls netcode events after forging or puzzle completions, confirm **NetcodeManager** is assigned.  
+2. If you want to sync data to server at day’s end, you might create a UI button “Sync Data” calling `(Code omitted—focusing solely on instructions).finalGameLoopManager.SyncGameDataToServer()`.  
+3. For monetization UI, ensure your shop or gacha code references **FinalGameLoopManager** if it logs completions there.
+
+---
+
+## 8. **Testing the Entire Loop**
+
+1. **Save** the main scene, press **Play**.  
+2. On Start, the manager checks if a new day → triggers daily reset, quest updates, cameo illusions usage hooking if your live ops event calls cameo illusions usage hooking.  
+3. **Try each** major feature in sequence:
+   - Realm expansions synergy (upgrade Tier?), forging synergy combos in the workshop, cameo illusions usage hooking in puzzle or forging, daily tasks, netcode donation or event queue, guild co-op, etc.  
+4. Ensure no errors in the Console, confirm synergy expansions references or cameo illusions usage hooking triggers as expected.
+
+---
+
+## 9. **UI Polishing**
+
+1. At this final stage, you can refine your “FinalUIController” or “MainMenuUI” to unify daily tasks, forging, synergy expansions, cameo illusions usage hooking, puzzle entry, netcode sync, and so forth.  
+2. E.g., a “Daily Planner” panel listing tasks from **DailyTaskManager** or quests from **QuestManager**.  
+3. Everything references **FinalGameLoopManager** if your code is built that way.
+
+---
+
+## 10. **Final Version Control Commit**
+
+1. **Save** your scene.  
+2. `git add .`  
+3. `git commit -m "Stage 17: Final Integration & Full Gameplay Loop"`  
+4. Now your puzzle-RPG is fully integrated with advanced synergy expansions, cameo illusions usage hooking, forging combos, netcode, tutorial flows, daily tasks, guild co-op, and monetization.
+
+---
+
+**End of Stage 17 Unity instructions.**  
+This concludes the entire 17-stage AAA puzzle-RPG blueprint’s Unity setup steps.

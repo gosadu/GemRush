@@ -1,0 +1,99 @@
+**STAGE 12 UNITY INSTRUCTIONS (EXTREMELY DETAILED, NO CODE)**
+
+Below are the **Unity setup steps** for **Stage 12** of the puzzle-RPG blueprint, which introduces **Post-Launch Expansions, Hard/Remixed Modes & Live Ops**. This includes configuring **HardModeManager**, **LiveOpsManager**, and an **ExpansionManager** for new realms or synergy expansions, cameo illusions usage hooking in events, forging synergy combos if relevant, etc. **No code** is shown—only step-by-step instructions for a Unity beginner. After this, say “Next” for Stage 13.
+
+---
+
+## 1. **HardModeManager Setup**
+
+1. Open your main scene (e.g., **TownHubScene**) or create a new “HardModeScene” if desired.  
+2. On your `[Managers]` object (or a new empty “HardModeManagers”), click **Add Component** → search “HardModeManager.”  
+3. In the Inspector, you’ll see a list like `regionHardSettings`. Each entry references:  
+   - `regionID`: numeric ID from your WorldManager’s Region definitions  
+   - `hardModeUnlocked`: bool  
+   - `enemyHPMultiplier`: float  
+   - `enemyDamageMultiplier`: float  
+   - `rewardMultiplier`: float  
+4. Populate this array with entries for each region. For example:
+   - Element 0: regionID = 1, `hardModeUnlocked=false`, `enemyHPMultiplier=1.5f`, `enemyDamageMultiplier=1.3f`, `rewardMultiplier=2f`.
+5. This means once the code calls `(Code omitted—focusing solely on instructions)` to unlock Hard Mode for region 1, the manager references those multipliers.
+
+---
+
+## 2. **LiveOpsManager Setup**
+
+1. Still on `[Managers]`, **Add Component** → “LiveOpsManager.”  
+2. Inspector might show:
+   - `liveEvents` (list of LiveOpsEvent assets)
+   - references to forging synergy combos manager, cameo illusions usage hooking, singleDevFeasibility manager, etc.  
+3. If code references `MysticForgeManager` or `SingleDevFeasibilityManager`, drag them into the fields.  
+4. **liveEvents** is an array of `LiveOpsEvent` scriptable objects. Let’s create them:
+
+### LiveOpsEvent Assets
+1. In **Project** → folder `Assets/Data/LiveOpsEvents/`.  
+2. Right-click → Create → “PuzzleRPG → LiveOpsEvent” (or whichever path).  
+3. For example, name one “ForgingWeekend.asset.”  
+   - `eventName="ForgingWeekend"`, `forgingSuccessBonus=0.1f`, `realmResourceRateBonus=0.0f`, `cameoTriggerOnLogin=false`, `isActive=false`.  
+4. Another example: “HardModeWeek.asset” → `eventName="HardModeWeek"`, etc.  
+5. In **LiveOpsManager** Inspector, under `liveEvents`, click “+” for each event. Drag your `.asset` file in.  
+6. That way, the manager can “ActivateEvent” or “DeactivateEvent” which adjusts forging success or cameo illusions usage hooking on login.
+
+---
+
+## 3. **ExpansionManager Setup**
+
+1. If you have a new realm or synergy expansions patch after launch, you can manage it with **ExpansionManager** (Stage 12 code).  
+2. On `[Managers]`, **Add Component** → “ExpansionManager.”  
+3. Inspector might show:
+   - `expansionEnabled` (bool)
+   - `expansionName="FutureRealmExpansion"` (string)  
+4. Toggling `expansionEnabled` might unlock new synergy expansions or cameo illusions usage hooking in code.  
+5. You can call `(Code omitted—focusing solely on instructions).EnableExpansion()` from a button or a timed event.
+
+---
+
+## 4. **UI for Live Ops & Hard Mode**
+
+1. In your **TownHubCanvas** or a “LiveOpsCanvas,” create a panel to show current events or a button to toggle them.  
+2. For example, a button labeled **“ActivateForgingWeekend”** might call `(Code omitted—focusing solely on instructions).ActivateEvent("ForgingWeekend")`.  
+3. Similarly, a button “HardModeUnlock” could call `(Code omitted—focusing solely on instructions).UnlockHardMode(int regionID).`  
+4. If you want to see them labeled in real-time, you might display `isActive` states from your events in a Text or UI list.
+
+---
+
+## 5. **Testing Hard/Remixed Regions**
+
+1. If your **WorldManager** has region ID=1 for normal mode, you might do something in code or UI to call `HardModeManager.UnlockHardMode(1).`  
+2. In the Inspector, see if `regionHardSettings` for region 1 now sets `hardModeUnlocked=true`.  
+3. For an encounter or puzzle code referencing `HardModeManager.GetHPScale(regionID)`, ensure it spawns enemies with `HP * 1.5f`, etc.  
+4. Verify in logs that you get “Unlocked hard mode for Region 1.”
+
+---
+
+## 6. **Testing Live Ops Activation**
+
+1. If you have a button that calls `(Code omitted—focusing solely on instructions).ActivateEvent("ForgingWeekend")`, press it at runtime.  
+2. Check the console for logs like “[LiveOpsManager] Event ForgingWeekend activated.”  
+3. The forging success rate might be set to 1f+ forgingSuccessBonus = 1.1f if it’s +10%.  
+4. If cameo illusions usage hooking triggers on login, confirm you see swirl or cameo. 
+
+---
+
+## 7. **Testing Post-Launch Expansion**
+
+1. If you want to “EnableExpansion” from **ExpansionManager**, create a button “EnableExpansion.”  
+2. OnClick → `(Code omitted—focusing solely on instructions).EnableExpansion()`.  
+3. In the console: `[ExpansionManager] Enabled expansion 'FutureRealmExpansion'`.
+4. Potentially new synergy expansions or cameo illusions usage hooking features appear in your final game loop code.
+
+---
+
+## 8. **Version Control**
+
+1. Save your scene.  
+2. `git add .` → `git commit -m "Stage 12: Post-Launch Expansions, Hard/Remixed Modes & Live Ops"`.
+
+---
+
+**End of Stage 12 Unity instructions.**  
+Say “Next” for Stage 13.

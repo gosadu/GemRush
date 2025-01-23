@@ -1,0 +1,103 @@
+**STAGE 14 UNITY INSTRUCTIONS (EXTREMELY DETAILED, NO CODE)**
+
+Below are the **Unity setup steps** for **Stage 14** of the puzzle-RPG blueprint, focusing on **Advanced Code Integration & Modules**—the aggregator approach to unify all managers via **ModuleReference**, plus the **IntegrationInitializer** for final hooking. **No code** or designer commentary, only step-by-step instructions. After reading, say “Next” for Stage 15.
+
+---
+
+## 1. **Open Main Scene & Identify All Managers**
+
+1. If you’ve been using a single “TownHubScene” or “GameCoreScene,” **open** it now.  
+2. In your **Hierarchy**, you likely have a `[Managers]` object with multiple scripts:
+   - WorldManager  
+   - PuzzleBoardManager  
+   - GuildManager  
+   - GachaManager  
+   - QuestManager  
+   - PartySystemManager  
+   - SurgeManager  
+   - ResourceManager, etc.  
+
+You want to ensure all managers from Stages 1–13 are present in your final scene(s).
+
+---
+
+## 2. **Add ModuleReference Script**
+
+1. On `[Managers]` (or create a new empty object named “**ModuleReferences**”), click **Add Component** → type “ModuleReference.”  
+2. In the **Inspector**, you’ll see multiple public fields grouped by stage. e.g.:
+
+   - **Stage1 Modules** (WorldManager, RealmProgressionManager, etc.)  
+   - **Stage2 Modules** (PuzzleBoardManager, GemSelector)  
+   - **Stage3 Modules** (ResourceManager, RealmExpansionManager)  
+   - …  
+   - **Stage13 Modules** (LeaderboardManager, PvPManager)  
+   - **Stage14+** (IntegrationInitializer, FinalGameLoopManager)
+
+---
+
+## 3. **Assign Each Manager in ModuleReference**
+
+1. Expand each header in the ModuleReference Inspector.  
+2. For “**Stage1 Modules**”:
+   - Drag the corresponding object from the Hierarchy or the same `[Managers]` object to the correct field. Example:
+     - `worldManager` → Drag your WorldManager script  
+     - `realmProgressionManager` → Drag your RealmProgressionManager  
+     - `sublocationManager` → Drag SublocationManager  
+     - etc.  
+3. For “**Stage2 Modules**,” do the same with PuzzleBoardManager, GemSelector, etc.  
+4. Repeat this for each stage’s modules until all references are properly assigned.  
+   - e.g., for Stage 7 Modules, `guildManager` → drag your GuildManager script, `guildBossManager` → drag the GuildBossManager object, etc.
+
+**Tip**: If some scripts exist on the same GameObject, you can drag that GameObject into multiple fields (the inspector allows you to pick the correct script from the dropdown).
+
+---
+
+## 4. **Add IntegrationInitializer**
+
+1. If you see a field in ModuleReference for `integrationInitializer`, do the following:
+   - Create or locate a script named “IntegrationInitializer” if you haven’t already.  
+   - On the `[Managers]` object (or “ModuleReferences” object), click **Add Component** → “IntegrationInitializer.”  
+2. In **ModuleReference** Inspector, for the “Stage14+” section, drag the object with IntegrationInitializer into `integrationInitializer`.  
+3. Also see if `finalGameLoopManager` is there—drag your FinalGameLoopManager object or script to that field.
+
+---
+
+## 5. **Check IntegrationInitializer Inspector**
+
+1. Select the IntegrationInitializer script in the Inspector:
+   - It might have a field `moduleRef`.  
+2. Drag the same object containing **ModuleReference** into that `moduleRef` slot (i.e., if ModuleReference is also on `[Managers]`, you can drag that object onto the field).  
+3. This ensures **IntegrationInitializer** logs or initializes everything once the scene starts.
+
+---
+
+## 6. **Scene Hierarchy Organization**
+
+1. By now, your `[Managers]` object may have 10+ scripts for synergy expansions, cameo illusions usage hooking, forging combos, netcode, daily tasks, etc.  
+2. For clarity, you can rename it to something like “**[GameManagers: Master Integration]**” or keep separate empty objects like:
+   - `[PuzzleManagers]`
+   - `[GuildManagers]`
+   - `[MonetizationManagers]`
+   - `[ModuleReferences]`
+   - Just ensure **ModuleReference** references them all.
+
+---
+
+## 7. **Testing All Integration**
+
+1. **Save** your scene. Press **Play**.  
+2. Look at the Console for a log from `IntegrationInitializer` (something like “All modules integrated and final. No placeholders remain.”).  
+3. Try using each major system: puzzle, forging, guild, cameo illusions usage hooking. Confirm no missing reference errors appear in the console.  
+4. If you see a NullReference about a manager not assigned, go back to **ModuleReference** Inspector and link it properly.
+
+---
+
+## 8. **Version Control**
+
+1. `git add .`  
+2. `git commit -m "Stage 14: Advanced Code Integration & ModuleReference Setup"`  
+
+---
+
+**End of Stage 14 Unity instructions.**  
+Say “Next” for Stage 15.

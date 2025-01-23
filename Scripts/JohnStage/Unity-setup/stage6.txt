@@ -1,0 +1,92 @@
+**STAGE 6 UNITY INSTRUCTIONS (EXTREMELY DETAILED, NO CODE)**
+
+Below are **Unity setup steps** for **Stage 6** of the puzzle-RPG blueprint, which introduces **Phantasm Surge & High-Combo Mechanics**. We’ll integrate the **SurgeManager** plus synergy expansions or cameo illusions usage hooking triggers when the combo passes a threshold. **No code** or designer text—just step-by-step instructions. After this, say “Next” for Stage 7.
+
+---
+
+## 1. **Review Puzzle Scene (from Stage 2)**
+1. Open your **PuzzleScene** (or “PuzzleCombatScene”).  
+2. Confirm you have `[PuzzleBoardManager]`, gem logic, synergy expansions references if they exist.
+
+---
+
+## 2. **Create or Attach SurgeManager**
+1. In the **Hierarchy**, locate your `[Managers]` object if it’s in the same scene or a persistent manager object.  
+2. **Add Component** → search **“SurgeManager”**.  
+3. In the Inspector, you’ll see a `SurgeConfig` reference plus cameo illusions usage hooking fields. Possibly an `audioOverlay` field if advanced audio is used.
+
+---
+
+## 3. **SurgeConfig (Scriptable Object)**
+1. In the **Project** window, create a folder if not present: `Assets/Data/SurgeConfigs/`.  
+2. Right-click → **Create → PuzzleRPG → SurgeConfig** (or your custom creation path).  
+3. Name it **“BasicSurgeConfig.asset”** or similar.  
+4. In the Inspector for this new `.asset`, set:
+   - `threshold` = e.g., 50 (the combo count trigger).  
+   - `duration` = 8 (how many seconds the surge lasts).  
+   - `damageBoost` = 1.2f (20% more damage).  
+   - `removeCorruptedGems` = true or false.  
+   - `cameoTrigger` = true if cameo illusions usage hooking is triggered.  
+   - `cameoID` = e.g., “SurgeSpirit” if you want a cameo swirl.  
+   - `surgeAudioClip` = an SFX (like “SurgeSFX.wav”) from `Assets/Audio/SFX/`.  
+
+---
+
+## 4. **Assign SurgeConfig in SurgeManager**
+1. Select your `[Managers]` object.  
+2. In **SurgeManager** script’s Inspector, drag your newly created `BasicSurgeConfig.asset` into the `config` slot.  
+3. If you have a cameo illusions usage hooking manager, drag the `ProjectionSummonManager` object into the cameo manager field.  
+4. If you have `AudioOverlayManager`, drag it into `audioOverlay`.
+
+---
+
+## 5. **PuzzleBoardManager Linking**
+1. Open the **PuzzleBoardManager** Inspector.  
+2. There might be a public field for **SurgeManager** if your code references it.  
+3. **Drag** the `[Managers]` object (with SurgeManager) into that field.  
+4. The puzzle logic typically calls `surgeManager.AttemptActivateSurge(...)` when combo≥ threshold.  
+5. Make sure your gem or board scripts do track a `comboCounter` that eventually triggers Surge.
+
+---
+
+## 6. **Adjusting the Puzzle Flow for High-Combo**  
+*(No code, only instructions)*
+
+1. If you want to see a special effect (like a screen flash or cameo illusions usage hooking swirl) upon surge:
+   - Confirm the `cameoTrigger` is set to true in SurgeConfig.  
+   - Confirm `cameoID` = something your cameo illusions usage hooking manager can spawn.  
+2. If you want advanced visuals (e.g., a short color overlay on the puzzle), you can create a UI Image in your puzzle canvas that fades in/out. But that’s additional—**Stage 6** only covers the manager hooking.
+
+---
+
+## 7. **Testing Surge in Play Mode**
+1. **Save** the puzzle scene.  
+2. Press **Play**.  
+3. If your puzzle code spawns an 8×8 grid and tracks combos, try matching enough gems quickly to reach the combo≥ 50.  
+4. Watch the **Console** or your game screen for logs or cameo illusions usage hooking swirl. If your `damageBoost=1.2f`, confirm you see logs about “Surge activated” or a cameo swirl.  
+5. Observe the `duration=8s`. After that, see if “Surge ended” logs appear. If you set `removeCorruptedGems=true`, check if 2 Corrupted gems vanish from the board.
+
+---
+
+## 8. **Audio Testing** (Surge Audio Clip)
+1. If you assigned a `surgeAudioClip` in SurgeConfig, ensure the puzzle BGM is playing normally.  
+2. Once surge triggers, your code might do `audioOverlay.bgmSource.PlayOneShot(surgeAudioClip)` or stop the BGM first.  
+3. Confirm you hear a short SFX or layered track. If not, check the AudioSource references or volume settings in the Inspector.
+
+---
+
+## 9. **Netcode or Social Integration** *(Optional)*
+1. If you want to log surges to a server or synergy expansions references, you can do so in code. But from a Unity standpoint:
+   - Possibly add a method in PuzzleBoardManager that calls `NetcodeManager.EnqueueEvent("SurgeActivated|...")`.  
+   - No code snippet—just ensure the NetcodeManager is in the same scene if you plan to do that.
+
+---
+
+## 10. **Version Control**  
+1. Save Scene.  
+2. `git add .` → `git commit -m "Stage 6: Phantasm Surge & High-Combo Mechanics Implemented"`.
+
+---
+
+**End of Stage 6 Unity instructions.**  
+Say “Next” for Stage 7.

@@ -1,0 +1,109 @@
+**STAGE 5 UNITY INSTRUCTIONS (EXTREMELY DETAILED, NO CODE)**
+
+Below are the **Unity setup steps** for **Stage 5** of the puzzle-RPG blueprint. This stage introduces **Hero Collection, Gacha, Masteries, & Party Setup**—including synergy references, cameo illusions usage hooking in certain hero logic, forging synergy combos that might boost certain heroes, etc. **No code** is provided, only step-by-step instructions. Once finished, say “Next” for Stage 6.
+
+---
+
+## 1. **Project Preparation**
+1. Open your **main** or **TownHubScene** (or whichever scene you use to handle hero collection/gacha).  
+2. Ensure you still have the `[Managers]` or `[GameManagers]` object from prior stages.
+
+---
+
+## 2. **HeroCollectionManager** Setup
+1. In the Hierarchy, **select** `[Managers]`.  
+2. If **HeroCollectionManager** (Stage 5 code) is not already attached, add it:  
+   - Inspector → **Add Component** → type “HeroCollectionManager.”  
+3. In the Inspector, no major fields may appear besides a list of `ownedHeroes`. You can leave it empty initially or pre-populate if your design demands it.
+
+---
+
+## 3. **Hero Data (Scriptable Objects)**
+1. Create a new folder: `Assets/Data/Heroes/`.  
+2. Right-click → **Create → PuzzleRPG → HeroData** (or similar path if that’s your custom creation menu).  
+3. Name the file **“KnightHero.asset”** (or any hero name).  
+   - Fill in fields like `heroName= "Knight"`, `baseHP= 100`, `baseAttack= 10`, `rarity= 2`, `cameoTriggerEnabled= false` (or true if cameo illusions usage hooking triggers for that hero), `synergyMultiplier=1.0f`.  
+4. If you have multiple heroes, create more `.asset` files. Possibly “MageHero.asset,” “ArcherHero.asset.”
+
+---
+
+## 4. **GachaManager** Setup
+1. On `[Managers]`, add the **GachaManager** script.  
+2. You’ll see:
+   - `gachaPool`: An array to store heroes + weights.  
+   - `resourceManager`: To check premium currency.  
+   - `premiumCurrencyType`: e.g., “Crystal.”  
+   - `gachaCost`: e.g., 100.  
+3. **Populate** the `gachaPool`:
+   1. If you have created heroes (`KnightHero.asset`, `MageHero.asset`), click “+” to add new elements.  
+   2. Drag each hero `.asset` into `heroData`.  
+   3. Set a float `weight` (like 50 for Knight, 10 for Mage, etc.).  
+4. Drag your **ResourceManager** object into `resourceManager`.  
+5. If you’re using `premiumCurrencyType= Crystal`, ensure your ResourceManager or PremiumCurrencyManager is set up for “Crystal.”
+
+---
+
+## 5. **MasteryManager** Setup
+1. Still on `[Managers]`, add the **MasteryManager** script.  
+2. In the Inspector, you might see lists like `offenseTree` or `defenseTree`.  
+3. Each entry is a “MasteryNode” requiring a name, costPoints, synergyBoost, puzzleDamageBoost, etc.  
+   - e.g., `nodeName= "Offense1"`, `costPoints=5`, `synergyBoost=0.05f`.  
+4. This manager references **HeroCollectionManager** at runtime, so ensure it can find the same instance if needed. No additional field linking is typically needed unless the code demands it.
+
+---
+
+## 6. **PartySystemManager** Setup
+1. On `[Managers]`, add the **PartySystemManager** script as well.  
+2. You see `maxPartySize=3` by default, or whichever number.  
+3. The `activeParty` list is empty initially.  
+4. In a **UI** or a **HeroUI** script (Stage 5 references `HeroUI.cs`), you can present a list of owned heroes and let the user add them to the party:
+   - For each hero, you’d do something like `(Code omitted—focusing solely on instructions).`
+
+---
+
+## 7. **Hero UI** (e.g., `HeroUI` or `PartyUI`)
+1. Create a **Canvas** or reuse `TownHubCanvas`. Make a panel named “HeroUI” or “PartyUI.”  
+2. Inside it, you can place a scroll view with a vertical layout group to display each hero in `HeroCollectionManager.ownedHeroes`.  
+3. You might use a prefab for each hero entry: “HeroListItem.prefab,” containing a `Text` or `Image` (for the hero portrait) and a `Button`.  
+4. In `OnClick`, you might link to **PartySystemManager** → “AddHeroToParty(heroData).”  
+5. This is purely UI hooking—**no** code snippet, just standard Unity steps.
+
+---
+
+## 8. **Testing Gacha Logic**
+1. Add a **Button** named “PullGachaButton” to your main UI or a Gacha UI.  
+2. In **OnClick**, link it to `GachaManager -> PerformGachaPull()` from the Inspector.  
+3. Ensure your ResourceManager or PremiumCurrencyManager has enough premium currency.  
+   - If your code references `PremiumCurrencyManager`, attach it similarly.  
+4. Press **Play**, click “PullGachaButton,” watch the logs about hero gained.
+
+---
+
+## 9. **Ensure Cameo illusions usage hooking**  
+1. If a hero’s `cameoTriggerEnabled=true` or if synergy expansions references cameo illusions usage hooking, **ProjectionSummonManager** might be triggered in certain code paths.  
+2. In the Inspector for `GachaManager` or `HeroCollectionManager`, see if you need to drag `ProjectionSummonManager` in. If so, do it.
+
+---
+
+## 10. **Mastery Upgrades**  
+1. If you want an advanced UI to show mastery nodes, create a “MasteryPanel.”  
+2. For each node in `MasteryManager.offenseTree` or `.defenseTree`, create a button that calls `(Code omitted—focusing solely on instructions).`  
+3. If the code checks `HeroCollectionManager` to find the hero data, ensure it’s all in one scene or a persistent manager approach.
+
+---
+
+## 11. **Party Flow**  
+1. Create a “PartyPanel” with a list or icons for each `PartyMember`.  
+2. The user can remove heroes from the party or set a hero as leader with a button.  
+3. In the Inspector, verify **PartySystemManager** is assigned if your UI scripts rely on it.
+
+---
+
+## 12. **Version Control**  
+1. **Save** your scene(s).  
+2. `git add .` → `git commit -m "Stage 5: Hero Collection, Gacha, Masteries & Party Setup"`.
+
+---
+
+**End of Stage 5 Unity instructions.**  
+Wait for “Next” to receive Stage 6.

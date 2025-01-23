@@ -1,0 +1,102 @@
+**STAGE 3 UNITY INSTRUCTIONS (EXTREMELY DETAILED, NO CODE)**
+
+Below are the **setup steps** for **Stage 3** of the puzzle-RPG blueprint, focusing on **Realm Tier Progression & Resource Systems** (formerly orchard expansions synergy). We’ll configure realm expansions, daily chores/minigames, resource gating, synergy references, etc. **No code** or designer commentary—**only** the Unity instructions. After reading, say “Next” for Stage 4.
+
+---
+
+## 1. **Create or Open a Scene for Realm Progression Testing**
+1. If you have a **TownHubScene** (Stage 1), you can **keep using it** for realm expansions display.  
+2. Alternatively, make a separate scene called **“RealmProgressionScene.unity”** to test Tier upgrades.  
+3. For a single-dev approach, you can just continue using **TownHubScene**.
+
+---
+
+## 2. **RealmProgressionManager & RealmExpansionManager Setup**
+1. In the **Hierarchy** (in the scene you’re using), select the **[Managers]** object if it already exists from Stage 1.  
+2. Confirm you have **RealmProgressionManager** attached:
+   - If not, right-click → **Add Component** → type **RealmProgressionManager**.
+3. Also ensure **RealmExpansionManager** is attached the same way.  
+4. Check **Inspector** for each manager:
+   - **RealmProgressionManager** might have an array `realms` where you define each realm’s Tier data.  
+   - **RealmExpansionManager** might have an array `upgradeCostTable`.  
+
+### Populate Tier Data
+1. Under **RealmProgressionManager**, set `realms` array size (for example, 2 if you have “ValleyRealm” and “HighlandRealm”).  
+2. For each element in `realms`:
+   - `realmName` = e.g., “ValleyRealm”  
+   - `currentTier` = 0  
+   - `maxTier` = 4  
+   - `requiredResources` = 0 (or set a placeholder if you want. No code needed, just data.)
+3. Under **RealmExpansionManager**, set `baseProgressManager` to your **RealmProgressionManager** by dragging from the Hierarchy.  
+4. Assign `resourceManager` if required (created in Stage 2 or next steps).  
+5. In `upgradeCostTable`, define entries like:
+   - `realmIndex = 0, tierRequired = 0, resourceType= Wood, costAmount=50` for Tier 0→1, etc.
+
+---
+
+## 3. **ResourceManager & ResourceType Setup**
+1. If **ResourceManager** is not already on `[Managers]` or a relevant manager object, attach it:
+   - Add the **ResourceManager** script in the Inspector.  
+2. In the ResourceManager’s **Inspector**:
+   - `resourceList`: add 2–3 elements if you want to test, e.g. `(resourceType=Wood, amount=100)`, `(resourceType=Metal, amount=50)`.  
+3. If you have a **ResourceType** enum that includes “Wood,” “Metal,” etc., no extra steps needed.  
+4. This ensures you can test Realm Tier upgrade costs (like “50 Wood to upgrade Tier”).
+
+---
+
+## 4. **DailyTaskManager & Daily Resource Nodes**
+*(Stage 3 references daily chores—like orchard expansions synergy → realm expansions synergy. We now do realm-based daily minigames.)*
+
+1. **DailyTaskManager**: 
+   - Confirm it’s on `[Managers]` or a new empty object.  
+   - In the Inspector, you might see `dailyNodes`: an array to store references to **DailyResourceNode** objects.  
+2. **DailyResourceNode** Prefabs:
+   - Create a new folder `Assets/Prefabs/DailyNodes/`.  
+   - Right-click → Create Empty Prefab → name it “WoodNode.prefab.”  
+   - Open it in Prefab Mode. Add a **SpriteRenderer** or a **UI** icon to represent the resource node. Attach the **DailyResourceNode** script.  
+   - In the Inspector, set `grantType= Wood`, `grantAmount=10`.  
+   - Save.  
+3. **Add** that prefab in the scene if you want it physically placed:
+   - Drag “WoodNode.prefab” into **TownHubScene** or whichever scene you’re using.  
+   - On the DailyTaskManager, go to the `dailyNodes` list, click **+**, then drag the scene instance (or a prefab reference) into the array element.  
+4. Test: 
+   - When you press **Play**, if you **click** or **trigger** the node’s `CollectResource()` method (no code snippet here, just hooking logic), it should give 10 Wood once per day.
+
+---
+
+## 5. **Linking Realm Tiers with Daily Resource Rates** *(Optional)*
+1. If you want realm expansions synergy to boost daily resource yields, you can reference the realm tier in the `DailyResourceNode` or `DailyTaskManager`.  
+2. For example, you might do it in code: `(Code omitted—focusing solely on instructions).`  
+3. In the Inspector, be sure to **drag** references if your script requires a `RealmProgressionManager` field.
+
+---
+
+## 6. **UI Panel for Realm Tier Upgrades**
+1. If you want a simple UI to upgrade realms:
+   - In the **TownHubCanvas** (Stage 1 steps), add a **Button** named “UpgradeRealmButton.”  
+   - In **OnClick** event, drag `[Managers]` object, pick a function like `RealmExpansionManager -> AttemptRealmUpgrade(int realmIndex)`.  
+   - You might set the int param to 0 if you want to upgrade the first realm.  
+2. Tying this to **ResourceManager**:
+   - If the cost is 50 Wood, ensure you have at least 50 Wood in your resourceList on start.  
+   - On pressing this button, you see logs about success or not enough resources.
+
+---
+
+## 7. **Test Flow**  
+1. **Save** your scene, press **Play**.  
+2. Check **Console** for logs when you press “UpgradeRealmButton.”  
+3. If successful, your realm’s `currentTier` increments in `RealmProgressionManager`.  
+4. If using **DailyResourceNode** in scene, test collecting resources. Then try upgrading again.  
+5. No placeholders remain—**all** synergy expansions references are final.
+
+---
+
+## 8. **Version Control**  
+1. Return to your Git client, do `git add .`.  
+2. Commit: `"Stage 3: Realm Tier Progression & Resource Systems Implemented"`.  
+3. This ensures Stage 3 progress is safely stored.
+
+---
+
+### Conclusion: Stage 3  
+You’ve now integrated **Realm Tier** logic, resource gating, daily tasks/nodes. Everything is set up in the Unity scene(s), fully referencing synergy expansions if scripts require them. **Stop** here. When ready, say “Next” for Stage 4.

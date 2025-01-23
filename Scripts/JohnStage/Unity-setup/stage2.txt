@@ -1,0 +1,118 @@
+**STAGE 2 UNITY INSTRUCTIONS (EXTREMELY DETAILED, NO CODE)**
+
+Below are the **Unity setup steps** for Stage 2 of the puzzle-RPG blueprint. This stage introduces **Puzzle-Combat Mechanics & Advanced Board Logic**, featuring synergy references, cameo illusions usage hooking, Radiant/Corrupted gems, etc. **No actual code** is posted here, just how to integrate it into Unity—**step by step**. Once done, say “Next” for Stage 3.
+
+---
+
+## 1. **Create or Open Your Puzzle Scene**
+1. If you already have **TownHubScene** from Stage 1, **create** a **new** scene for puzzle-combat.  
+   - In **Project** window: Right-click → Create → Scene → name it **“PuzzleScene.unity”** (or “PuzzleCombatScene”).  
+   - Save it under `Assets/Scenes/`.  
+2. **Double-click** that scene to open it, ensuring you now see an empty **Hierarchy**.
+
+---
+
+## 2. **Add a PuzzleBoardManager Object**
+1. In the **Hierarchy**: right-click → **Create Empty**.  
+2. Name it **“[PuzzleBoardManager]”** or similar.  
+3. In the Inspector, attach the **PuzzleBoardManager** script (assuming it’s imported from Stage 2 code).  
+   - (Code omitted—focusing solely on Unity instructions)  
+4. You’ll see public fields like `gemPrefab`, `boardRoot`, `combatData`, etc., in the Inspector. We’ll populate them in later steps.
+
+---
+
+## 3. **Gem Prefab Setup**
+1. In the **Project** window, create a new folder if not existing: `Assets/Prefabs/Gems/`.  
+2. Drag or place **Gem sprites** (Red, Blue, Green, Yellow, Radiant) in a folder `Assets/Art/Gems/`.  
+3. **Create** a new **Prefab**: right-click in `Gems/` folder → Create Empty Prefab → name it “GemPrefab.”  
+4. **Double-click** to open the prefab in prefab isolation mode.  
+5. Add a **SpriteRenderer** component if it’s 2D; if 3D, a MeshRenderer or model reference.  
+6. Attach the **Gem** script (Stage 2 code) to it. In the Inspector, you may see fields like `animator` or `enableFloatEffect`.  
+   - For advanced animation: If you have an **Animator** with gem color states, add an **Animator** component to the prefab and assign your “GemAnimator.controller.”  
+7. **Save** the prefab changes. 
+8. Return to the **PuzzleScene**. In `[PuzzleBoardManager]`, find the **`gemPrefab`** field, drag “GemPrefab” from the Project into that slot.
+
+---
+
+## 4. **Board Root Setup**
+1. With `[PuzzleBoardManager]` selected, note the `boardRoot` field in the script’s Inspector.  
+2. Create an empty **GameObject** in the Hierarchy, name it “**BoardRoot**.”  
+3. Move it to a convenient position (e.g., `(0,0,0)`).  
+4. Drag **BoardRoot** from Hierarchy into `boardRoot` on `[PuzzleBoardManager]`.  
+   - This ensures the puzzle script instantiates gems under the BoardRoot for organization.
+
+---
+
+## 5. **PuzzleCombatData Asset**
+1. In **Project** window, right-click → Create → **PuzzleRPG → PuzzleCombatData** (or the custom scriptable object path from Stage 2).  
+2. Name it **“BasicPuzzleCombatData.asset”**.  
+3. In the Inspector, configure fields like `timeOrHP = 60`, `useTimedMode = true`, etc.  
+4. Select `[PuzzleBoardManager]` in Hierarchy, drag `BasicPuzzleCombatData.asset` into the `combatData` field. 
+
+---
+
+## 6. **Radiant & Corrupted Gems** 
+*(Stage 2 introduced Radiant (wildcard) and Corrupted (hazard) references. In code we skip here, but Unity side:)*
+
+1. **If** you have a distinct “CorruptedGem” sprite or prefab:
+   - Create a separate prefab for Corrupted if you prefer, or keep logic in the same `Gem.cs`.
+   - If you’re storing them as separate prefabs, assign them in your code references. 
+   - Alternatively, if the Stage 2 code spawns corrupted as a gem color, you just need the sprite in `Assets/Art/Gems/CorruptedGem.png`—no extra prefab if the code uses a single gem prefab. 
+2. For **Radiant** gem visuals:
+   - Confirm you have a Radiant sprite or animation. If the same gem prefab uses color states, no extra prefab needed—just use the code’s logic for Radiant.
+
+---
+
+## 7. **Animator or DOTween Setup for Advanced Animation** 
+*(Stage 2 references “advanced board logic,” synergy combos, cameo illusions usage hooking. No code snippet, just how to set it up in Unity.)*
+
+1. **Animator Approach**: 
+   - If each gem color uses a different idle state, create `GemAnimator.controller` in `Assets/Animations/Gems/`. 
+   - Make states “RedIdle,” “BlueIdle,” etc. 
+   - Assign triggers “RedIdle,” etc. 
+   - On the gem prefab, set the “Animator” field in the **Gem** script to your **Animator** component. 
+2. **DOTween** approach:
+   - Import DOTween from Asset Store or Package. 
+   - **Tools → Demigiant → DOTween Utility Panel** → click “Setup DOTween.” 
+   - On the gem prefab or puzzle manager, you can use tween calls for movement or float effects. 
+   - No placeholders remain—just be sure to install DOTween so the code runs without error.
+
+---
+
+## 8. **Puzzle Scene Background**  
+1. Optionally, create a **Canvas** or a 2D **Sprite** for the puzzle background. 
+2. Place “PuzzleBG.png” in `Assets/Art/Backgrounds/`. 
+3. Drag it into the scene so it appears behind the board grid. 
+4. Adjust **Order in Layer** or `Z` position to ensure gems spawn on top.
+
+---
+
+## 9. **Synergy or Cameo Manager Linking**  
+*(Stage 2 might not fully use cameo illusions usage hooking, but if code references them, do:)*
+
+1. If you have **ProjectionSummonManager** from Stage 1, you can place that either in the **TownHubScene** or a persistent manager object. 
+2. If `[PuzzleBoardManager]` references cameo illusions usage hooking, you can drag the manager object into the relevant public field in the Inspector. 
+3. If synergy expansions gating is relevant to puzzle logic, drag your **RealmProgressionManager** or synergy expansions references into `[PuzzleBoardManager]`’s fields if they exist.
+
+---
+
+## 10. **Testing the Puzzle**  
+1. **Save** the puzzle scene (Ctrl+S). 
+2. Press **Play** while in the puzzle scene. 
+3. Watch logs in the Console that indicate puzzle board creation. If the script spawns 8×8 = 64 gem objects under `BoardRoot`, it’s working. 
+4. Verify the advanced logic: 
+   - Gems appear, match logic triggers if you see logs like “ComboCounter increased.” 
+   - Radiant gem may appear at a low chance, synergy expansions references might factor in code for spawn chance. 
+   - If cameo illusions usage hooking or forging synergy combos are referenced, check logs or stubs for further hooking.
+
+---
+
+## 11. **Version Control** 
+1. Return to your Git client or terminal, do `git add .`  
+2. Commit: `"Stage 2: Puzzle-Combat Mechanics & Advanced Board Logic Implemented"`. 
+3. This ensures you have a stable checkpoint for Stage 2.
+
+---
+
+**End of Stage 2 Unity instructions.**   
+Wait for “Next” to see Stage 3.

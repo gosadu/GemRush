@@ -1,0 +1,99 @@
+**STAGE 4 UNITY INSTRUCTIONS (EXTREMELY DETAILED, NO CODE)**
+
+Below are the **Unity setup steps** for **Stage 4** of the puzzle-RPG blueprint, which focuses on **Arcane Gear Infusion & Crafting** (replacing forging≥Arcane synergy combos). This includes the **MysticForgeManager**, **WorkshopManager**, forging puzzle scene, synergy expansions references, cameo illusions usage hooking if forging special items, etc. **No code** is posted—**only** the step-by-step instructions for a Unity beginner. After this, say “Next” for Stage 5.
+
+---
+
+## 1. **Create or Open the Workshop Scene**
+1. If you have a **TownHubScene** from prior stages, you can integrate forging there or create a new scene named **“ForgeScene.unity”** in `Assets/Scenes/`.  
+2. Double-click that scene to open it. (If using a single scene approach, place forging in Town Hub—just adapt these steps.)
+
+---
+
+## 2. **Set Up MysticForgeManager**
+1. In the **Hierarchy**, create an empty GameObject named **“[ForgeManagers]”** or use `[Managers]` if it’s persistent.  
+2. Attach the **MysticForgeManager** script (Stage 4 code). In the Inspector, you may see fields like `recipeList`, `resourceManager`, `realmManager`, `cameoManager`.  
+3. **Assign** references if present:
+   - **resourceManager**: Drag the ResourceManager object from your scene.  
+   - **realmManager**: Drag the RealmProgressionManager if forging is gated by realm tier.  
+   - **cameoManager** (ProjectionSummonManager) if forging special items triggers cameo illusions usage hooking.
+
+---
+
+## 3. **Data Setup for ForgeItemData & ForgeRecipe**
+1. In **Project** window, create a folder `Assets/Data/ForgeItems/` and another `Assets/Data/ForgeRecipes/`.  
+2. Right-click → Create → “PuzzleRPG → ForgeItemData” to create an item asset, e.g. **FlamingSword.asset**. 
+   - In the Inspector, define fields like `baseSuccessChance = 70`, `costAmount=50`, `primaryResourceCost= Metal`, `itemName="FlamingSword"`, etc.  
+   - If cameo illusions usage hooking is triggered upon success, set `cameoTriggerID= "FireSpirit"`.  
+3. For a recipe upgrading Rare → Epic:
+   - Right-click → Create → “PuzzleRPG → ForgeRecipe” to create an asset, e.g. **FlamingSwordUpgrade.asset**.  
+   - Link `baseItem` to your FlamingSword.asset, `upgradedItem` to something like FlamingSwordEpic.asset if you have it, `extraCost= 30`, etc.
+4. **In** `MysticForgeManager` Inspector:
+   - Under `recipeList`, click the “+” button to add references to your newly created ForgeRecipe assets.  
+
+---
+
+## 4. **Forge Puzzle Minigame (MiniForgePuzzleManager)**
+*(Stage 4 code introduces a 4×4 forging puzzle akin to the main puzzle. No code snippet, just setup.)*
+
+1. Optionally create a separate **ForgePuzzleScene** or integrate the forging puzzle in your Workshop scene.  
+2. **Create** an empty object, name it **“[MiniForgePuzzleManager]”**.  
+3. Attach the `MiniForgePuzzleManager` script. In the Inspector, you’ll see fields like `width=4, height=4, gemPrefab, puzzleRoot`.  
+4. Create a folder `Assets/Prefabs/ForgeGems/`.  
+   - Right-click → Create Empty Prefab named “ForgeGemPrefab.”  
+   - Inside it, add a sprite or model for forging gem. Attach the `ForgeGem` script if that’s part of Stage 4 code.  
+5. **Assign** `ForgeGemPrefab` to the `gemPrefab` field in `[MiniForgePuzzleManager]`.  
+6. Add an empty child object named “ForgeBoardRoot” or similar, drag it into `puzzleRoot`. 
+7. This ensures a 4×4 grid of forging gems spawns on start.
+
+---
+
+## 5. **WorkshopManager for Scene Loading**
+1. If you have a dedicated **WorkshopManager** (Stage 4 code) that loads the forging puzzle scene, attach it to `[ForgeManagers]` or `[Managers]` in your main scene.  
+2. The Inspector might have fields like `forgePuzzleSceneName` (default “ForgePuzzleScene”).  
+3. When you press a UI button in the Town Hub to begin forging, the manager can load this puzzle scene additively:
+   - (Code omitted—focusing solely on instructions)
+4. **Return** logic: once the user finishes the puzzle, the code calls `CompleteForgePuzzle(...)`, and `MysticForgeManager` uses forging synergy combos logic.
+
+---
+
+## 6. **UI Buttons for Forging Flow**
+1. In the **TownHubCanvas** or a separate **WorkshopCanvas**:
+   - Create a Button named “OpenForging.”  
+   - OnClick → `[Managers]` object → “WorkshopManager -> BeginForge(ForgeItemData item).”
+     - If the method uses an `int` parameter or no parameters, see how the code does it. You might need a small bridging script or a specialized UI method.  
+2. Alternatively, if your forging puzzle is **all** in one scene, you skip the scene load approach and just show/hide the puzzle panel.
+
+---
+
+## 7. **Testing Craft Attempts**
+1. Press **Play** in the Unity Editor.  
+2. If you’re in the **Town Hub**:
+   - Click your “OpenForging” button if set up → The puzzle scene loads or the forging puzzle panel appears.  
+3. Once you do the forging puzzle minigame:
+   - On completion, you call `CompleteForgePuzzle(performanceScore)` in `WorkshopManager`. 
+   - Check logs to see if the forging success logic used your item’s `baseSuccessChance + puzzlePerformance`.
+
+---
+
+## 8. **Cameo Illusions Usage Hooking in Forging**
+1. If you gave an item a `cameoTriggerID`, verify the **ProjectionSummonManager** is assigned in `MysticForgeManager`.  
+2. If forging is **successful** and code says cameo illusions usage hooking triggers, ensure the cameo swirl or ally appears.  
+3. Place a cameo prefab or check logs if it’s missing.
+
+---
+
+## 9. **Balance & Gating Checks**  
+1. In the Inspector, make sure the **RealmProgressionManager** realm tier is high enough if the forging item requires a certain `realmTierRequired`.  
+2. If your item says `realmTierRequired=2` but you’re only Tier 0, forging attempts log “Not enough realm tier.”
+
+---
+
+## 10. **Version Control**  
+1. Save Scenes.  
+2. `git add .` → `git commit -m "Stage 4: Arcane Gear Infusion & Crafting (Workshop) Setup"`.
+
+---
+
+**End of Stage 4 Unity instructions.**  
+When ready, say “Next” for Stage 5.

@@ -1,0 +1,135 @@
+**STAGE 1 UNITY INSTRUCTIONS (EXTREMELY DETAILED, NO CODE)**
+
+Below are the **complete** Unity setup steps for Stage 1 of the puzzle-RPG blueprint. This stage establishes a multi-realm world, the Town Hub, and sublocation infrastructure, referencing realm expansions (replacing orchard expansions) and cameo illusions usage hooking if relevant. No actual code or designer commentary is provided—only the **step-by-step** Unity instructions. Once you finish, say “Next” for Stage 2 instructions.
+
+---
+
+### 1. **Create Your Unity Project**
+1. **Open Unity Hub** (or Unity Editor).  
+2. **Click “New Project”** (version 2021 LTS or higher recommended).  
+3. Name it **“PuzzleRPG_Stage1”** or a similar name.  
+4. Select **2D** (or **3D** if you prefer a 3D environment).  
+5. Click **“Create Project”** to open an empty Unity project.
+
+---
+
+### 2. **Organize Folders**
+1. In the **Project** window (lower-left by default):
+   - Right-click **Assets** → Create → **Folder** named `Scripts`.
+   - Within `Scripts`, create subfolders:  
+     - `Managers`
+     - `Data`
+     - `UI`
+     - `Utilities` (if desired)
+   - Right-click **Assets** → Create → **Folder** named `Scenes`.
+   - Right-click **Assets** → Create → **Folder** named `Art`.
+   - Right-click **Assets** → Create → **Folder** named `Audio`.
+   - This clean structure helps keep your project organized even at Stage 1.
+
+---
+
+### 3. **Create TownHubScene**
+1. Go to **File → New Scene**.  
+2. Select **2D** if using a 2D environment (or **3D**).  
+3. **Save** it immediately as **“TownHubScene.unity”** inside `Assets/Scenes/`.  
+4. This scene will serve as the main “Town Hub” or “Adventurer’s Outpost” for Stage 1.
+
+---
+
+### 4. **Set Up Managers in the Town Hub**
+*(No code, just how to add them as GameObjects. They will eventually reference realm expansions, cameo illusions usage hooking, forging synergy combos in later stages.)*
+
+1. In the **Hierarchy** window, right-click in empty space → **Create Empty**.  
+2. Name it **“[Managers]”** (using square brackets to identify it easily).  
+3. **Attach** the following scripts (once imported) to `[Managers]`:  
+   - **WorldManager** (manages multi-realm data)  
+   - **RealmProgressionManager** (realm expansions gating)  
+   - **SublocationManager** (handles sublocation references)  
+   - **SceneTransitionManager** (manages cinematic fade or swirl transitions)  
+   - **AudioOverlayManager** (handles background music)  
+   - **DailyTaskManager** (manages daily resource chores)  
+   - **TutorialManager** (basic tutorial hooking for Stage 1)  
+   - **ProjectionSummonManager** (cameo illusions usage hooking manager)  
+   - **TownHubManager** (the main logic for the Town Hub)  
+
+**How to do each attach**:  
+- Select `[Managers]` in the Hierarchy.  
+- In the Inspector, click **Add Component**.  
+- Type the script name (e.g., **“WorldManager”**).  
+- Repeat for each manager script needed.  
+- You’ll see them stacked in the Inspector.
+
+*(Since we’re not posting code, assume you have these script files available. For each script, you attach it the same way: Add Component → choose script name.)*
+
+---
+
+### 5. **Set Up SceneTransitionManager Overlay (Fade)**
+1. While `[Managers]` is selected, notice the **SceneTransitionManager** script in the Inspector once attached.  
+2. It typically has a public `Image overlay` field.  
+3. **Create a Canvas** for the transition overlay:  
+   - Right-click the Hierarchy → **UI** → **Canvas**.  
+   - Name it **“TransitionCanvas”** (or similar).  
+4. Inside the `TransitionCanvas`, right-click → **UI** → **Image**.  
+5. Name this Image **“FadeOverlay”**.  
+6. Select the Image. In the **Inspector**, set its size to **stretch** across the whole screen.  
+7. Drag this `FadeOverlay` from Hierarchy into the `overlay` field in **SceneTransitionManager**.  
+   - That links the fade image used for transitions.
+
+---
+
+### 6. **AudioOverlayManager Setup**
+1. On the `[Managers]` object (with **AudioOverlayManager** attached), add an **AudioSource** component:
+   - In the Inspector → Add Component → type “AudioSource.”  
+2. The script might have a public `AudioSource bgmSource` field.  
+3. **Drag** the new AudioSource from the Inspector into that field if it’s not auto-assigned.  
+4. You can place a test **MP3 or WAV** in `Assets/Audio/Music/`, then set it as the AudioSource’s **AudioClip** if you want immediate BGM for Stage 1.
+
+---
+
+### 7. **DailyTaskManager & Realm Progression References**  
+1. If you have data references for realm expansions synergy, cameo illusions usage hooking, or daily tasks (like resource node prefabs), you can create them in the Project as needed (e.g., `Assets/Data/DailyResourceNode.asset`)—but for Stage 1, it might remain basic.  
+2. Just ensure that in the **Inspector** for **DailyTaskManager** or **RealmProgressionManager**, any arrays or lists (like realm tiers, daily nodes) are left either empty or assigned minimal test data for Stage 1.
+
+---
+
+### 8. **Basic Town Hub UI**  
+*(No code, just how to set up a placeholder UI panel for realm expansions, cameo illusions usage hooking if relevant, etc.)*
+
+1. In the Hierarchy, right-click → **UI** → **Canvas**.  
+2. Name it **“TownHubCanvas”**.  
+3. Under `TownHubCanvas`, create a few **Buttons** with text like “OpenRealmProgressionPanel,” “OpenWorkshop,” “OpenGuildHall,” “TravelToRegion(1).”  
+   - Each Button is set up by:
+     - Right-click the Canvas → UI → Button, name it e.g. “OpenRealmButton.”  
+     - Adjust RectTransform as desired.  
+     - In the Inspector, the **OnClick** event can call methods in **TownHubManager** (once assigned).  
+4. For example, if `TownHubManager` has a public method “`OpenRealmProgressionPanel()`,” drag `[Managers]` into the OnClick event, pick `TownHubManager -> OpenRealmProgressionPanel()`.  
+5. This means once you click that Button, it runs the method in code (Stage 1 logic).
+
+---
+
+### 9. **Scene Save & Testing**  
+1. **Save** the scene: File → Save or `Ctrl+S`.  
+2. Click **Play** (top middle in Unity).  
+3. Verify no warnings about missing references in the **Console**:
+   - If something says “NullReference,” check you assigned it in the Inspector (like cameo illusions usage hooking manager or realm expansions synergy manager).  
+4. Confirm **Audio** plays if you set a test track, and **TutorialManager** or **DailyTaskManager** logs “TownHubIntro tutorial” or “Checking daily tasks.”  
+5. If you click a button like “OpenWorkshop,” watch the **SceneTransitionManager** fade in/out (or see logs if it’s not hooking up visuals yet).
+
+---
+
+### 10. **Version Control Commit**  
+*(No code, just instructions for a beginner in Unity using Git or similar.)*  
+1. **Open a terminal** or use a built-in Git client in your IDE.  
+2. `git init` inside your project folder if you haven’t yet.  
+3. **Add** your files: `git add .`  
+4. **Commit** with message: `"Stage 1: Multi-Realm World + Town Hub + Sublocation Infrastructure"`.  
+5. Confirm you have a stable checkpoint. Next stage will build on top of this.
+
+---
+
+### **Conclusion: Stage 1**  
+You have a **basic Town Hub scene** with the key managers:  
+- **WorldManager**, **RealmProgressionManager**, **SublocationManager**, **TransitionManager**, **AudioOverlayManager**, **DailyTaskManager**, **TutorialManager**, **ProjectionSummonManager**, **TownHubManager**  
+Plus a rudimentary UI for traveling to region or opening realm expansions synergy panel.
+
+**Stop here** and wait for “Next.”

@@ -1,0 +1,92 @@
+**STAGE 16 UNITY INSTRUCTIONS (EXTREMELY DETAILED, NO CODE)**
+
+Below are the **Unity setup steps** for **Stage 16** of the puzzle-RPG blueprint, which covers **Performance & Netcode Optimization**. This includes setting up the **PerformanceManager**, **ObjectPool**, **NetcodeManager** for asynchronous cloud logic, cameo illusions usage hooking references if relevant, synergy expansions references if certain netcode or performance toggles exist. **No code** or designer commentary—**only** step-by-step instructions for a Unity beginner. After reading, say “Next” for Stage 17.
+
+---
+
+## 1. **Scene / Managers Setup**
+
+1. Open your **main** or “TownHubScene” (or whichever scene is your core).  
+2. Ensure you have a `[Managers]` or `[GameManagers]` object in the Hierarchy.
+
+---
+
+## 2. **PerformanceManager**
+
+1. On `[Managers]`, click **Add Component** → search “PerformanceManager.”  
+2. In the **Inspector**, you’ll see fields such as:
+   - `targetFrameRate=60`
+   - `enablePooling` (bool)
+   - `logMemoryUsage` (bool)
+   - `memoryLogInterval=5f`  
+3. Adjust these as desired:
+   - If you want to see memory usage in the Console every 5 seconds, set `logMemoryUsage=true`.  
+   - If you want to force the game to run at 30 FPS for testing, set `targetFrameRate=30`.  
+
+---
+
+## 3. **ObjectPool Setup**
+
+1. If you plan to pool certain objects (like cameo illusions usage hooking VFX, forging synergy combos VFX, or gem slash effects), create an empty object “`ObjectPool`” or attach it to `[Managers]`.  
+2. **Add Component** → “ObjectPool.”  
+3. In the Inspector:
+   - A `List<PoolItem>` named `items`. Each has fields:
+     - `poolID` (string)
+     - `prefab` (GameObject)
+     - `initialCount` (int)
+   - A hidden queue once you run the game.  
+4. Example:
+   - Element 0: `poolID= "SlashEffect"`, `prefab= SlashEffectPrefab`, `initialCount=10`.  
+5. Then your code can call `(Code omitted—focusing solely on instructions).GetFromPool("SlashEffect", position, rotation)` or `.ReturnToPool("SlashEffect", effectObj)` at runtime.
+
+---
+
+## 4. **NetcodeManager**
+
+1. On `[Managers]`, add **NetcodeManager** if not already.  
+2. Inspector might show:
+   - `useCloudSaves=true`
+   - `eventQueue`  
+3. If you want to rely on asynchronous event sync, you can wire up UI or game logic that calls `(Code omitted—focusing solely on instructions).EnqueueEvent("ResourceDonate|Wood|10")`.  
+4. To test cloud-like flows, you might have a button “UploadData” linking to `NetcodeManager -> UploadPlayerData()` and “DownloadData” for `DownloadPlayerData()`.
+
+---
+
+## 5. **Setting Up Pool Prefabs for Performance**
+
+1. If your cameo illusions usage hooking swirl effect is a frequent spawn, you can pool it:
+   - Create “`CameoSwirlPrefab`.”  
+   - In `ObjectPool` → `items` → add a new element.  
+   - `poolID= "CameoSwirl"`, `prefab= CameoSwirlPrefab`, `initialCount=5`.  
+2. If forging synergy combos produce special sparkles, do the same.  
+3. This ensures objects are reused rather than destroyed and re-instantiated, improving performance on mid-range devices.
+
+---
+
+## 6. **Testing PerformanceManager Logging**
+
+1. **Save** the scene. Press **Play**.  
+2. If `logMemoryUsage=true`, watch the Console every 5 seconds for memory usage logs.  
+3. If `targetFrameRate=30`, confirm your game tries to run at 30 FPS.  
+4. Adjust these values in the Inspector during Play mode to see immediate effects.
+
+---
+
+## 7. **Testing Netcode Event Queue**
+
+1. If you have a bridging UI with a button “SendDonationEvent,” it calls `(Code omitted—focusing solely on instructions).EnqueueEvent("Donate|Wood|50")`.  
+2. Check the console to see `[NetcodeManager] Enqueued event: Donate|Wood|50`.  
+3. By default, the NetcodeManager’s `Update()` or `ProcessEvents()` might log “[NetcodeManager] Processing Donate|Wood|50.”  
+4. If you want cloud sync, test the “UploadPlayerData” or “DownloadPlayerData” button in the UI.
+
+---
+
+## 8. **Version Control**
+
+1. **Save** your scene.  
+2. `git add .` → `git commit -m "Stage 16: Performance & Netcode Optimization Setup"`.
+
+---
+
+**End of Stage 16 Unity instructions.**  
+Say “Next” for Stage 17.

@@ -1,0 +1,103 @@
+**STAGE 7 UNITY INSTRUCTIONS (EXTREMELY DETAILED, NO CODE)**
+
+Below are **Unity setup steps** for **Stage 7** of the puzzle-RPG blueprint, focusing on **Guild & Co-Op Systems** (Tavern Node in the blueprint). This includes a **GuildManager**, multi-phase boss (GuildBossManager), cameo illusions usage hooking if certain thresholds are reached, synergy expansions references, resource gifting, etc. **No code** is shown—only the step-by-step Unity instructions. Once finished, say “Next” for Stage 8.
+
+---
+
+## 1. **Set Up a Tavern or Guild Scene (Optional)**
+1. You can either:
+   - **Create** a new scene named “GuildScene.unity” for dedicated guild flow, or
+   - Integrate guild logic into your **TownHubScene**.  
+2. For clarity, we’ll assume you add it to **TownHubScene** near the “Guild Hall” or “Tavern Node.”
+
+---
+
+## 2. **Add GuildManager**
+1. In the Hierarchy, find your `[Managers]` object or create a new empty object named **“[GuildManagers]”**.  
+2. **Add Component** → search “GuildManager” script.  
+3. The **Inspector** might show:
+   - `guildName` (string)
+   - `config` (GuildConfig asset)
+   - `members` list
+   - `totalResourcesContributed`
+   - references to `ResourceManager`, `ProjectionSummonManager`, etc.
+
+### GuildConfig
+1. In the **Project** window, create a folder `Assets/Data/Guild/` if not present.  
+2. Right-click → **Create → PuzzleRPG → GuildConfig** (or whichever creation path).  
+3. Name it “BasicGuildConfig.asset.”  
+4. In the Inspector for this `.asset`, set:
+   - `maxMembers= 30`  
+   - `dailyContributionLimit= 50`  
+   - `guildUpgradeCost= 500`  
+   - etc.
+
+### Inspector Linking
+1. Select `[GuildManagers]`, drag **BasicGuildConfig.asset** into the `config` field of **GuildManager**.  
+2. Drag your **ResourceManager** object into `resourceManager`.  
+3. If cameo illusions usage hooking triggers at certain threshold, drag `ProjectionSummonManager` into `cameoManager`.
+
+---
+
+## 3. **GuildBossManager**
+1. Still in the same `[GuildManagers]` object or a new “GuildBossManager” object:
+   - Add the **GuildBossManager** script.  
+2. In the Inspector:
+   - `totalBossHP`, `currentBossHP`, `phases` (a list of GuildBossPhase), cameo illusions usage hooking references, etc.
+3. If you have multiple phases, set something like:
+   - `totalBossHP= 10000`
+   - `phases` size= 3, each phase with a `health` threshold (like 8000, 5000, 2000) and `hazardSpawnRate`.  
+4. Link `ProjectionSummonManager` if the cameo illusions usage hooking triggers on boss rage.
+
+---
+
+## 4. **UI for Guild and Boss**
+1. In **TownHubCanvas** or another **Canvas**, add a **Button** labeled “GuildHallButton.”  
+   - In **OnClick**, call “TownHubManager -> OpenGuildHall()” or something similar (Stage 1 or 2 references).  
+2. Inside the “Guild Hall” or “Guild UI Panel,” create:
+   - A text field for “Guild Info” (guildName, guildLevel).  
+   - A button “DonateResources” that calls a method in GuildManager to donate X resource.  
+   - A button “UpgradeGuildLevel” if your config uses level logic.  
+   - Another panel or button “Guild Boss” → leads to a UI where you see boss HP, can do “DealDamageButton.”
+
+### Dealing Boss Damage
+1. The GuildBossManager might have a method like “DealDamage(string playerID, float dmg).”  
+2. In the UI, create an **InputField** “DamageField.”  
+3. Create a Button “DealDamageButton.”  
+4. In **OnClick**, reference `GuildBossManager -> DealDamage("PlayerID1", float.Parse(damageField.text))`, or use a bridging script to handle that.  
+5. If cameo illusions usage hooking is triggered on phase thresholds, your user sees a swirl or cameo spawn.
+
+---
+
+## 5. **ResourceManager Donating Flow**
+1. If code references a function like `GuildManager -> DonateResources(playerID, ResourceType, int amount)`, you might create a UI:
+   - A dropdown or toggles for which `ResourceType` (Wood, Metal, etc.).
+   - An **InputField** for how many resources to donate.
+   - A “Donate” button with OnClick → calls the method.  
+2. Ensure your user’s resource count is sufficient. If `resourceManager` says you have 100 Wood but you try donating 200, you see a console warning.
+
+---
+
+## 6. **Checking cameo illusions usage hooking**  
+1. If your code triggers cameo illusions usage hooking at `totalResourcesContributed >= 1000` or at boss phase changes:
+   - Make sure the `ProjectionSummonManager` object is in the same scene or is a persistent Don’tDestroyOnLoad object.
+   - In GuildManager or GuildBossManager Inspector, link cameo illusions usage hooking manager if there’s a field for it.
+
+---
+
+## 7. **Test in Play Mode**
+1. **Save** the scene. Press **Play**.  
+2. Attempt to “DonateResources” in the UI. Watch logs for success or warnings.  
+3. If total contributions cross a threshold, cameo illusions usage hooking swirl might appear.  
+4. Press “DealDamage” on the boss. Check if the HP logs decrease. If it drops below a phase threshold, cameo illusions usage hooking swirl or hazard ramp logs appear.
+
+---
+
+## 8. **Version Control**  
+1. `git add .`  
+2. `git commit -m "Stage 7: Guild & Co-Op Systems Setup"`.
+
+---
+
+**End of Stage 7 Unity instructions.**  
+Say “Next” for Stage 8.
