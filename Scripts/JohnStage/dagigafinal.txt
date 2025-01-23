@@ -1,0 +1,2349 @@
+**SECTION 1: MULTI-REGION WORLD, TOWN HUB, AND SUBLOCATION INFRASTRUCTURE**  
+*(Ultra-Granular Developer-Level Detail)*  
+
+---
+
+### 1.1 **World Overview and Progression Logic**  
+- **Regions and The Overworld**  
+  - The game features **10 primary Regions**, each themed around a particular environment or story arc (e.g., Ember Highlands, Cascade Reaches, Terra Valley).  
+  - An **Overworld Map** displays these Regions in a painterly style. Initially, only one Region—**Oakrest** (Region ID=0)—is accessible. The remaining 9 Regions unlock sequentially based on **Realm Tier Progression** milestones or boss completions.  
+  - Each of the 10 Regions contains **5 Sublocations**, for a total of **50** distinct sub-areas.  
+    - **Example**: Region 1 might have Sublocation 1–5, each containing puzzle-combat nodes, local mini-bosses, daily tasks, or special quest hooks.  
+  - **Future Expansions**: Additional or “Hard Mode” Regions (IDs 11–13, etc.) can be unveiled post-launch, either as patch updates or live events.  
+
+- **Region Lock/Unlock Conditions**  
+  - Typically, clearing **70%** of the puzzle-combat nodes in a Region’s final sublocation and defeating that sublocation’s boss unlocks the next Region.  
+  - Some Regions require certain **Realm Tier Progression** levels (e.g., Region 4 might demand Timberland District Tier 2) to ensure players have adequate gear and resources.  
+  - **Teleportation Points** can be permanently unlocked once a Region’s story is completed, allowing players to revisit or skip certain areas.  
+
+#### Developer Focus  
+1. **Streamlined Flow**: Each Region is progressively more challenging, requiring players to continually invest in gear (via **Arcane Gear Infusion**) and upgrade their districts through **Realm Tier Progression**.  
+2. **Optional Side Nodes**: ~30% of nodes in each sublocation can be purely optional, offering extra rewards but not mandatory for boss unlock. This approach accommodates both casual progress and hardcore farming.  
+3. **Data-Driven Scaling**: Enemy HP, Corrupted gem spawn rates, and puzzle hazards in each Region can be dynamically scaled or adjusted server-side.  
+
+---
+
+### 1.2 **Town Hub: Oakrest (Region ID=0)**  
+- **Central Location**: Oakrest is the starting Region and the only one available at the game’s launch. It features a single Sublocation, **Adventurer’s Haven**, that contains the core “town” services.  
+- **Town Layout**:  
+  1. **Main Square**  
+     - Contains fundamental NPCs and shops (e.g., a Gold Merchant for minor resource trades, and a Premium Store for gem purchases).  
+     - **Quest Board** or **“Daily Planner Access Point”** to highlight all daily/weekly tasks in one interface.  
+     - Visual enhancements: set up an **Arcane Flow Transition** effect when moving from the Square to other key structures.  
+  2. **Realm Districts Entry**  
+     - Access to the **4 Districts** tied to **Realm Tier Progression**. Each District is effectively a sub-hub with its own minigame and resource management UI.  
+     - The District Gate might show real-time progression bars, e.g., “Timberland District Tier 2 → Next Upgrade: 80/100 seeds.”  
+  3. **Workshop Node**  
+     - The forging location for **Arcane Gear Infusion**.  
+     - Houses the “4×4 forging puzzle,” forging cost panels, Arcane Infusion success rate displays, and a resource exchange UI.  
+  4. **Tavern Node**  
+     - Primary location for **Guild & Co-Op** features.  
+     - Contains guild chat, guild boss boards, and **Guest Hero Summon** management.  
+  5. **Player Room Node**  
+     - The player’s personalizable “housing” area.  
+     - Trophies from region completions, special furnishings that grant small in-game bonuses (e.g., -5% forging time).  
+
+#### Developer Focus  
+1. **Single-Sublocation Architecture**: All core interactions happen within Adventurer’s Haven to reduce overhead. Sub-nodes within the Town can be loaded via smaller scenes or integrated into one scene with multiple UI tabs.  
+2. **Arcane Flow Transitions**: Consistent visual transitions when entering the Workshop, Player Room, or District Gate to unify the game’s style.  
+3. **Adaptive Audio Layers**: The Town can have a base music track that layers in additional ambiance in each sub-node.  
+
+---
+
+### 1.3 **Sublocation Design & Node Distribution**  
+- **Sublocation Composition**  
+  - Each Region has **5 Sublocations** with **10–40** puzzle-combat nodes each. The variety in node count accommodates different pacing (e.g., early sublocations might have only 10–15 nodes, later ones 30–40).  
+  - Each Sublocation typically includes:  
+    - **3–6 Normal Minion Nodes**  
+    - **1–2 Elite or Mini-Boss Nodes**  
+    - **1 “Main Boss” Node** (often at the final sublocation)  
+    - **Optional Resource Farming Nodes** or “shortcuts” that appear for 8 hours after initial completion.  
+- **Node Clearance & Respawn**  
+  - Once cleared, a node remains passable for **8 hours**, then respawns with slightly randomized puzzle parameters (gem spawn rates, Corrupted gem frequencies, and minion compositions).  
+  - If a node’s “boss” is defeated, the boss typically does not respawn with full HP unless the region is reset in **Hard Mode** or a special event.  
+- **Teleport Event Nodes**  
+  - Unlocked upon **100% clearing** a sublocation, letting players skip repeated minion fights if they revisit that sublocation.  
+  - Can be monetized with skip tokens or integrated as a free convenience for high-tier players.  
+
+#### Developer Focus  
+1. **Controlled Complexity**: Keeping the sublocation structure standardized ensures a single developer can manage the content pipeline.  
+2. **Procedural Variation**: Basic minions or Corrupted gem rates can be pulled from a data table, so repeated node clearances remain fresh without requiring unique design each time.  
+3. **Endgame Revisits**: Hard or “Remixed” modes can repurpose these Sublocations without adding new art or massive new code.
+
+---
+
+### 1.4 **Puzzle-Combat Node Implementation**  
+- **Entry Flow**  
+  1. Player taps a node on the Sublocation map.  
+  2. **Arcane Flow Transition** effect while loading the puzzle board.  
+  3. Pre-fight screen shows recommended power, synergy tips, or optional difficulty modifiers (e.g., +25% HP for enemies in exchange for +10% gold).  
+- **Combat Execution**  
+  1. **8×8** real-time gem board.  
+  2. Timed HP drain (varies by mode).  
+  3. Minions or boss inflict extra damage at fixed intervals.  
+  4. **Corrupted Gems** evolve over time, Radiant gems accelerate the combo meter.  
+  5. **Phantasm Surge** triggers at 50 combo points, removing 2 Corrupted gems and boosting synergy for 8 seconds.  
+- **Post-Battle Rewards**  
+  - Gold, resource materials (seeds, wood, ore, blossoms, forging catalysts), hero XP, skill XP.  
+  - Potential forging components for **Arcane Gear Infusion** or **Realm Tier Progression**.  
+  - A “battle summary UI” detailing combos performed, total damage, synergy triggers used.  
+
+---
+
+### 1.5 **Scaling & Feasibility**  
+- **Single-Developer Maintenance**  
+  - Each Region is structured around the same template: 5 Sublocations × ~10–40 nodes.  
+  - Variation is data-based: enemy stats, spawn tables for Corrupted gems, and synergy triggers.  
+- **Data Scripting**  
+  - Use JSON or scriptable objects for each Sublocation’s node layout.  
+  - Mark which nodes are boss fights, elite fights, or resource “farming” nodes.  
+  - Mark gating conditions (e.g., “Require Arcane Bloom District Tier 2 to attempt Node #25”).  
+- **Potential Monetization Spots**  
+  - **Node Skips**: A small premium cost to instantly bypass minion waves.  
+  - **Boss Challenge**: Optional “Double Rewards” if the player spends a small premium token to activate a harder variant of the boss.  
+
+---
+
+### 1.6 **Detailed Numeric Examples & Developer Notes**  
+1. **Example Region & Sublocation**  
+   - **Region 1: Ember Highlands**  
+     - Sublocation 1: Ember Outskirts (10 nodes)  
+     - Sublocation 2: Blistering Canyon (12 nodes)  
+     - Sublocation 3: Charred Grove (15 nodes)  
+     - Sublocation 4: Fiery Summit (15 nodes)  
+     - Sublocation 5: Lavaheart Keep (Boss Lair, 20 nodes)  
+   - Typical minion stats here might be 60–80 HP, 3–4 DPS. Boss ~600 HP, 8 DPS, spawns +5% Corrupted gems.  
+   - Clearing 70% of Sublocation 5’s nodes unlocks the boss.  
+2. **Node Respawn Timer**  
+   - 8 hours from clearing. E.g., if the player kills the boss at 10 AM, that node’s minions reappear at 6 PM, with some random changes in gem distribution.  
+   - The boss remains “conquered” but can be re-challenged in a “Hard Mode” after the entire region is completed or reset.  
+3. **Teleport Unlock Condition**  
+   - If a player clears 100% of Charred Grove, they gain a teleport circle letting them skip Ember Outskirts and Blistering Canyon entirely when returning to fight in Sublocation 3 or beyond.  
+
+---
+
+#### **Rationale for Maximizing Engagement & Revenue**  
+- This multi-region layout keeps the game map feeling expansive while controlling dev workload via repeated design templates.  
+- Inter-node gating with **Realm Tier Progression** ensures that players must return to Oakrest to invest in District upgrades or attempt forging with **Arcane Gear Infusion** to remain powerful enough for deeper nodes.  
+- The combination of puzzle skill, resource management, and gating fosters daily logins, driving potential premium purchases (resources, skip tokens, forging success boosters).  
+
+---
+
+### 1.7 **Section 1 Conclusion**  
+The multi-region structure, anchored by a single town hub (Oakrest) and subdivided into manageable puzzle-combat sublocations, provides a robust yet feasible world layout. Data-driven design allows a single developer to maintain or expand content rapidly. The combination of standard node clearance, boss gating, and integration with **Realm Tier Progression** sets a compelling foundation for the puzzle-RPG’s overarching structure.  
+
+
+> **End of Section 1**. *(Awaiting your “next” prompt for Section 2.)*
+
+
+---
+
+**SECTION 2: PUZZLE-COMBAT MECHANICS & ADVANCED BOARD LOGIC**  
+*(Ultra-Granular Developer-Level Detail)*  
+
+---
+
+### 2.1 **Real-Time Puzzle Board Foundations**  
+1. **Grid Size & Layout**  
+   - An **8×8** grid is used for all standard encounters. Each cell can contain one gem of six possible types (Ember, Cascade, Terra, Zephyr, Radiant, or Corrupted).  
+   - **Adaptive Difficulty Tables** can modify gem distribution based on the node or region, ensuring deeper regions or boss nodes have increased Corrupted gem spawn rates.  
+
+2. **Initial Gem Seeding**  
+   - At the start of combat, the board randomly populates with elemental gems (Ember/Cascade/Terra/Zephyr) at an approximate distribution of 80–90% total.  
+   - **Radiant** gems appear at a small base chance (2–3%).  
+   - **Corrupted** gems can appear at 5–10% chance in standard nodes, but can go up to 15–20% in advanced or boss nodes.  
+   - If the board spawns a match of 3 or more gems at the very start, those gems are cleared automatically before combat begins, to avoid freebies.  
+
+3. **Single-Developer Feasibility**  
+   - The board logic is entirely data-driven. A single script can handle gem spawning, matching detection, combo calculations, and time-based evolutions.  
+   - Each region or boss can use a reference to a data table specifying the target gem spawn rates, Corrupted gem evolution time, and puzzle speed multipliers.  
+
+---
+
+### 2.2 **Time-Based Mechanics & HP Drain**  
+1. **HP Drain Over Time**  
+   - **Casual Mode**: -1 HP every 5 seconds.  
+   - **Standard Mode**: -1 HP every 3 seconds.  
+   - **Hardcore Mode**: -1 HP every 1 second.  
+   - Each puzzle node can override these values if needed (e.g., boss nodes might enforce Standard or Hardcore).  
+2. **Enemy Damage Tick**  
+   - Certain minions or bosses inflict DPS separate from HP drain. For example, a minion might deal 1–4 DPS, while a boss deals 5–10 DPS. These ticks occur every second or in discrete intervals (e.g., every 2 seconds) based on node data.  
+   - Some advanced bosses also apply a short spike in damage whenever a Corrupted gem evolves to Phase 2 or 3.  
+3. **Time-Acceleration Factors**  
+   - Certain synergy effects (e.g., a Zephyr 5-gem match) can speed up or slow down the overall board rotation but do not alter the HP drain clock.  
+   - Developer can add special node modifiers (like “Time Warp Node”) that speed up or slow down the entire board by 10–20%. This is toggled via a data flag.  
+
+---
+
+### 2.3 **Matching & Combo Meter**  
+1. **Basic Matching Rule**  
+   - Swapping adjacent gems forms a match if 3 or more identical elemental gems (or Radiant) are lined up horizontally or vertically.  
+   - Radiant gems can pair with any color, significantly increasing the likelihood of large matches.  
+2. **Combo Meter Increments**  
+   - +1 to the combo meter per standard gem matched.  
+   - **Radiant** gems add +2 each (1 normal +1 bonus).  
+   - Chain reactions from falling gems can increase the meter further within the same move.  
+   - **Example**: A single move that triggers three separate matches in a cascade might yield (3 + 4 + 4) = 11 matched gems. If 2 of those are Radiant, the final contribution is 11 base + 2 (bonus) = 13 to the combo meter.  
+3. **Phantasm Surge Threshold**  
+   - The combo meter caps at 50 in normal puzzle-combat. Once it hits 50 within a single chain or wave of matches, **Phantasm Surge** triggers.  
+   - The meter resets to 0 after the Surge ends (8-second duration), though new combos can build toward triggering another Surge if the match volume is large enough.  
+
+---
+
+### 2.4 **Phantasm Surge (Combo ≥ 50)**  
+1. **Activation & Duration**  
+   - Triggers automatically upon reaching 50 combo points.  
+   - Lasts **8 seconds** by default, but can be extended by multi-element synergy (up to +3 seconds if the party is 4 distinct elements).  
+2. **Immediate Effects**  
+   - Removes **2 Corrupted Gems** from the board instantly.  
+   - Boosts all damage by **+10%** during the Surge window.  
+   - Any **5+ gem match** within this window spawns **1 new Radiant gem** at a random empty cell on the board.  
+3. **Surge End**  
+   - The combo meter resets to 0. The normal board state resumes. If the player manages another 50 points in quick succession, a second Surge can occur.  
+
+**Developer Note**: The presence of Radiant gems (especially if gear or synergy buffs raise Radiant spawn rates) can create a near back-to-back Surge chain. This is intentional for high-level combos and fosters excitement during boss fights.
+
+---
+
+### 2.5 **Corrupted Gem Evolution & Removal**  
+1. **Phases**  
+   - **Phase 1**: Harmless. Remains for 5 seconds before evolving to Phase 2.  
+   - **Phase 2**: Deals minor area damage or a set DPS spike if left another 5 seconds. Then evolves to Phase 3.  
+   - **Phase 3**: Explodes, locking adjacent gems for **3 seconds** and dealing a larger HP hit (e.g., 5 HP or more). The Corrupted gem then vanishes.  
+2. **Removal Methods**  
+   - Corrupted gems cannot be matched away by standard element combos.  
+   - **Phantasm Surge** automatically removes 2 per activation.  
+   - Certain gear from **Arcane Gear Infusion** or synergy unlocks via **Realm Tier Progression** (e.g., T3 in Seed Grove or T3 in Miner’s Gulch) can revert or remove Corrupted gems if a 4+ match or 5-gem match is made in the board.  
+3. **Developer Tuning**  
+   - Each node or boss can define how quickly Corrupted gems evolve (e.g., 4 seconds or 6 seconds instead of 5).  
+   - Corrupted gem spawn rate can scale from ~5% in early game to ~20% in late-game or hard-mode nodes.  
+
+---
+
+### 2.6 **Board Rotation & Arcane Flow Transitions**  
+1. **Periodic Board Rotation**  
+   - Every **9 seconds** in standard puzzle fights (if no active matches or cascades), the board rotates 90°.  
+   - Rotation can be sped up or delayed by certain synergy effects, especially from Zephyr gear or hero abilities.  
+   - Rotations may cause new matches or separate existing ones, drastically changing the board state.  
+2. **Arcane Flow Transitions** (During Combat Waves)  
+   - For multi-wave encounters, an **Arcane Flow Transition** can play between waves (1–2 seconds) while the board remains partially locked. The next wave’s minions/boss appear at the edge of the screen or as an overlay.  
+   - Visually consistent swirling energy ties thematically to the Arcane aspects of the game.  
+3. **Performance & Implementation**  
+   - This effect is typically a shader-based swirl or fade-out/fade-in. The puzzle grid itself can remain in memory while the swirl effect is shown on top.  
+   - Minimizes load times and fosters visual continuity.  
+
+---
+
+### 2.7 **Damage Calculation & Elemental Synergy**  
+1. **Base Damage Formula**  
+   \[
+   \text{Damage} = 
+   \Bigl(\text{BaseAttack} + \text{GearBonus} + \text{RoleBonus}\Bigr)
+   \times \Bigl(\text{GemMatchFactor} + \text{ElementBoost} + \text{ComboChainFactor}\Bigr)
+   - \text{EnemyDefense}
+   \]  
+   - **BaseAttack**: Determined by hero stats (average or sum of party?).  
+   - **GearBonus**: Items forged via **Arcane Gear Infusion** can add a flat or percentage bonus.  
+   - **RoleBonus**: If roles are balanced (Attacker, Defender, Support, Utility), or if the hero’s role matches the gem color.  
+   - **GemMatchFactor**: +1.0 for 3-gem match, +1.5 for 4, +2.0 for 5, and +0.5 for each gem above 5.  
+   - **ElementBoost**: +0.2 per hero in the party of that element. (If 2 Ember heroes match Ember gems, +0.4, etc.)  
+   - **ComboChainFactor**: +0.1 per chain within the same move.  
+2. **Mono vs Multi-Element Party**  
+   - **Mono**: If all 4 heroes share the same element, add +10% to that element’s gem-based damage.  
+   - **Multi**: 3 distinct elements +2 seconds to Phantasm Surge, 4 distinct +3 seconds total.  
+3. **Radiant Modifiers**  
+   - Radiant gems are wildcard for color matching, but use the damage factor of the majority color in that match. If the match is purely Radiant (rare scenario), treat it as a neutral element dealing standard damage.  
+
+---
+
+### 2.8 **Reward Drops & Resource Flow**  
+1. **Resource Categories**  
+   - **Gold**: Standard currency. Dropped from minions/bosses, used for realm upgrades or forging fees.  
+   - **Materials**: Seeds, wood, ore, blossoms, forging catalysts, or synergy shards. Tied to **Realm Tier Progression** and used for **Arcane Gear Infusion**.  
+   - **Hero XP**: Directly raises hero levels.  
+   - **Skill XP**: Logging, Mining, Gathering, Combat. Each puzzle victory yields small increments based on node difficulty.  
+2. **Drop Tables**  
+   - Each node references a drop table that might yield 1–2 resource types. Boss nodes offer guaranteed forging mats plus a chance for special gear infusion tokens.  
+   - Developer can easily adjust drop rates globally via data for economy tuning.
+
+---
+
+### 2.9 **Advanced Monetization Opportunities**  
+1. **Boosters**  
+   - Temporary item that increases Radiant gem spawn by +2% for 30 minutes, sold in small premium packs.  
+   - “Corruption Cleanser” that automatically removes 1 Corrupted gem every 10 seconds for one puzzle attempt.  
+2. **Puzzle Time Extenders**  
+   - For Hardcore or timed event nodes, players can buy a +10-second extension if they’re close to winning but run out of HP or time. This must be carefully balanced to avoid pay-to-win backlash.  
+3. **Gem Refresh**  
+   - In certain encounters, a button to reshuffle the board once per puzzle at a small premium cost.  
+
+---
+
+### 2.10 **Section 2 Conclusion**  
+The real-time puzzle-combat system is both accessible and deep, hinging on dynamic mechanics like Corrupted gem evolution, Radiant wildcard bonuses, and a powerful Phantasm Surge. Careful data-driven design lets a single developer balance spawn rates, HP drain speeds, and synergy thresholds on the fly. This fosters an environment ripe for daily engagement, strategic deck-building with elemental synergy, and frequent monetization triggers, all in a cohesive puzzle format.
+
+
+> **End of Section 2**. *(Awaiting your “next” prompt for Section 3.)*
+
+---
+
+**SECTION 3: REALM TIER PROGRESSION & RESOURCE SYSTEMS**  
+*(Ultra-Granular Developer-Level Detail)*  
+
+---
+
+### 3.1 **Overview of Realm Tier Progression**  
+1. **Four Districts**  
+   - **Timberland District** (focus on wood resources, Ember gear cost discounts)  
+   - **Miner’s Gulch** (focus on ore resources, Terra gear cost discounts)  
+   - **Seed Grove** (focus on seed resources, Cascade gear cost discounts)  
+   - **Arcane Bloom** (focus on blossoms, boosting Arcane Gear Infusion success rates)  
+2. **Tier 0 to Tier 4**  
+   - Each District begins at **Tier 0** and can be upgraded to **Tier 4**.  
+   - Upgrading unlocks new daily minigame yields, synergy perks, forging cost reductions, or special puzzle-combat benefits.  
+3. **Unlock Conditions**  
+   - Basic unlock: The player can access Tier 0 of all districts from the start.  
+   - Further tiers require paying resources (seeds, wood, ore, blossoms) plus gold. Some Tiers also require a certain Region completion to limit progression speed in early game.  
+4. **Single-Developer Advantage**  
+   - All Tier data (costs, synergy bonuses, daily yields) is stored in a data table or JSON for easy maintenance.  
+   - Minimal scene changes: Each District is effectively a single environment or UI panel with incremental expansions shown by visual enhancements (e.g., building frames, new decorative elements).
+
+---
+
+### 3.2 **District-Specific Mechanics & Benefits**  
+1. **Timberland District**  
+   - **Tier Cost**: Seeds + gold.  
+   - **Primary Resource**: Wood.  
+   - **Daily Minigame**: “Timberland Swipe”—players drag across the screen to chop logs within a short timer (~10 seconds).  
+   - **Yield at Tier 0**: ~10 wood/day. Each Tier adds +2–5 wood.  
+   - **Synergy Perk**: -2% forging cost for **Ember gear** per Tier. Also influences minor puzzle effects like a small chance (1–2%) to spawn extra Ember gems on match.  
+   - **Major Unlock**: Tier 3 opens the 4th hero slot in puzzle-combat parties.  
+
+2. **Miner’s Gulch**  
+   - **Tier Cost**: Wood + gold.  
+   - **Primary Resource**: Ore.  
+   - **Daily Minigame**: “Miner’s Tap”—players tap on shifting ore deposits for ~10 seconds to collect.  
+   - **Yield at Tier 0**: ~10 ore/day. Each Tier adds +2–5 ore.  
+   - **Synergy Perk**: -2% forging cost for **Terra gear** per Tier. At Tier 3, forging that gear can remove Corrupted gems with a 4-gem Terra match in puzzle-combat.  
+
+3. **Seed Grove**  
+   - **Tier Cost**: Ore + gold.  
+   - **Primary Resource**: Seeds.  
+   - **Daily Minigame**: “Seed Sorting”—players quickly drag seeds into matching color baskets, ~10 seconds.  
+   - **Yield at Tier 0**: ~10 seeds/day. Each Tier adds +2–5 seeds.  
+   - **Synergy Perk**: -2% forging cost for **Cascade gear** per Tier. At Tier 3, a 5-gem Cascade match in puzzle-combat can revert 1 Corrupted gem.  
+
+4. **Arcane Bloom**  
+   - **Tier Cost**: Seeds + wood + ore + gold.  
+   - **Primary Resource**: Blossoms.  
+   - **Daily Minigame**: “Blossom Weave”—a short puzzle where players trace lines between blossoming nodes.  
+   - **Yield at Tier 0**: ~5 blossoms/day. Each Tier adds +1–2 blossoms.  
+   - **Synergy Perk**: +5% success chance for **Arcane Gear Infusion** at Tier 1 and 2, +10–15% at Tier 3.  
+   - **Major Unlock**: Tier 3 yields an additional synergy effect (e.g., +2 Radiant gem spawn chance in puzzle-combat).  
+
+---
+
+### 3.3 **Tier Upgrade Costs & Data Examples**  
+Below is a **sample** cost structure for each District’s Tiers. Final numbers can be adjusted via data for economy balancing.  
+
+| **District** | **T0→T1**               | **T1→T2**               | **T2→T3**               | **T3→T4**                 |
+|--------------|-------------------------|-------------------------|-------------------------|---------------------------|
+| Timberland   | 50 seeds + 200 gold    | 100 seeds + 500 gold    | 200 seeds + 1000 gold   | 400 seeds + 2000 gold     |
+| Miner’s Gulch| 50 wood + 200 gold     | 100 wood + 500 gold     | 200 wood + 1000 gold    | 400 wood + 2000 gold      |
+| Seed Grove   | 50 ore + 200 gold      | 100 ore + 500 gold      | 200 ore + 1000 gold     | 400 ore + 2000 gold       |
+| Arcane Bloom | 25 seeds/wood/ore + 300 gold | 50 seeds/wood/ore + 600 gold | 100 seeds/wood/ore + 1200 gold | 200 seeds/wood/ore + 2500 gold |
+
+- **Tier 3** is typically the biggest milestone, granting a major synergy unlock or gameplay feature (e.g., 4th hero slot, Corrupted gem removal, etc.).  
+- Each Tier can require a small narrative quest or puzzle-combat objective to confirm the upgrade (e.g., “Defeat 10 minions in Ember Highlands to gather the materials needed for Tier 2”).  
+
+---
+
+### 3.4 **Daily Minigames & Off-Line Resource Accumulation**  
+1. **Daily Minigames**  
+   - Each District has a 10–15 second interactive minigame awarding base resources (wood, ore, seeds, blossoms).  
+   - The yield scales with Tier (e.g., +2 wood/ore/seeds or +1 blossom per Tier).  
+   - Some synergy or event boosters can temporarily multiply these yields (like a weekend event granting +25% to daily minigame rewards).  
+2. **Off-Line Production**  
+   - Each District passively generates half of the daily minigame’s base yield per hour, capped at **12 hours** of accumulation.  
+   - Example: If Timberland yields 10 wood/day at Tier 0, the hourly off-line rate is ~5 wood, capping at 60 wood after 12 hours.  
+   - Developer can increase or decrease the cap from 12 to 18 hours if players desire more flexibility.  
+
+---
+
+### 3.5 **Synergy with Puzzle-Combat and Arcane Gear Infusion**  
+1. **Tier-Linked Puzzle Benefits**  
+   - District Tiers can influence certain puzzle-combat elements, such as:  
+     - +1% chance per Tier to spawn a specific elemental gem.  
+     - Tier-based damage bonuses for matching that District’s element (e.g., +2% Ember damage per Timberland Tier).  
+2. **Arcane Gear Infusion Discounts or Boosts**  
+   - District Tiers reduce forging costs/time for gear matching that District’s elemental affinity.  
+   - Arcane Bloom Tiers significantly impact **Arcane Gear Infusion** success rates, encouraging players to push those Tiers for easier forging of powerful gear.  
+3. **Monetization Integration**  
+   - Potential to offer a **Realm Resource Pass** that boosts all daily minigame yields by +30% for 7 days.  
+   - Tier skipping or partial resource pack sales: e.g., “Arcane Bloom Starter Bundle” containing seeds, wood, ore, blossoms to expedite Tier 1 or 2.  
+
+---
+
+### 3.6 **Skill System Overlap**  
+1. **Logging, Mining, Gathering, Combat**  
+   - **Logging**: Affects the output of the Timberland District minigame (+1 wood per skill level).  
+   - **Mining**: Influences the ore yield from Miner’s Gulch, scaling similarly (+1 ore per skill level).  
+   - **Gathering**: Boosts seeds and blossoms from Seed Grove and Arcane Bloom minigames (e.g., +5% yield per skill level).  
+   - **Combat**: Minor synergy with puzzle-combat, such as -1 second to Corrupted gem evolution at certain thresholds or +1% base damage.  
+2. **Level-Up Milestones**  
+   - Reaching skill level 5 or 10 might unlock an advanced district perk, like an extra daily minigame attempt or guaranteed resource chest.  
+   - All skill progression data can be stored in a single JSON table, referencing XP thresholds for each level.  
+
+---
+
+### 3.7 **Resource Balancing & Economy Tuning**  
+1. **Resource Bottlenecks**  
+   - Seeds, wood, and ore feed directly into Tier upgrades and forging costs. Blossoms are essential for advanced **Arcane Gear Infusion**.  
+   - If certain resources become too scarce, live data updates can adjust daily yields, forging fees, or Tier costs to maintain a healthy mid-late game pace.  
+2. **Gold Sink**  
+   - Each Tier upgrade costs a notable amount of gold, ensuring gold remains relevant beyond puzzle-combat drops.  
+   - Additional gold sinks can include upgrading guild features, purchasing small synergy items, or paying for forging attempts.  
+3. **Server-Side Adjustments**  
+   - A single developer can shift resource yields, Tier costs, or synergy bonuses from a central data file.  
+   - Live ops events or expansions can introduce new District Tiers (Tier 5 or beyond) post-launch with minimal friction.  
+
+---
+
+### 3.8 **Section 3 Conclusion**  
+Realm Tier Progression elegantly intertwines with puzzle-combat and **Arcane Gear Infusion** through resource collection, daily minigames, and synergy perks. Each District’s Tier gating is carefully balanced to encourage consistent logins and facilitate a monetization-friendly environment. The result is a self-sustaining system that seamlessly merges daily resource chores, skill leveling, puzzle synergy, and gear forging enhancements, all manageable by a single developer for continuous updates or expansions.
+
+---
+
+> **End of Section 3**. *(Awaiting your “next” prompt for Section 4.)*
+
+**SECTION 4: ARCANE GEAR INFUSION & CRAFTING (WORKSHOP NODE)**  
+*(Ultra-Granular Developer-Level Detail)*  
+
+---
+
+### 4.1 **Core Philosophy of Arcane Gear Infusion**  
+1. **Purpose & Engagement**  
+   - Arcane Gear Infusion is the prime method to craft or upgrade equipment that boosts puzzle-combat performance (damage, Corrupted gem removal, Radiant gem synergy).  
+   - Players must gather resources through **Realm Tier Progression** (seeds, wood, ore, blossoms) and gold to fund the Infusion process.  
+   - This system encourages daily logins, forging puzzle mastery, and strategic resource spending.  
+
+2. **Single-Developer Feasibility**  
+   - The forging mechanic hinges on a small puzzle mini-board plus a data-driven item database.  
+   - All gear stats, infusion success rates, forging timers, and synergy perks can be maintained in a single JSON table.  
+
+---
+
+### 4.2 **Workshop Node & Arcane Flow Transitions**  
+1. **Workshop Entry**  
+   - Located in Oakrest’s “Adventurer’s Haven.”  
+   - Upon entering, an **Arcane Flow Transition** visually swirls the screen, leading to a forging interface.  
+2. **Workshop UI**  
+   - **Gear Selection Panel**: Lists available gear recipes (categorized by element: Ember, Cascade, Terra, Zephyr, Arcane) and rarity (Rare, Epic, Legendary).  
+   - **Resources Required**: Displays seeds, wood, ore, blossoms, and gold needed.  
+   - **Infusion Success Rate**: A real-time percentage bar factoring in Tier perks, skill bonuses, event buffs, or premium passes.  
+   - **Arcane Gear Minigame Launch**: Button to initiate the 4×4 forging puzzle.  
+
+---
+
+### 4.3 **4×4 Forging Puzzle Mechanics**  
+1. **Puzzle Setup**  
+   - A 4×4 grid with a **15-second** timer by default. (Events or forging passes might reduce or increase this time window.)  
+   - The grid spawns gems primarily of the target gear’s element (e.g., Ember) at ~50–60% chance, some Radiant (~5–10%), and a small portion of other elements.  
+   - **No Corrupted gems** appear here unless a special event or challenge forging mode is introduced.  
+
+2. **Matching Goals**  
+   - Players must create as many matches (particularly of the target element) as possible before time runs out.  
+   - Each match of the target element slightly boosts the final **Arcane Gear Infusion** success rate (e.g., +1% per 3-gem match).  
+   - Matching Radiant gems might grant extra forging XP or synergy bonuses for the main puzzle.  
+
+3. **Scoring & Success Rate**  
+   - **Base Success**: ~70% for Rare gear, ~60% for Epic, ~50% for Legendary (can be raised by Arcane Bloom Tiers, forging passes, or good puzzle performance).  
+   - Each successful target-element match in the forging puzzle adds +1% success, up to a maximum cap (e.g., +15%).  
+   - Radiant matches might add +2% each, up to a smaller cap (to avoid overstacking).  
+
+4. **Time’s Up**  
+   - Once 15 seconds pass (or the puzzle is fully matched out), the forging attempt finalizes.  
+   - The UI displays a final success percentage, then the “infusion result” animation plays.  
+
+---
+
+### 4.4 **Gear Families & Special Effects**  
+1. **Ember Gear**  
+   - **Base Bonus**: +15% damage to Ember gem matches.  
+   - **Signature Effect**: A 5-gem Ember match triggers +5 AoE damage to all minions or a mini-boss.  
+   - **Tier Synergy**: Timberland District upgrades reduce Ember gear costs and may add extra Ember gem spawn in puzzle-combat.  
+
+2. **Cascade Gear**  
+   - **Base Bonus**: +15% damage to Cascade gem matches.  
+   - **Signature Effect**: A 5-gem Cascade match reverts 1 Corrupted gem (unlocked at Tier 3 in Seed Grove).  
+   - **Tier Synergy**: Seed Grove Tiers reduce Cascade gear forging cost/time and boost synergy in puzzle-combat.  
+
+3. **Terra Gear**  
+   - **Base Bonus**: +15% damage to Terra gem matches.  
+   - **Signature Effect**: A 4+ gem Terra match removes 1 Corrupted gem (unlocked at Tier 3 in Miner’s Gulch).  
+   - **Tier Synergy**: Miner’s Gulch Tiers reduce Terra gear forging cost/time, plus potential puzzle board perks.  
+
+4. **Zephyr Gear**  
+   - **Base Bonus**: +15% damage to Zephyr gem matches.  
+   - **Signature Effect**: A 5-gem Zephyr match accelerates board rotation speed by +15% for 5 seconds in puzzle-combat.  
+   - **Tier Synergy**: Could tie to sub-systems or a future district if expansions add a Zephyr-based resource.  
+
+5. **Arcane Gear**  
+   - **Base Bonus**: synergy with Radiant gems. Typically grants +2 combo meter or small shield effects upon Radiant matches.  
+   - **Tier Synergy**: Arcane Bloom District Tiers significantly increase infusion success rates for Arcane gear.  
+   - **Possible Advanced Effects**: Summon a mini shield that absorbs 5 damage every 20 seconds, or generate bonus Radiant gems if you form consecutive 4-gem matches.  
+
+---
+
+### 4.5 **Infusion Success & Upgrading Rarities**  
+1. **Rarity Tiers**:  
+   - **Rare**, **Epic**, and **Legendary**.  
+   - Each tier has progressively stronger base stats and synergy effects.  
+
+2. **Base Success Rates** (Example)  
+   - **Crafting Rare**: 70% base.  
+   - **Crafting Epic**: 60% base.  
+   - **Crafting Legendary**: 50% base.  
+   - Adjusted by puzzle performance, Arcane Bloom Tier bonuses, forging passes, daily events, or hero skill synergy.  
+
+3. **Upgrading (Transmutation)**  
+   - **Rare → Epic**: Requires 30 forging XP + 30 blossoms + forging puzzle success check.  
+   - **Epic → Legendary**: Requires 60 forging XP + 50 blossoms + forging puzzle success check.  
+   - Each forging attempt grants +5 forging XP.  
+
+4. **Failure State**  
+   - If infusion fails, you get a “normal” version of that gear tier without the special synergy effect, or you keep the old tier if you were upgrading (depending on design choice).  
+   - Players can re-attempt if they gather enough resources or wait for improved forging buffs (events or Tier upgrades).  
+
+---
+
+### 4.6 **Forging Costs, Timers & Monetization**  
+1. **Resource & Gold Requirements**  
+   - Each piece of gear requires a certain combination of seeds, wood, ore, blossoms, plus gold.  
+   - Example: **Rare Ember Sword** might cost 50 seeds + 200 gold, **Epic Ember Sword** might cost 100 seeds + 500 gold, etc.  
+
+2. **Forging Attempts Cooldown**  
+   - Optional system: A short cooldown (5–10 minutes) after each forging attempt.  
+   - Could be bypassed by spending premium currency or skip tokens.  
+
+3. **Forge Pass**  
+   - A **7-day** micro-pass that grants:  
+     - +10–15% Arcane Gear Infusion success.  
+     - -5s to forging puzzle time (from 15s to 10s).  
+     - Potential synergy with Arcane Bloom Tiers.  
+
+4. **Live Ops Events**  
+   - **“Heatwave Weekend”** for Ember gear or **“Arcane Surge Week”** for Arcane gear offering +10% success rate.  
+   - Cosmetic tie-ins or new gear families can be introduced to spike purchases.  
+
+---
+
+### 4.7 **Integrating Skills & Mastery**  
+1. **Forging XP & Mastery**  
+   - Each successful or failed forging attempt yields forging XP used for certain Mastery perks.  
+   - Might cross over with the player’s **Gathering** or **Combat** skill if forging results in special synergy items.  
+2. **Mastery Tree Unlocks**  
+   - Example: a node in the Offensive Mastery line could add +2% forging success for gear of the hero’s main element.  
+
+---
+
+### 4.8 **Section 4 Conclusion**  
+Arcane Gear Infusion is a pivotal system tying the resource-collecting gameplay loop with puzzle skill. The 4×4 forging mini-puzzle, success rates modifiable by daily events and Tier progression, and the variety of elemental gear families ensure an addictive chase for optimal builds. This structure also creates ideal monetization touchpoints (forge passes, skip tokens, event-limited gear) while maintaining feasible maintenance for a single developer, thanks to data-driven gear recipes and forging logic.
+
+---
+
+> **End of Section 4**. *(Awaiting your “next” prompt for Section 5.)*
+
+**SECTION 5: HERO COLLECTION, GACHA, MASTERIES & PARTY SETUP**  
+*(Ultra-Granular Developer-Level Detail)*  
+
+---
+
+### 5.1 **Hero Summoning and Rarities**  
+1. **Gacha Mechanics**  
+   - **Summoning Banners**: Rotating feature banners every 2 weeks, showcasing specific heroes with boosted rates.  
+   - **Currency**: Each pull costs **20 premium gems** for a single, or **180 premium gems** for a 10-pull (10% discount).  
+   - **Base Star Rates** (example baseline; can be tuned for balance):  
+     - 1★ = 65%  
+     - 2★ = 23%  
+     - 3★ = 10%  
+     - 4★ = 2%  
+   - **Pity Counter**:  
+     - Guaranteed 3★ every **10** consecutive pulls without one.  
+     - Guaranteed 4★ every **40** consecutive pulls without one.  
+   - **Summon Animation**: Incorporates an **Arcane Flow Transition** swirl effect for dramatic reveals, layered with **Adaptive Audio Layers** that ramp up tension as the animation nears completion.
+
+2. **Single-Developer Implementation**  
+   - All hero data (stats, element, role, star rating) is stored in a **JSON** or scriptable object database.  
+   - Each banner references the same hero pool but can toggle rate-ups for certain heroes.  
+   - Pity counters are tracked per banner type or shared across all banners, depending on design choice.
+
+3. **Potential Monetization Hooks**  
+   - **Premium Gem Packs** sold in various price tiers (e.g., \$4.99 for 300 gems, \$9.99 for 650 gems, etc.).  
+   - **Limited-Time “Guaranteed 3★ or 4★ Ticket Bundles”** that bundle resources or forging passes for synergy with puzzle-combat progression.
+
+---
+
+### 5.2 **Hero Leveling & Ascension**  
+1. **Hero Levels**  
+   - Each hero has a level cap tied to their star rating (e.g., 1★ max level = 20, 2★ = 30, 3★ = 40, 4★ = 50).  
+   - Leveling requires **Hero XP**, earned from puzzle-combat victories, daily tasks, or quest rewards.  
+   - **XP per Level** can scale exponentially (e.g., 100 XP at low levels, up to 1,000+ XP near max level).  
+
+2. **Ascension System**  
+   - Once a hero reaches max level for their current star rating, the player can “Ascend” them to unlock higher level caps or stat boosts.  
+   - Ascension typically requires specific materials or a second copy of the hero (for 2★–4★). Alternatively, special “Ascension Shards” can be used to bypass duplicates.  
+   - **Realm Tier Progression** can unlock advanced Ascension items in daily minigames or sub-boss drops.  
+
+3. **Balance & Maintenance**  
+   - Keep Ascension material requirements or duplicate needs clearly indicated in the hero UI.  
+   - Monitor data to ensure players can feasibly ascend key heroes without feeling an extreme paywall.
+
+---
+
+### 5.3 **Hero Roles & Elemental Synergy**  
+1. **Roles**  
+   - **Attacker**: Prioritizes offense, higher BaseAttack, synergy with big gem matches.  
+   - **Defender**: Higher BaseDefense, synergy with shielding or HP drain reduction.  
+   - **Support**: Often grants healing or buffing synergy, e.g., extends **Phantasm Surge** or reduces Corrupted gem spawn timers.  
+   - **Utility**: Special niche effects (e.g., board rotation manipulation, extra Radiant gem spawn, forging bonuses).  
+
+2. **Elements**  
+   - **Ember, Cascade, Terra, Zephyr,** and rare **Arcane** heroes (Arcane as extremely limited, possibly 3★–4★ only).  
+   - Mono-element parties gain +10% damage for that color’s gem matches.  
+   - Multi-element (3 distinct elements) extends **Phantasm Surge** by +2 seconds, 4 distinct by +3 seconds.  
+
+3. **Leader Skills**  
+   - Each hero has a potential **Leader Skill**, active only if that hero is designated “Leader” in the party setup.  
+   - Examples: “+5% Ember gem spawn,” “-10% enemy DPS,” or “+3 Radiant gem spawn chance once per wave.”  
+
+---
+
+### 5.4 **Hero Mastery Trees**  
+1. **Three Branches**:  
+   - **Offensive Mastery**: Increases damage, synergy combos, or critical hit chance if applicable.  
+   - **Defensive Mastery**: Reduces HP drain, mitigates damage from minions/bosses, or slows Corrupted gem evolution.  
+   - **Support Mastery**: Boosts forging synergy, daily minigame yields, or party-wide healing/shielding.  
+
+2. **Mastery Points**  
+   - Earned from forging completions, puzzle kills, or daily/weekly tasks.  
+   - Typically each hero has 10–15 mastery nodes, with costs ranging from 1–3 mastery points per node.  
+
+3. **Unlock Requirements**  
+   - Some mastery nodes might require the hero to be 2★ or higher, or to have completed a specific sublocation quest.  
+   - This ensures progression is layered across puzzle-combat, forging, and realm upgrading.
+
+---
+
+### 5.5 **Party Composition & Synergy Bonuses**  
+1. **Party Size**  
+   - **Up to 3 Heroes** initially; the 4th slot unlocks at Tier 3 in the **Timberland District**.  
+   - A party of 4 can significantly boost synergy combos and puzzle survival, creating a strong incentive to progress in that District.  
+2. **Role Synergy**  
+   - 1 Attacker + 1 Defender + 1 Support + 1 Utility → +5% synergy combos in puzzle-combat.  
+   - Variations (2 Defenders, 2 Attackers, etc.) might unlock other synergy buffs if desired, stored in data for easy expansion.  
+3. **Elemental Synergy**  
+   - **Mono**: +10% to matching that element’s gems.  
+   - **Multi**: +2 or +3 seconds to **Phantasm Surge** duration.  
+
+4. **Loadout Management**  
+   - Each hero can equip up to 1–2 gear pieces (main hand, off-hand) plus potential accessories, all crafted via **Arcane Gear Infusion**.  
+   - The game can prompt recommended synergy loadouts if it detects a strong gear-hero-element match.
+
+---
+
+### 5.6 **Guest Hero Summon Mechanic**  
+1. **Borrowing System**  
+   - Players can borrow a friend’s hero as a **Guest Hero Summon** to serve as a pseudo-5th slot in puzzle-combat.  
+   - By default, the cameo hero has ~50% of its full stats. If its element matches the party’s main synergy color, the cameo hero retains ~70% stats instead.  
+2. **Daily/Weekly Limits**  
+   - 1–2 Guest Hero Summons per day, or a weekly cap of ~10 uses.  
+   - Potential to purchase extra Guest Summon passes with premium currency.  
+3. **Progression Benefits**  
+   - Helps newer players tackle advanced nodes earlier.  
+   - Encourages social connections, fosters guild synergy, and can drive revenue if players rely heavily on cameo heroes for tough content.
+
+---
+
+### 5.7 **Hero Trials & Quests**  
+1. **Hero Trial Nodes**  
+   - Short 2–3 node arcs unlocked after acquiring a 3★+ hero.  
+   - Each trial focuses on that hero’s synergy (e.g., forcing the player to use that hero in the puzzle-combat party).  
+   - Rewards might include forging materials, mastery points, or even “costume tokens” for that hero.  
+2. **Narrative Hooks**  
+   - Trials can reveal backstory or side arcs for each hero.  
+   - Encourages rotation of multiple heroes to unlock new gear synergy.  
+
+---
+
+### 5.8 **Adaptive Audio Layers & Hero Themes**  
+1. **Audio Integration**  
+   - Summoning animations can escalate from a calm layer to a dramatic chord as the star rating is revealed.  
+   - Puzzle-combat with a hero leader might add a subtle element-based music layer (e.g., sizzling embers for Ember heroes).  
+2. **Arcane Flow Transitions**  
+   - The gacha reveal uses swirl-like transitions to highlight big star pulls.  
+   - Hero Trial nodes can have unique swirl color palettes matching the hero’s element.
+
+---
+
+### 5.9 **Numeric Examples & Balancing Notes**  
+- **XP Requirements**  
+  - 1★ Hero: level cap 20, total XP needed ~5,000.  
+  - 2★ Hero: level cap 30, total XP needed ~15,000.  
+  - 3★ Hero: level cap 40, total XP needed ~40,000.  
+  - 4★ Hero: level cap 50, total XP needed ~100,000.  
+- **Mastery Point Gain**  
+  - +1 MP for every 10 forging completions, +1 for every 20 puzzle-combat node clears, etc. Data can be adjusted server-side.  
+- **Summon Probability Adjustments**  
+  - Limited-time banners might raise a specific 4★ hero’s rate from 2% to 3%, effectively a 50% rate-up among 4★ pulls.  
+
+---
+
+### 5.10 **Section 5 Conclusion**  
+The hero system—spanning summoning, leveling, mastery trees, and synergy-based party building—is a critical pillar of the puzzle-RPG design. By layering multi-element, role-based synergy, **Guest Hero Summon** features, and star-based progression, the game ensures a long-term collector’s loop. Coupled with potent gear from **Arcane Gear Infusion** and advanced synergy from **Realm Tier Progression**, heroes become central to both monetization and gameplay depth. This approach provides endless potential for expansions, new banners, live ops events, and mastery updates, all managed by a single developer via data-driven structures.
+
+---
+
+> **End of Section 5**. *(Awaiting your “next” prompt for Section 6.)*
+
+**SECTION 6: PHANTASM SURGE & HIGH-COMBO MECHANICS**  
+*(Ultra-Granular Developer-Level Detail)*  
+
+---
+
+### 6.1 **Phantasm Surge Fundamentals**  
+1. **Trigger Condition**  
+   - The player’s **combo meter** reaches **50** within a single cascade or turn in puzzle-combat.  
+   - Multiple match chains can contribute to hitting 50, but it must occur in the same “move cycle” (i.e., no break in combo accumulation).  
+
+2. **Immediate Effects**  
+   - **Phantasm Surge** initiates automatically.  
+   - Removes **2 Corrupted Gems** from the board instantly, prioritizing the most evolved ones (Phase 2 or Phase 3 first).  
+   - Activates a **+10% damage** bonus for the entire party during the Surge window.  
+
+3. **Duration & Extensions**  
+   - **Base Duration**: **8 seconds**.  
+   - **Multi-Element Bonus**: If the party has 3 distinct elements, add **+2** seconds. If 4 distinct, add **+3** seconds total.  
+   - **Gear Influences**: Certain **Arcane Gear Infusion** items (especially for Radiant or unique synergy gear) may extend Surge by an additional 1–2 seconds or increase the damage bonus.  
+
+4. **Board Spawns During Surge**  
+   - Any **5+ gem match** automatically spawns **1 Radiant gem** onto a random empty cell. This effect can chain multiple times if multiple 5+ matches occur.  
+   - Radiant gems generated this way can accelerate combos even further, potentially enabling a second Surge after the first ends if the matches remain large.  
+
+5. **Surge End**  
+   - After time expires, the **combo meter resets to 0**.  
+   - Any partial combos accrued during Surge do not carry over; the player must build back up to 50 again for a second Surge.  
+
+---
+
+### 6.2 **Combo Meter Mechanics Revisited**  
+1. **Combo Meter Increments**  
+   - +1 per standard matched gem, +2 per Radiant gem in that match.  
+   - If multiple chains occur in the same move, each chain’s matched gems contribute cumulatively to the meter.  
+2. **Overflow Handling**  
+   - Once the meter hits 50, any excess is ignored for that Surge trigger. The reset occurs only after Surge completion.  
+3. **Chain Reaction Example**  
+   - Player swaps gems, creating a 3-gem Terra match (3 points), which triggers a drop that forms a 4-gem Ember match (4 points), then a 5-gem Radiant/Ember mix (count 5 + any Radiants).  
+   - If the total from these three successive matches hits 50, the Surge triggers immediately.  
+
+---
+
+### 6.3 **Synergy with Party Elements & Roles**  
+1. **Mono-Element Surge Potential**  
+   - If a party is all Ember, each Ember match deals +10% damage inherently. Large Ember combos can accumulate the combo meter quickly.  
+   - Encourages focusing on a single color for an explosive Surge.  
+2. **Multi-Element Surge Extension**  
+   - 3 distinct elements = +2s Surge duration, 4 distinct = +3s.  
+   - This provides more time to leverage the +10% damage bonus or spawn multiple Radiant gems.  
+3. **Role Implications**  
+   - A party featuring Support or Utility heroes may have unique abilities to slow Corrupted gem evolution or generate bonus Radiant gems. This synergy can help build combos faster.  
+   - Attacker roles typically have higher base damage, making the Surge’s +10% multiplier even more potent.  
+
+---
+
+### 6.4 **Corrupted Gem Interaction**  
+1. **Removal Priority**  
+   - At Surge activation, the 2 most advanced Corrupted gems are removed first (Phase 3 > Phase 2 > Phase 1).  
+   - If fewer than 2 Corrupted gems exist, the Surge simply removes those that do exist.  
+2. **Gear-Enhanced Surge**  
+   - Some **Arcane Gear** might remove an additional Corrupted gem or transform them into Radiant gems upon Surge.  
+   - This can drastically reduce hazard pressure in tough boss nodes where Corrupted gem spawn is high.  
+
+---
+
+### 6.5 **Surge Strategy & Advanced Play**  
+1. **Planned Overshoot**  
+   - Skilled players might match smaller combos initially, lining up a massive board for a final big chain that rockets the meter past 50. This yields more immediate Radiant gem spawns during the Surge.  
+2. **Staggered Usage**  
+   - In multi-wave fights, a player might strategically hold off triggering Surge if a wave is nearly over, then aim to start the next wave with a fresh Surge.  
+3. **Event or Live Ops Boosts**  
+   - Certain weekend events or synergy buffs might reduce the Surge threshold from 50 to 40, or increase the damage bonus from +10% to +15%.  
+   - Timed events encouraging high-combo play can be an effective engagement driver.
+
+---
+
+### 6.6 **Adaptive Audio Layers & Phantasm Surge**  
+1. **Audio Triggers**  
+   - The moment Surge triggers, a **layered “Surge” track** fades in, intensifying the puzzle BGM.  
+   - If HP is low (<20%), the tension track merges, creating a multi-layer audio scenario (base track + Surge track + tension track).  
+2. **Arcane Flow Visual Overlays**  
+   - A swirling energy overlay can appear on the puzzle board for the duration of the Surge, possibly tinted to the party’s main element or a Radiant prismatic effect.  
+3. **Implementation**  
+   - Simple state machine in code: if `surgeActive = true`, crossfade the audio mixer to the Surge layer. Once Surge ends, revert.  
+
+---
+
+### 6.7 **Numeric Examples & Tuning**  
+1. **Base Surge Duration**: 8 seconds (can be +2s or +3s from multi-element synergy).  
+2. **Damage Bonus**: +10% (some gear or events can raise it to +15–20%).  
+3. **Corrupted Gem Removal**: Exactly 2 at activation. If fewer than 2 exist, remove them all.  
+4. **Radiant Spawn on 5+ Matches**: Typically spawns 1 Radiant gem per 5-gem match or bigger. Gear or mastery nodes might allow multiple Radiants if the match is especially large (e.g., 7+ gems).  
+
+---
+
+### 6.8 **Monetization & Engagement Hooks**  
+1. **Surge-Oriented Gear**  
+   - “Phantasm-Linked Amulet” that extends Surge by +1 second, or “Surge’s Wrath Blade” that doubles the Radiant gem spawn from 5+ matches during Surge.  
+   - Tied to advanced forging (Legendary items) that require hefty resources.  
+2. **Surge Quests & Leaderboards**  
+   - Daily or weekly quests like “Activate Phantasm Surge 10 times” or “Generate 20 Radiant gems during a single Surge.”  
+   - Weekly leaderboard events tracking total Surges triggered with special cosmetic prizes.  
+
+---
+
+### 6.9 **Possible Future Expansions**  
+1. **Multiple Surge Thresholds**  
+   - A late-game feature might allow a second-level Surge at combo ≥ 100, providing an even stronger effect or removing 4 Corrupted gems.  
+   - Balanced carefully to avoid overshadowing the standard Surge.  
+2. **Surge Fusion**  
+   - If two different synergy triggers coincide (e.g., gear effect that removes Corrupted gems + Surge removal), the game can produce special effects (like creating a Radiant “bomb” gem).  
+
+---
+
+### 6.10 **Section 6 Conclusion**  
+Phantasm Surge is a defining puzzle-combat mechanic, rewarding high combo play with a powerful board-clearing effect, heightened damage, and Radiant gem spawns. Its interplay with multi-element synergy, role balance, and Corrupted gem removal encourages players to craft specific gear, hone puzzle skills, and optimize party composition. This creates a deep, satisfying feedback loop that elevates the puzzle layer beyond a standard match-3, serving as a crucial hook for both engagement and monetization.
+
+---
+
+> **End of Section 6**. *(Awaiting your “next” prompt for Section 7.)*
+
+**SECTION 7: GUILD & CO-OP SYSTEMS (TAVERN NODE)**  
+*(Ultra-Granular Developer-Level Detail)*  
+
+---
+
+### 7.1 **Guild Formation and Basic Structure**  
+1. **Guild Unlock Criteria**  
+   - Players can create or join a guild after reaching **Region 1 completion** (70% node clearance) or achieving **Tier 1** in any **Realm Tier Progression** district. This ensures they have basic familiarity with the game’s core loops.  
+   - Guild creation cost: **500 gold** + **50 premium gems** (or a one-time quest item).  
+   - Single-Developer Advantage: All guild data (members, guild name, crest, rank) is stored on the server with minimal real-time netcode.  
+
+2. **Member Capacity and Ranks**  
+   - **Default Max Members**: 30. Can be increased to 40 or 50 via guild upgrades or expansions if needed.  
+   - **Ranks**: Leader, Officer, Member. Officers can accept or reject new applications and help manage guild settings.  
+
+3. **Guild Tavern Node**  
+   - Found in the **Town Hub (Adventurer’s Haven)**.  
+   - On entering, an **Arcane Flow Transition** animation reveals the guild interface.  
+   - This interface includes guild chat, roster, resource donation panels, and the guild boss board.  
+
+---
+
+### 7.2 **Resource Gifting & Guild Grove**  
+1. **Daily Resource Gifting**  
+   - Each member can **send up to 50** resources (wood, ore, seeds, blossoms, gold) daily.  
+   - Each member can **receive up to 100** resources daily in total.  
+   - Sending a resource gives **+1 guild contribution point** per unit.  
+   - Developer Tuning: These values are adjustable in data tables to prevent abuse or to stimulate co-op.  
+
+2. **Guild Grove**  
+   - A shared “mini-district” that benefits every member.  
+   - **Upgrading the Guild Grove** costs an aggregate of resources from the guild bank. Each donated item adds to a “Guild Grove XP” meter.  
+   - **Tier Levels**:  
+     - Tier 1 → +5% success for **Arcane Gear Infusion**.  
+     - Tier 2 → +10% daily resource yields for every member’s minigame.  
+     - Tier 3 → +3% improved gacha rates for 3★+ heroes, or +5% synergy combos in puzzle-combat (server-toggled choice).  
+   - Each Tier might require **1,000** total resources per guild member or a flat 30,000 donation threshold for a 30-member guild.  
+
+3. **Weekly Guild Contribution Milestone**  
+   - If the guild collectively donates **X** resources in a 7-day period, they activate a **48-hour forging or puzzle-combat buff** (e.g., +5% Radiant gem spawn).  
+   - Fosters continuous group effort and consistent daily logins.
+
+---
+
+### 7.3 **Guild Boss Battles (Asynchronous)**  
+1. **Core Mechanic**  
+   - A large-scale boss with **10,000–50,000+ HP**, depending on guild size and boss difficulty.  
+   - Each member fights the boss individually in a puzzle-combat scenario, dealing as much damage as possible before running out of HP or time.  
+   - The boss’s global HP pool decreases cumulatively as members contribute damage.  
+
+2. **Boss Scaling & Phases**  
+   - **Phase Triggers** at 75%, 50%, and 25% HP. Each phase might increase **Corrupted gem** spawn rates or impose a new hazard (like -1 HP drain speed upgrade).  
+   - High-level guild bosses may have up to **5 phases**, each adding a twist (e.g., +10% enemy DPS, forced board rotation every 6 seconds instead of 9).  
+
+3. **Rewards & Distribution**  
+   - **Base Rewards**: gold, forging mats (seeds, wood, ore, blossoms), skill XP.  
+   - **Phase Clear Bonuses**: unlocking extra forging tokens or synergy shards.  
+   - **Top Damage Contributors** (Top 3 or Top 5): extra Arcane Bloom blossoms, special cosmetic frames, or guild titles.  
+   - After the boss is fully defeated, a **24-hour victory window** awards the final loot to all participants.  
+
+4. **Attempt Limits & Monetization**  
+   - Each member has **1 free attempt** daily; extra attempts can be bought with **premium gems** or earned through guild events.  
+   - A “Guild Raid Pass” might grant unlimited attempts for a weekend event, encouraging more spending from active guild players.  
+
+---
+
+### 7.4 **Guild Missions & Co-Op Quests**  
+1. **Weekly Guild Missions**  
+   - E.g., “Craft 30 Rare Ember items collectively,” or “Accumulate 500 seeds in total.”  
+   - Completing yields a short guild-wide buff (like +5% forging success for 48 hours) plus individual rewards (hero XP, synergy tokens).  
+
+2. **Co-Op Quests**  
+   - Special limited-time quest arcs that require multiple members to complete parallel tasks (like clearing certain puzzle nodes or forging advanced gear).  
+   - Once enough members complete the tasks, a unique reward is unlocked for everyone who participated.  
+   - Single-Developer Feasibility: The quest triggers and progress tracking can be stored on the server with minimal code overhead.
+
+---
+
+### 7.5 **Guest Hero Summon Integration**  
+1. **Guild-Focused Guest Hero Summon**  
+   - Guildmates can set one hero as their “loan hero.”  
+   - Borrowing a guildmate’s hero counts as a **Guest Hero Summon** for puzzle-combat, at ~50–70% stats.  
+   - Each day, a user can utilize up to **2** different guild heroes.  
+2. **Friend vs. Guild Summons**  
+   - Distinguish between friend list summons and guild summons. Possibly remove the daily limit for guild summons if players are heavily co-op focused.  
+   - Monetization angle: a “Guest Summon Pass” could allow unlimited usage of a specific guildmate’s hero for 7 days.
+
+---
+
+### 7.6 **Guild vs. Guild Competitions**  
+1. **Resource Collection Race**  
+   - Over 3–5 days, track which guild can gather the most wood/ore/seeds. Reward top guilds with forging tokens or synergy boosters.  
+2. **Boss Time Trials**  
+   - Global event where each guild tries to beat a special boss in the fewest cumulative attempts or shortest real-time.  
+   - The top 1%, 5%, and 10% guilds earn tiered rewards (cosmetics, forging passes, synergy items).  
+3. **Asynchronous Implementation**  
+   - All data is tallied on the server. Minimal real-time netcode needed. Perfect for a single developer to maintain.  
+
+---
+
+### 7.7 **Guild Chat & Social Features**  
+1. **In-Game Chat Integration**  
+   - Basic text chat with optional pinned announcements (for guild missions or boss attempts).  
+   - Might embed short emojis or gem-themed stickers.  
+2. **Announcement Board**  
+   - Summarizes daily tasks, boss HP, upcoming events, or realm expansions.  
+   - Leader/Officers can post messages about strategy, resource donation focuses, etc.  
+
+---
+
+### 7.8 **Numeric Examples & Balancing**  
+1. **Guild Boss HP**  
+   - Small Guilds (10 members) = ~10,000 HP, Medium (30) = 25,000 HP, Large (50) = 50,000 HP.  
+   - Boss DPS scaling: ~5–15 DPS depending on difficulty and phases.  
+2. **Resource Donation Caps**  
+   - Daily send limit = 50 resources, receive limit = 100. Weekly total guild donation needed for Tier 1 Grove upgrade = ~30,000 resources for a 30-person guild.  
+3. **Mission Targets**  
+   - Weekly “Guild Forge Mission”: e.g., “Craft 50 Epic Terra gear collectively” yields a 48-hour +5% synergy combos buff.  
+4. **Time Windows**  
+   - Guild Boss resets weekly. If it’s killed early, guild members can continue to farm smaller reward bosses or focus on resource missions.  
+
+---
+
+### 7.9 **Monetization Within Guild Systems**  
+1. **Guild Pass**  
+   - A micro-pass providing +50 daily resource sending capacity, +50 daily receiving capacity, or +1 extra daily boss attempt.  
+   - Could cost ~100–200 premium gems per 7-day period.  
+2. **Guild Grove Boosters**  
+   - Premium items that speed up guild grove upgrading by providing large resource donations instantly.  
+   - Alternatively, special “Guild Treasure” packages that give seeds, wood, ore, blossoms for the whole guild.  
+3. **Cosmetics & Guild Pride**  
+   - Guild banners, emblems, or tavern decorations could be sold for premium currency, purely aesthetic but fostering brand loyalty and group identity.
+
+---
+
+### 7.10 **Section 7 Conclusion**  
+By incorporating guild-based resource gifting, asynchronous boss battles, shared District-like upgrades (Guild Grove), and co-op missions, the game fosters strong social ties and daily engagement. These systems synergize with **Arcane Gear Infusion** (providing forging resources) and **Realm Tier Progression** (tying guild tasks to district upgrades). The result is a robust community-driven environment that encourages retention, monetization, and collective accomplishment— all feasible for a single developer to maintain through data-driven code and minimal real-time net requirements.
+
+---
+
+> **End of Section 7**. *(Awaiting your “next” prompt for Section 8.)*
+
+**SECTION 8: MONETIZATION, SHOPS, & ECONOMY MANAGEMENT**  
+*(Ultra-Granular Developer-Level Detail)*  
+
+---
+
+### 8.1 **Primary Currencies**  
+1. **Gold**  
+   - Earned from puzzle-combat node clears, daily tasks, guild boss participation, and realm minigames (in smaller amounts).  
+   - Spent on **Realm Tier Progression** upgrades, **Arcane Gear Infusion** fees, or minor guild fees.  
+   - Functions as the baseline in-game currency.  
+
+2. **Premium Gems**  
+   - Purchased with real money or occasionally earned through special events, achievements, or daily login streaks.  
+   - Used for hero gacha pulls, skip tokens, forging passes, resource packs, or optional cosmetics.  
+   - Price tiers for Premium Gems might range from \$4.99 (300 gems) to \$99.99 (6,000 gems), with scaling bonus amounts.  
+
+3. **Resource Items** (Seeds, Wood, Ore, Blossoms)  
+   - Directly feed **Arcane Gear Infusion** and **Realm Tier Progression**.  
+   - Farmed daily via minigames and node drops, or gained from guild donations.  
+   - Also sold in **Resource Packs** for premium gems.  
+
+---
+
+### 8.2 **Shops & Purchase Flow**  
+1. **Standard Shop (Gold & Gems)**  
+   - Accessible in the **Town Hub** or from a UI button.  
+   - **Gold Shop**: Buy small items like minor potions (HP regen for puzzle-combat) or forging catalysts.  
+   - **Gem Shop**: Purchase premium gem bundles or resource packs (wood, ore, seeds, blossoms) to skip certain progression bottlenecks.  
+
+2. **Battle Pass & Micro-Passes**  
+   - **14-Day Battle Pass**:  
+     - Free Track: baseline rewards (gold, resource boosters, 2★ or 3★ hero tickets).  
+     - Premium Track (~200 gems): includes exclusive cosmetics, guaranteed 3★ or 4★ hero tickets, synergy boosters for puzzle-combat, forging skip tokens.  
+   - **Micro-Passes** (7 Days):  
+     - **Forge Pass**: +15% Arcane Gear Infusion success, shorter forging puzzle timer, ~100 gems.  
+     - **Realm Resource Pass**: +30% daily minigame yields, ~100 gems.  
+   - All of these are purchased in the gem shop, with a clear UI display of the benefits.
+
+3. **Event Shops**  
+   - Appear during **Live Ops** or seasonal events, allowing players to exchange event tokens for forging materials, exclusive gear, or cosmetic items.  
+   - Single developer can rotate these event shops monthly or seasonally, adjusting inventories via data tables.
+
+---
+
+### 8.3 **Gacha Summons & Cosmetic Banners**  
+1. **Hero Gacha**  
+   - **Single Pull**: 20 gems, **10-Pull**: 180 gems with guaranteed 3★ hero after 10 pulls if not obtained earlier (pity).  
+   - **Limited-Time Banners**: rotate every 2 weeks, featuring rate-ups for certain 4★ heroes or event-limited units.  
+   - **Cosmetic Gacha** (optional future expansion): purely visual hero skins or puzzle board themes.  
+
+2. **Transparency & Pity Systems**  
+   - Guaranteed 3★ every 10 pulls, 4★ every 40 pulls.  
+   - Rate-up heroes displayed with exact percentages to comply with ethical gacha practices.  
+
+3. **Monetization Insight**  
+   - Rare/Legendary gear and 4★ heroes represent aspirational content driving whales/dolphins spending.  
+   - Cosmetic expansions can be introduced without affecting game balance, providing an additional revenue stream.
+
+---
+
+### 8.4 **Economy Tuning & Data Management**  
+1. **Resource Income vs. Costs**  
+   - **Daily Resource Gains**: Realistically, a player might collect ~30–50 seeds, wood, ore each day (spread across minigames and node drops), plus 5–10 blossoms.  
+   - **Tier Upgrade Costs**: Scale to ensure **1–2 weeks** of play per tier without premium shortcuts.  
+   - **Forging Costs**: Balanced so that consistent farming yields ~1 Rare or Epic gear piece every few days; Legendary takes longer, prompting the possibility of event weekends or passes.  
+
+2. **Server-Side Variables**  
+   - A single developer can adjust spawn rates, forging fees, node drop tables, or gacha probabilities via server data.  
+   - **Live Patch**: If players find progression too slow, buff daily resource yields; if whales clear content too quickly, add new Tiers or scale forging costs.  
+
+3. **Gold Sinks**  
+   - **Arcane Gear Infusion** attempts require moderate gold fees.  
+   - **Realm Tier Progression** costs escalate significantly at higher Tiers.  
+   - Additional gold can be spent on guild improvements or optional daily “quick refreshing” of realm minigames.  
+
+---
+
+### 8.5 **Skip Tokens & Convenience Purchases**  
+1. **Skip Tokens**  
+   - Allow players to bypass node re-clears or forging cooldowns. Sold in small bundles (5 tokens for 100 gems).  
+   - Also used to instantly complete daily realm minigames if a player is short on time.  
+2. **Stamina or Energy**  
+   - The game might not have a traditional stamina system, but these skip tokens function similarly for speeding up repeated content.  
+3. **Single-Developer Maintenance**  
+   - Implement skip tokens as a currency or item with a straightforward check in the node/forging UI.  
+   - Monetize them in special bundles (e.g., “Farming Booster Pack” includes skip tokens + resource packs).
+
+---
+
+### 8.6 **Cosmetics & Customization**  
+1. **Hero Skins**  
+   - Purely visual outfits for heroes.  
+   - Offered in special banner gacha or purchased directly for ~300–500 gems each.  
+   - Could be tied to certain holiday events or boss kills (e.g., “Defeat the Ember Dragon to unlock a scorching armor style”).  
+
+2. **Puzzle Board Themes**  
+   - Custom gem frames, backgrounds, or special Radiant gem animations.  
+   - No gameplay impact, purely visual flair.  
+   - Priced higher, e.g., 1,000–2,000 gems, or granted in certain premium passes.  
+
+3. **Housing / Room Decor**  
+   - Furniture or trophies that appear in the **Player Room** node.  
+   - Some items offer minor buffs (like -5% forging time), but many are cosmetic.  
+   - Guild event participation can award unique decorations, fueling cosmetic pride.
+
+---
+
+### 8.7 **Live Ops & Seasonal Events**  
+1. **Weekly Elemental Days**  
+   - Monday: +10% Ember gem spawn, Tuesday: +10% Cascade, etc.  
+   - Minor buffs that refresh every week, encouraging daily logins.  
+
+2. **Forging Weekend**  
+   - +15% forging success or -20% forging resource cost.  
+   - Typically accompanied by new gear families or time-limited synergy items in the shop.  
+
+3. **Seasonal Pass**  
+   - Could run alongside main events (e.g., “Winter’s Frost Pass”).  
+   - Theming puzzles, awarding holiday cosmetics, or event-limited forging recipes.  
+   - Ties neatly with premium purchase models, fueling short-term spending boosts.
+
+---
+
+### 8.8 **Dynamic Pricing & Market Testing**  
+1. **Data-Driven Adjustments**  
+   - If conversion rates are low, the developer can adjust gem bundle pricing or add more freebies to certain tiers.  
+   - If resource pack sales are too high, tweak forging costs so that players need them less frequently (to avoid pay-to-win backlash).  
+2. **A/B Testing**  
+   - Server might present different offers or discounts to subsets of players to gauge the most profitable approach.  
+   - Must maintain fairness by limiting how drastically these tests affect core gameplay progression.
+
+---
+
+### 8.9 **Sustaining a Seven-Figure Monthly Revenue**  
+1. **Retention Hooks**  
+   - Regular content updates (new heroes, gear sets, expansions), cyclical events, and rotating banners drive recurring spending.  
+   - Daily login rewards that occasionally drop premium gems keep F2P users engaged, while whales consistently pull for top-tier heroes and gear.  
+2. **Mid-Spender Incentives**  
+   - Affordable passes (e.g., 100–200 gems) offering substantial convenience boosts without overshadowing big spenders.  
+   - Cosmetic or functional minor boosts keep mid-tier spenders satisfied.  
+3. **Endgame & Guild Systems**  
+   - High-level forging, guild bosses, or GvG competitions encourage advanced players to keep investing in synergy gear or resources.  
+   - Live ops and expansions maintain content, preventing stagnation.
+
+---
+
+### 8.10 **Section 8 Conclusion**  
+A well-rounded economy and shop design underpins the entire puzzle-RPG experience. By balancing gold as a core in-game currency, premium gems for critical upgrades or cosmetics, and a system of resource packs, micro-passes, and forging/event bonuses, the game maintains high revenue potential. Seamless data-driven adjustments allow a single developer to fine-tune progression rates, forging fees, and event buffs. Combined with ethical gacha practices (pity systems, transparent rates), this framework can realistically achieve seven-figure monthly revenue while preserving an enjoyable experience for all player archetypes.
+
+---
+
+> **End of Section 8**. *(Awaiting your “next” prompt for Section 9.)*
+
+**SECTION 9: BRANCHING STORY & QUEST SYSTEM**  
+*(Ultra-Granular Developer-Level Detail)*  
+
+---
+
+### 9.1 **Core Story Framework and Delivery**  
+1. **Branching Narrative**  
+   - The game world contains **10 Regions**, each with 5 Sublocations. Each region features a main storyline that unfolds as players progress through puzzle-combat nodes.  
+   - The narrative uses **quest arcs** to link puzzle-combat milestones with **Realm Tier Progression** tasks or **Arcane Gear Infusion** achievements.  
+   - Certain sublocations may offer minor branching paths, allowing the player to choose which node arcs to clear (e.g., a stealth route vs. a combat-heavy route).  
+
+2. **Implementation Approach**  
+   - **Quest Data** stored in JSON or scriptable objects, referencing each region, required node completions, and synergy tasks (e.g., forging a certain gear).  
+   - Minimal cutscenes, focusing on short dialogues or event pop-ups. This keeps dev overhead low and makes updates easier.  
+
+3. **Story vs. Side Content**  
+   - Each region’s main quest must be ~70% complete to unlock its final boss.  
+   - Side quests can revolve around forging tasks, daily minigames, or unique puzzle modifiers, rewarding extra skill XP, forging mats, or hero ascend items.  
+
+---
+
+### 9.2 **Quest Types and Objectives**  
+1. **Combat Node Objectives**  
+   - **Defeat minions or region boss** at a particular node.  
+   - Survive for X seconds in a high Corrupted gem environment.  
+   - Complete the node with a specific synergy condition (e.g., a multi-element party or forging an Ember gear piece beforehand).  
+
+2. **Realm Tier Progression Objectives**  
+   - **Upgrade Timberland District to Tier 2** or “Use the Seed Grove minigame 5 times.”  
+   - Link realm tasks with story arcs: “Forge a Cascade staff to purify the local waterways.”  
+
+3. **Arcane Gear Infusion Objectives**  
+   - Craft a Rare or Epic gear piece of a specific element.  
+   - Transmute gear from Rare → Epic or Epic → Legendary as part of a storyline quest.  
+
+4. **Guild or Co-Op Objectives**  
+   - Optional side quests prompting guild activities, such as “Contribute 100 seeds to your guild” or “Defeat the guild boss once.”  
+
+5. **Mixed Puzzles or Collectibles**  
+   - Region sub-quests might ask players to collect hidden resources in puzzle-combat nodes (like “Arcane Shards” dropping from certain minions).  
+
+---
+
+### 9.3 **JSON Quest Example**  
+```json
+{
+  "questID": "Q305",
+  "title": "Fortress of Cinders",
+  "requiredRegion": 3,
+  "objectives": [
+    {
+      "type": "CombatNode",
+      "nodeID": 22,
+      "description": "Defeat the Ember Knight in Lava Citadel"
+    },
+    {
+      "type": "RealmTier",
+      "district": "Timberland",
+      "level": 2,
+      "description": "Upgrade Timberland District to Tier 2"
+    },
+    {
+      "type": "Forging",
+      "element": "Ember",
+      "rarity": "Rare",
+      "description": "Craft a Rare Ember Sword"
+    }
+  ],
+  "rewards": [
+    "HeroExp x1000",
+    "Arcane Gear Infusion Token x3",
+    "QuestItem:EmberKey"
+  ]
+}
+```
+- **Explanation**: This quest requires clearing a node, upgrading a district, and forging a gear piece. Rewards include standard XP, infusion tokens, and a key item used to unlock a boss node.
+
+---
+
+### 9.4 **Daily and Weekly Quests**  
+1. **Daily Quests**  
+   - Typically 3–5 tasks refreshing every 24 hours.  
+   - Common tasks: “Collect wood from Timberland,” “Defeat 5 minions,” “Complete 1 forging puzzle,” “Use a Guest Hero Summon.”  
+   - Rewards: seeds, wood, ore, blossoms, small amounts of gold, forging XP, or synergy shards.  
+
+2. **Weekly Quests**  
+   - 1–2 more extensive tasks (e.g., “Clear 20 puzzle-combat nodes,” “Craft 2 Epic gear items,” “Participate in Guild Boss 3 times”).  
+   - Larger rewards: advanced forging mats, special synergy gear tokens, or potential star hero tickets.  
+
+3. **Highlight Quest**  
+   - A single featured quest each week granting a unique item or decorative reward (like a new Player Room furnishing).  
+   - Encourages consistent engagement over the week.
+
+---
+
+### 9.5 **Quest Progression Flow**  
+1. **Daily Planner UI**  
+   - On login, players see all active quests: main story arcs, side arcs, daily/weekly tasks, guild missions.  
+   - Tapping a quest objective navigates directly to the relevant node or UI (e.g., forging screen).  
+2. **Branching Region Arcs**  
+   - Each region has 5 sublocations with a narrative arc culminating in a final boss.  
+   - Sub-boss arcs might diverge slightly, but reconverge for the main storyline.  
+3. **Gatekeeping**  
+   - Some quests explicitly require Tier 2–3 in certain districts, preventing players from skipping resource investments.  
+   - Boss unlocks typically require “QuestItem” keys or 70% node clearance in that sublocation.
+
+---
+
+### 9.6 **Narrative Themes & Implementation**  
+1. **Story Emphasis**  
+   - Keep story segments bite-sized to accommodate puzzle gameplay.  
+   - Each region can revolve around an elemental conflict—Ember region threatened by Corruption, Cascade region flooding, etc.  
+2. **Visual Delivery**  
+   - Simple pop-up dialogues with character portraits, occasionally a background cut-in.  
+   - **Arcane Flow Transitions** for major chapter completions or boss reveals.  
+3. **Single-Developer Maintenance**  
+   - A quest manager system that checks objectives asynchronously; no complex cutscenes or voice acting required.  
+   - Additional story arcs or expansions can be added easily by appending new quest data and a few lines of event scripting.
+
+---
+
+### 9.7 **Reward Tiers and Integration**  
+1. **Incentive to Engage in All Systems**  
+   - Quests often point players to forge new gear, upgrade realm districts, or experiment with multi-element synergy in puzzle-combat.  
+   - Reward synergy: e.g., forging tokens for forging quests, realm resource bundles for realm tasks, hero XP for combat tasks.  
+2. **Scaling Rewards**  
+   - Early regions: 100–200 gold per quest, ~10 forging XP, small resource amounts.  
+   - Late regions: 500–1000 gold, 2–3 forging tokens, 20–30 resource units, or special synergy shards.  
+3. **Seasonal Quests**  
+   - Tied to live ops or holiday events.  
+   - Can grant limited-time gear recipes or event currency exchange for unique forging materials.
+
+---
+
+### 9.8 **Story-Driven Monetization Hooks**  
+1. **Quest Skips or Timed Completion**  
+   - Players who lack enough resources to complete a forging or realm upgrade quest might purchase resource bundles.  
+   - “Quick Complete” tokens could let them skip mundane tasks (like “Harvest 10 times from Timberland”), at a small premium cost.  
+2. **Quest-Related Premium Items**  
+   - For a quest requiring Legendary gear, the game might promote a forging pass to boost success rates.  
+   - For a boss fight quest, players may see an offer for a cameo hero with strong synergy.  
+
+---
+
+### 9.9 **Advanced Branching & Future Content**  
+1. **Alternate Endings**  
+   - Potentially, the final region’s storyline could branch, offering replayability or multiple boss variants.  
+   - Minimal overhead if designed as separate quest IDs referencing the same puzzle nodes with different text.  
+2. **Hero-Specific Quest Arcs**  
+   - As introduced in Section 5, 3★+ heroes have personal quest lines.  
+   - These arcs can integrate with the main storyline or remain side content that unlocks forging materials or hero mastery nodes.  
+
+---
+
+### 9.10 **Section 9 Conclusion**  
+A robust branching quest system is pivotal for funneling players through puzzle-combat, forging, realm upgrading, and guild co-op. By carefully designing daily/weekly tasks, main story arcs, and side quests linked to synergy mechanics, the game ensures sustained engagement. Each quest can be maintained in a simple data-driven format, letting a single developer iterate on reward balance or expand the storyline over time. This keeps the content fresh, promotes monetization (through resource gating and forging), and unifies all major gameplay loops under a cohesive narrative umbrella.
+
+---
+
+> **End of Section 9**. *(Awaiting your “next” prompt for Section 10.)*
+
+
+**SECTION 10: MINION & BOSS ENCOUNTERS + PLAYER CUSTOMIZATION & AVATARS**  
+*(Ultra-Granular Developer-Level Detail)*  
+
+---
+
+### 10.1 **Minion Nodes & Enemy Variations**  
+1. **Standard Minions**  
+   - **HP Range**: ~60–200 in early game, scaling to 500+ in late-game sublocations.  
+   - **DPS**: Typically 1–7, with some higher-tier minions reaching ~10 DPS in advanced regions.  
+   - **Special Abilities**: Some minions can boost Corrupted gem spawn by +2–5%, or apply short “debuffs” like a +1 second penalty to Corrupted gem evolution for the player.  
+
+2. **Elite Minions**  
+   - **HP Range**: ~200–500 early, scaling to 1000+ in later regions.  
+   - **DPS**: 5–12 typically, with unique synergy powers (e.g., a Terra Elite might lock certain gem rows or an Ember Elite might reduce HP drain intervals by 0.5s).  
+   - **Rewards**: Higher gold drops (~35+), better forging mats (25–35% chance for valuable items), and potential synergy shards.  
+
+3. **Procedural Variation**  
+   - Each node can pull from a minion pool relevant to the region’s element or theme.  
+   - A single developer can tweak data tables for HP, DPS, special traits, and drop rates to maintain freshness.  
+   - *Example*: Ember Highlands minions might have small flame animations and modest HP but high Corrupted gem spawn. Cascade Reaches might have watery visuals and mild DPS but slow the board rotation.  
+
+---
+
+### 10.2 **Boss Nodes & Encounter Phases**  
+1. **Boss HP & DPS**  
+   - **Early Boss**: ~600 HP, 10 DPS.  
+   - **Mid Boss**: ~1500 HP, 15 DPS, more frequent Corrupted gem triggers.  
+   - **Late Boss**: ~3000 HP, 20+ DPS, advanced mechanics (like forcing a board rotation every 6s instead of 9s).  
+   - Hard/Remix modes can scale boss HP to 5000–10,000 for endgame content.  
+
+2. **Encounter Design**  
+   - **Phased Fights**: At 75%, 50%, and 25% HP, the boss might intensify hazards (e.g., +10% Corrupted gem spawn) or generate special puzzle events (e.g., multiple Radiant gems spawn but accompanied by a damaging HP drain spike).  
+   - **Wave Structure**: Some boss nodes have 1–2 waves of minions prior to the boss. Others start directly with the boss. The user’s HP might partially restore between waves (e.g., +20% HP).  
+
+3. **Adaptive AI Tweaks**  
+   - If the player’s gear rating or synergy stats significantly exceed the recommended threshold, the boss can spawn an extra +5% Corrupted gems or do +2 DPS for more challenge.  
+   - If the player is undergeared, minion HP or DPS can reduce slightly, ensuring a broader skill margin.  
+
+4. **Reward Drops**  
+   - **Guaranteed**: gold (100–500), forging mats, synergy shards.  
+   - **Chance**: Rare or Epic forging token, advanced resources for **Arcane Gear Infusion**.  
+   - **Quest Items**: Some bosses drop region-key items or storyline MacGuffins for the next quest arc.  
+
+---
+
+### 10.3 **Encounter Scenes & Visual Presentation**  
+1. **Node Scenes**  
+   - A painterly backdrop matching the region’s theme (e.g., a volcanic scene for Ember Highlands).  
+   - 1–2 minions displayed on-screen, or a large boss sprite for boss fights.  
+2. **Arcane Flow Transitions**  
+   - On entering a node, a swirl-like fade from the sublocation map to the puzzle board.  
+   - Between waves (if multi-wave), partial swirl transitions add drama, layered with boss roar or minion chatter in **Adaptive Audio Layers**.  
+3. **Battle UI Indicators**  
+   - Boss HP bar at the top, with breakpoints for each phase.  
+   - Timer or HP drain indicator.  
+   - **Corrupted Gem Gauge** (optional UI element) showing how many Corrupted gems are active or near evolution.  
+
+---
+
+### 10.4 **Player Customization & Avatars**  
+1. **Personal Avatar**  
+   - Each player has a small profile portrait or anime-inspired character that appears in co-op or guild contexts.  
+   - Avatars can be changed with cosmetic skins purchased via premium gems or unlocked through quest arcs.  
+2. **Player Title System**  
+   - Titles earned by defeating certain bosses, reaching Tier 4 in a district, or ranking in guild events.  
+   - Titles can display next to the avatar in chat or friend lists.  
+
+3. **Player Room**  
+   - Located in **Adventurer’s Haven**. A mini customizable space where the user can place trophies or gear stands showing their best Legendary items.  
+   - Some furnishings grant small buffs: e.g., a forging workbench reducing forging puzzle times by 1 second or a special orchard statue giving +2 daily resource yields.  
+
+4. **Fashion & Cosplay** (Cosmetic Items)  
+   - Outfits for the player’s avatar or furniture sets for the room, each with unique design motifs (Ember-themed, Cascade-themed, etc.).  
+   - No direct gameplay advantage, though certain high-tier furniture might provide minor synergy perks.  
+   - Sold for 300–500 gems or rewarded in seasonal events.
+
+---
+
+### 10.5 **Integrating Avatars with Minion/Boss Fights**  
+1. **Visual Representation**  
+   - During puzzle-combat, the user’s avatar or main hero might be displayed in the corner, providing reaction animations on big matches or receiving damage.  
+   - **Adaptive Audio Layers** can incorporate short voice lines or SFX triggered by the avatar when a Phantasm Surge is activated.  
+2. **Guest Hero Summon Visual**  
+   - If a **Guest Hero Summon** is used, that hero’s portrait or sprite can appear briefly, assisting with an attack animation. This fosters social identity in guild or friend contexts.  
+
+---
+
+### 10.6 **Advanced Minion & Boss Affixes (Optional for Variety)**  
+1. **Affix System**  
+   - Additional random modifiers for certain nodes, similar to “Elite Affixes.”  
+   - Examples:  
+     - **“Explosive Wrath”**: upon minion death, spawn 1 Corrupted gem instantly.  
+     - **“Elemental Surge”**: minion attacks create +2 Ember gems each wave.  
+     - **“Shielding Aura”**: boss reduces all damage by 20% for the first 10 seconds of each wave.  
+2. **Implementation**  
+   - Each node or sublocation has a chance to apply 0–2 affixes from a data table.  
+   - The affixes appear in the battle preview UI, so players can adapt their party synergy accordingly.  
+
+---
+
+### 10.7 **Proposed Future Expansion: Boss Rush or Raid System**  
+1. **Boss Rush**  
+   - Consecutive boss fights with no HP refresh between them, offering scaling rewards.  
+   - Encourages advanced synergy combos and gear.  
+2. **Raid System**  
+   - Potential multi-player synchronous or asynchronous mode for large-scale boss challenges.  
+   - Single developer can implement an asynchronous version, similar to the guild boss, but with multiple bosses in one event.  
+
+---
+
+### 10.8 **Balancing & Data Management**  
+1. **Scalable Enemy Stats**  
+   - HP, DPS, or special hazard frequencies stored in simple tables keyed by region or sublocation difficulty.  
+   - Minion randomization ensures the same node can feel slightly different upon each 8-hour reset.  
+2. **Reward vs. Time**  
+   - The ratio of time spent vs. rewards gained must be balanced to keep mid- and late-game players satisfied.  
+   - Boss nodes often yield 2–3× the normal resource/forging mat drops.  
+
+---
+
+### 10.9 **Monetization Ties**  
+1. **Boss Attempt Tickets**  
+   - If a boss node is particularly profitable (e.g., “Epic forging mat guaranteed”), there might be a daily limit or small gem cost to re-fight quickly.  
+2. **Cosmetic Avatars & Animations**  
+   - Some advanced boss kills might drop unique avatar animations (like a flaming aura from an Ember Dragon).  
+   - Seasonal events can add limited-time boss fights awarding special trophies or room decorations.  
+
+---
+
+### 10.10 **Section 10 Conclusion**  
+Minion and boss encounters form the strategic centerpiece of the puzzle-RPG, balancing hazard-laden puzzle-combat with satisfying loot. The synergy between **Arcane Gear Infusion**, **Realm Tier Progression** gating, and combat difficulty scaling ensures a rewarding challenge curve. Meanwhile, player customization (avatars, room décor, titles) adds personal flair and fosters a sense of progression beyond raw stats. These systems, fully data-driven, remain manageable for a single developer to maintain and expand, offering potential for new boss variants, affixes, or cosmetic rewards with each seasonal patch or update.
+
+---
+
+> **End of Section 10**. *(Awaiting your “next” prompt for Section 11.)*
+
+
+**SECTION 11: AI/PROCEDURAL TOOLS & SINGLE-DEVELOPER FEASIBILITY**  
+*(Ultra-Granular Developer-Level Detail)*  
+
+---
+
+### 11.1 **Data-Driven Architecture**  
+1. **Centralized Data Repositories**  
+   - **JSON** or **Scriptable Objects** for each major category: 
+     - **Puzzle Spawn Tables** (gem distributions, Corrupted gem spawn rates, Radiant spawn rates)  
+     - **Enemy Stats** (HP, DPS, hazards, affixes)  
+     - **Realm Tier Progression** (upgrade costs, synergy boosts)  
+     - **Arcane Gear Infusion** (crafting costs, success rates, forging puzzle parameters)  
+     - **Hero Database** (stats, roles, elements, mastery nodes, gacha rates)  
+     - **Quest System** (daily tasks, main story arcs, side quests)  
+   - A single developer can edit these data sets using a lightweight in-engine editor or external JSON.  
+   - **Hotfix Capability**: Server overrides for urgent balancing or live ops changes.
+
+2. **Modular Design**  
+   - Each system (puzzle-combat, forging, realm progression, guild co-op) is encapsulated in a manager module that references the central data.  
+   - This ensures minimal code duplication and easier debugging.  
+
+3. **Version Control**  
+   - Store all data in a repository (e.g., Git) with clear naming and version tags: “PuzzleSpawn_v1.2,” “EnemyStats_v2.0,” etc.  
+   - A single developer can roll back or branch new changes quickly.
+
+---
+
+### 11.2 **Procedural Content & Node Generation**  
+1. **Procedural Node Respawn**  
+   - Every 8 hours, cleared nodes re-randomize minion or boss composition from a predefined pool.  
+   - **Affix System** (Section 10) can randomly apply ~0–2 affixes to keep encounters fresh.  
+   - The puzzle board’s initial gem layout uses a seeded random with adjustable Corrupted gem spawn rates.  
+2. **Event-Based Variations**  
+   - On weekends or special events, the server can globally modify “Ember gem spawn +5%” or “Corrupted gem evolve 1s faster,” applying instantly to all puzzle nodes.  
+3. **Single-Dev Maintenance**  
+   - Node generation logic only needs a few config tables: minion sets per region, probability weighting for elite spawns, boss triggers.  
+   - Adjust these tables for difficulty fine-tuning without altering core code.  
+
+---
+
+### 11.3 **Quest & Hazard Generation**  
+1. **Random Daily/Weekly Quests**  
+   - A script randomly picks from a pool of quest templates (e.g., “Defeat X minions,” “Use forging puzzle Y times,” “Harvest from Realm District Z”).  
+   - Weighted logic ensures variety (combat tasks, forging tasks, realm tasks).  
+2. **Corrupted Gem Hazard Tuning**  
+   - If data indicates too many players fail at certain puzzle nodes, the dev can reduce the spawn rate or extend Corrupted gem phase timers.  
+   - Conversely, if advanced players find the game too easy, spike hazard rates for higher-tier regions or enable Hard Mode.  
+
+---
+
+### 11.4 **Incremental Content Additions**  
+1. **New Region Releases**  
+   - Create new region data: 5 sublocations, each with 10–40 nodes referencing minion/boss tables.  
+   - Add new forging recipes or synergy gear in data.  
+   - Possibly introduce an additional District Tier (Tier 5) for existing realms or a brand-new realm with distinct resources.  
+2. **Live Ops & Seasonal Events**  
+   - Minimal code changes needed. The developer can toggle event flags (e.g., “+15% forging success on weekends”) or add a questline awarding unique resources.  
+   - Cosmetic items, hero banners, or forging item sets can be introduced in the data layer alone.
+
+---
+
+### 11.5 **Performance & Optimization**  
+1. **Mobile Platform Target**  
+   - Keep puzzle-combat logic efficient with minimal overhead. An 8×8 grid with real-time matching can run smoothly if coded carefully.  
+   - **Arcane Flow Transitions** are shader or sprite-based effects, not heavy cinematics.  
+2. **Server Interaction**  
+   - Asynchronous design: only boss kills, guild donations, or quest completions require server validation.  
+   - Everything else (local puzzle gem logic, forging mini-puzzle) can run client-side, with periodic sync to prevent major cheating.  
+
+---
+
+### 11.6 **AI Opponents & Asynchronous PvP (Optional)**  
+1. **Asynchronous PvP**  
+   - If the dev wants to add a puzzle duel mode, they can store each player’s “defense pattern” (gear synergy, gem spawn style) in a data file.  
+   - Challengers face an AI-simulated puzzle scenario referencing that defense pattern.  
+   - The overhead is low, as it’s mostly a parameter set for the puzzle hazard rates and Corrupted gem triggers.  
+2. **Future Real-Time PvP**  
+   - More complex netcode, requires synchronization. Typically beyond a single dev’s scope unless the user base is large and the feature is demanded.  
+
+---
+
+### 11.7 **Single-Developer Feasibility Strategies**  
+1. **Automated Tools**  
+   - A simple “Node Editor” to place or remove puzzle nodes, assign minion/boss sets, define quest references.  
+   - A “Resource Editor” for forging costs and realm upgrade data.  
+2. **Scheduled Content**  
+   - Plan out monthly or quarterly expansions. Pre-generate the next region’s data.  
+   - Activate them on the server side when ready. This drip-feed approach keeps the game lively without overwhelming dev resources.  
+3. **Community Feedback Loop**  
+   - Track analytics (clear rates, forging success attempts, realm tier upgrade frequency) to identify friction points or exploit.  
+   - Adjust the data values in real-time to keep retention high and monetize effectively.
+
+---
+
+### 11.8 **QA & Testing Methodology**  
+1. **Automated Unit Tests**  
+   - For puzzle logic, forging success calculations, synergy triggers.  
+   - Minimizes regression errors when adjusting data.  
+2. **Staging Environment**  
+   - Maintain a test environment with debug UI to instantly set Tier levels, forging resources, or puzzle spawns.  
+   - Ensure changes are tested before going live to the player base.  
+3. **Bug Prioritization**  
+   - Focus on game-breaking puzzle logic issues, quest gating issues, or economy exploits first.  
+   - Cosmetic or minor UI quirks can be patched later.  
+
+---
+
+### 11.9 **AI-Driven Recommendations**  
+1. **Difficulty Auto-Balance**  
+   - The server can track average time to defeat bosses or node clear rates. If <40% of players can beat a node, reduce hazard rates. If 90% beat it easily, increase them.  
+2. **Dynamic Offers**  
+   - Simple logic can recommend forging passes or resource packs if the system detects players stuck on a certain Tier or gear upgrade.  
+
+---
+
+### 11.10 **Section 11 Conclusion**  
+By leveraging a data-driven architecture, modular design, and simple asynchronous netcode, a single developer can feasibly maintain and expand every aspect of this puzzle-RPG. Procedural node respawns, quest automation, and flexible event toggles minimize manual overhead. With strategic use of analytics and a robust QA pipeline, the game can adapt in real time to player behavior, ensuring an optimal blend of challenge, engagement, and monetization potential.
+
+---
+
+> **End of Section 11**. *(Awaiting your “next” prompt for Section 12.)*
+
+**SECTION 12: POST-LAUNCH EXPANSIONS, HARD/REMIXED MODES & LIVE OPS**  
+*(Ultra-Granular Developer-Level Detail)*  
+
+---
+
+### 12.1 **Philosophy of Post-Launch Content**  
+1. **Sustaining Engagement**  
+   - Continuous introduction of new Regions, gear families, or event types prevents stagnation.  
+   - Regular live ops keep mid- to late-game players invested in upgrading more heroes, forging better gear, and revisiting earlier nodes in Hard modes.  
+
+2. **Single-Developer Manageability**  
+   - All expansions must be primarily **data-driven** with minimal new code.  
+   - Reusing existing puzzle-combat mechanics (e.g., gem boards, Corrupted gem rates) with new parameters or skins keeps dev time low.  
+
+---
+
+### 12.2 **Hard/Remixed Regions**  
+1. **Unlock Criteria**  
+   - After clearing a Region normally, a **Hard Mode** variant unlocks.  
+   - Hard Mode can apply a global +50% minion/boss HP, +10–20% damage, higher Corrupted gem spawn.  
+   - Possibly require a certain **Realm Tier Progression** milestone (e.g., Tier 2 in two Districts) to ensure the player is prepared.  
+
+2. **Rewards**  
+   - **Increased Resource Drops**: 1.5× or 2× from each node, forging mats more likely to be Epic-grade.  
+   - **Unique Materials**: Shards for higher-tier forging recipes or special synergy gear (e.g., “Hard Terra Shards”).  
+   - **Cosmetic Titles**: “Conqueror of Ember Highlands (Hard)” or exclusive puzzle board themes.  
+
+3. **Extended Hard Variants**  
+   - **Expert Mode**: An even tougher step, available after Hard mode completion.  
+   - **Remixed Nodes**: Additional affixes or brand-new node layouts for replay value, all stored in data for easy toggling.  
+
+---
+
+### 12.3 **Rogue-Lite Endless Mode**  
+1. **Unlock Criteria**  
+   - Beating Region 5 (or finishing the main storyline) grants access to an **Endless Tower** or similar challenge.  
+2. **Wave-Based Combat**  
+   - Each wave introduces new minions or environmental hazards (e.g., progressive Corrupted gem spawn, rotating board speeds).  
+   - HP does not fully reset between waves; partial recovery or item usage is possible.  
+3. **Rewards & Progression**  
+   - Every **5–10 waves**, the player gets forging mats or synergy tokens.  
+   - Every **50 waves**, a bigger reward (e.g., a guaranteed Epic gear infusion token).  
+   - The mode typically resets weekly or monthly, with leaderboards tracking the highest wave cleared.  
+4. **Data-Driven Implementation**  
+   - The wave structure references a procedural enemy set.  
+   - Single developer can update the table for difficulty adjustments or special event twists (like “Week of Ember Overload” – more Ember gems, stronger Ember minions).
+
+---
+
+### 12.4 **Seasonal Live Ops & Rotating Events**  
+1. **Elemental Day Cycle**  
+   - Already established weekly rotations: Ember Monday, Cascade Tuesday, etc.  
+   - This can be amplified post-launch with added bonuses (e.g., +15% synergy combos, +10% forging success for that element on its day).  
+2. **Weekend Forging Events**  
+   - “Forging Weekend” or “Arcane Bloom Festival” with +15–20% forging success or -20% forging cost.  
+   - These events can coincide with new gear banners or gacha hero releases for maximum revenue impact.  
+3. **Seasonal Events (Monthly or Quarterly)**  
+   - Themed around real-world holidays or in-game lore (e.g., “Flamefall Festival,” “Aqua Solstice”).  
+   - Introduce time-limited quest lines, forging recipes, or mini-bosses that drop unique materials.  
+   - Offer a seasonal pass with free/premium tracks.  
+
+4. **Guild vs. Guild Seasons**  
+   - A 2-week competition period every month where guilds race in resource collection, forging item counts, or boss time trials.  
+   - Rewards include special guild emblems, upgraded orchard visuals, or synergy gear.  
+
+---
+
+### 12.5 **Heroic Tales & Special Mini-Events**  
+1. **Heroic Tales**  
+   - 2–3 node arcs focusing on a specific hero’s backstory.  
+   - Repeatable every few weeks, awarding synergy items, forging XP, or a second copy of that hero for ascension.  
+   - Encourages players to diversify hero usage.  
+2. **Mini-Events**  
+   - Short 3–5 day events that reuse existing sublocations with twists (like “Rain of Corruption” – higher Corrupted gem rates, special boss cameo).  
+   - Could reward unique furniture for the Player Room or minor synergy gear.  
+
+---
+
+### 12.6 **Adding New District Tiers & Realms**  
+1. **Tier 5 Additions**  
+   - Post-launch, the developer can introduce a **Tier 5** for each district, requiring higher resource costs and unlocking advanced synergy perks (e.g., “+2 Radiant gems on every 5-gem match”).  
+   - Could coincide with new forging materials only found in Hard Mode or Endless Tower.  
+2. **Extra Realms**  
+   - Beyond the initial four (Timberland, Miner’s Gulch, Seed Grove, Arcane Bloom), additional realms (e.g., “Zephyr Spire”) might be introduced for new gear families.  
+   - This realm could focus on a new resource or synergy bonus, all data-driven and referencing the same minigame logic.  
+
+---
+
+### 12.7 **Monetization in Post-Launch Phases**  
+1. **Battle Pass Expansions**  
+   - Offer seasonal or extended passes with tiered rewards.  
+   - Tie unique gear or hero skins to top-tier pass milestones.  
+2. **Limited-Time Gacha Heroes**  
+   - Seasonal 4★ or 5★ heroes with exclusive synergy effects, rotating every 2–3 months.  
+   - Potential for festival or holiday banners with small pity adjustments or guaranteed event-limited units.  
+3. **Forge Bundles for Hard Mode**  
+   - Special resource packs or forging passes that help players tackle Hard Mode content sooner.  
+   - “Legendary Infusion Kit” includes blossoms, forging XP tokens, skip tokens, etc.
+
+---
+
+### 12.8 **Data-Driven Live Ops Management**  
+1. **Weekly Timers**  
+   - The developer sets a schedule for weekly tasks, forging weekends, or elemental day bonuses in a server-side calendar.  
+   - Minimal code changes needed—each event is a data flag that modifies spawn rates, forging success, or synergy combos.  
+2. **Hotfix & Balancing**  
+   - If an event proves too generous, adjust rates or event durations mid-week.  
+   - If players complain about difficulty spikes, reduce enemy HP or hazard rates on Hard Mode nodes.  
+
+---
+
+### 12.9 **Leaderboards & Competition Incentives**  
+1. **Endless Tower Leaderboard**  
+   - Resets monthly or quarterly, awarding unique frames, titles, or forging passes to the top 1–10%.  
+   - Encourages whales to invest in synergy gear or multiple star heroes to push further.  
+2. **Guild vs. Guild**  
+   - Seasonal GvG ranking with rewards to top guilds.  
+   - Easy to maintain asynchronously: just track resource donations, boss kills, forging completions, etc.  
+
+---
+
+### 12.10 **Section 12 Conclusion**  
+Post-launch expansions, Hard/Remixed modes, and continuous live ops form the backbone of a thriving, long-lived puzzle-RPG. By reusing core data-driven systems—puzzle mechanics, forging, realm progression—a single developer can roll out substantial new content with minimal code overhead. Weekly or monthly events, Heroic Tales, and seasonal expansions maintain user excitement and spending, ensuring the game’s ongoing viability and profitability.
+
+---
+
+> **End of Section 12**. *(Awaiting your “next” prompt for Section 13.)*
+
+**SECTION 13: LEADERBOARDS & PLAYER-VERSUS-PLAYER (PVP) SYSTEM**  
+*(Ultra-Granular Developer-Level Detail)*  
+
+---
+
+### 13.1 **Leaderboards Overview**  
+1. **Purpose & Motivation**  
+   - Leaderboards fuel competitive play, driving retention and monetization as players vie for ranking-based rewards or prestige titles.  
+   - They also provide social validation, especially in guild contexts or among friend lists.  
+
+2. **Single-Developer Feasibility**  
+   - Asynchronous data collection and display: no heavy real-time netcode required.  
+   - All leaderboards can be updated periodically (hourly, daily, weekly) with a server-based script.  
+
+3. **Leaderboard Categories** (Examples)  
+   - **Realm Tier Progression**: Ranking players by how many districts they’ve leveled to Tier 4 (or Tier 5 in future expansions).  
+   - **Forging Mastery**: Tally total successful **Arcane Gear Infusion** attempts or forging XP earned.  
+   - **Endless Mode Scores**: Highest wave reached or total waves cleared in a season.  
+   - **Daily Quest Streaks**: Longest unbroken streak of daily task completions.  
+   - **Guild Boss Damage**: Summed damage contributed to guild bosses in a weekly cycle.
+
+---
+
+### 13.2 **Leaderboard Data & Implementation**  
+1. **Data Storage**  
+   - Server maintains a simple database table for each leaderboard type.  
+   - Each entry references the player’s account ID, rank, score/metric (e.g., total forging XP), and last update time.  
+
+2. **Update Frequency**  
+   - Some boards (e.g., daily quest streaks) can be updated instantly upon task completion.  
+   - Others (like forging or Endless Mode) might refresh every 5–15 minutes to avoid server strain.  
+
+3. **Seasons or Resets**  
+   - **Seasonal Leaderboards** (monthly, quarterly) reset at the end of the season, distributing rewards to the top X%.  
+   - **Persistent Leaderboards** (like total Realm Tiers) remain ongoing with no reset, simply reflecting lifetime progress.
+
+---
+
+### 13.3 **Reward Structures**  
+1. **Ranking Tiers**  
+   - **Top 1%**: Unique cosmetic frames or titles (e.g., “Grand Artisan” for forging).  
+   - **Top 5%**: Slightly lesser but still exclusive cosmetics or forging passes.  
+   - **Top 10–20%**: Resource bundles, forging tokens, synergy items.  
+   - **Participation**: Everyone gets a small reward for placing on the board, ensuring broad appeal.  
+
+2. **Trophy & Title System**  
+   - Titles displayed next to the player’s avatar in guild chat or friend lists.  
+   - Trophies can appear in the **Player Room**, granting minor synergy buffs or purely cosmetic bragging rights.  
+
+3. **Monetization Angle**  
+   - Competitively minded players might spend on forging skip tokens, synergy gear, or limited-time passes to push higher on the boards.  
+   - Seasonal events with leaderboards often see a revenue spike near season’s end as whales chase top ranks.
+
+---
+
+### 13.4 **PvP Modes: Asynchronous Puzzle Duels**  
+1. **Core Concept**  
+   - Players challenge an AI-controlled “defense setup” defined by another player’s chosen heroes, synergy gear, or puzzle hazard preferences.  
+   - The challenger faces a puzzle board with special conditions (e.g., increased Corrupted gem spawn, boosted Radiant gem spawn) based on the defender’s gear synergy.  
+
+2. **Battle Flow**  
+   - **Matchmaking**: Could be bracketed by player level, synergy rating, or an ELO-like system.  
+   - **Puzzle-Combat**: The challenger’s puzzle board spawns with hazards or buffs reflecting the defender’s setup. If the challenger can defeat the “AI minions” or meet the objective (e.g., reduce HP to 0) within the time limit, they win.  
+   - **Scoring**: Possibly track time to victory, HP lost, or number of Surges triggered.  
+
+3. **Rewards**  
+   - **Rank Points**: Gains or losses in a PvP leaderboard bracket.  
+   - **PvP Currency**: Used to buy exclusive cosmetics or synergy gear in a dedicated PvP shop.  
+   - **Seasonal Trophies**: Similar to other leaderboards.  
+
+4. **Implementation Feasibility**  
+   - The “defender” states are just data sets: which heroes, gear effects, synergy buffs, recommended hazard rates.  
+   - The puzzle logic is single-player, meaning minimal real-time netcode is needed.  
+
+---
+
+### 13.5 **Optional Live PvP (High Complexity)**  
+1. **Real-Time Matching**  
+   - Two players simultaneously matching gems on separate boards, possibly sending Corrupted gems or negative effects to each other.  
+   - Significantly more complicated netcode for a single dev, with potential desync issues.  
+2. **Recommendation**  
+   - Launch with asynchronous PvP first. If the user base demands it, consider real-time PvP as a post-launch expansion.  
+   - Keep real-time PvP in careful alpha/beta testing if ever pursued.  
+
+---
+
+### 13.6 **GvG (Guild vs. Guild) Competitions**  
+1. **Resource Races**  
+   - Track which guild accumulates the most seeds, wood, ore, blossoms in a 3–5 day event.  
+   - Leaderboard ranks guilds by total donations. Rewards are distributed similarly in tiers (top 1%, top 5%, etc.).  
+2. **Forging or Boss Kill Races**  
+   - Count how many Epic or Legendary gear items a guild collectively forges during an event window.  
+   - Summed damage to special GvG boss spawns on an event server.  
+3. **Rewards**  
+   - Guild-wide buffs, exclusive guild banners or decorations, forging passes for the top guilds.  
+   - Encourages group coordination and resource spending (hence increased monetization).
+
+---
+
+### 13.7 **Merging Leaderboards with Live Ops**  
+1. **Weekly Rotations**  
+   - Focus on a particular leaderboard each week (e.g., forging XP board is highlighted; top players get special forging perks for the next week).  
+   - Rotating highlights keep the meta dynamic.  
+2. **Seasonal Rankings**  
+   - Tied to major events (e.g., “Harvest Festival Season” spans a month).  
+   - Exclusive “season champion” frames or rarities in synergy gear.  
+
+---
+
+### 13.8 **Cheat Prevention & Fair Play**  
+1. **Server Validation**  
+   - Key game actions (forging success, puzzle node completion, synergy gear creation) must be verified server-side to prevent hacking inflated scores.  
+2. **Anti-Bot Measures**  
+   - Captchas or random puzzle modifications for suspiciously repetitive players.  
+   - Leaderboard data scanning for impossible forging or node clear rates.  
+
+3. **Ethical Gacha & PvP**  
+   - Display exact pull rates, pity counters, and avoid extreme pay-to-win gear in PvP to maintain a healthy community.
+
+---
+
+### 13.9 **Detailed Numeric Examples & Tuning**  
+1. **Asynchronous PvP**  
+   - Win yields +10 rank points, loss yields -5 rank points.  
+   - End-of-week rank determines premium or cosmetic rewards.  
+2. **Leaderboard Seasonal Reset**  
+   - Seasonal reset every 30 days for Endless Tower, forging XP, or guild resource collection.  
+   - Top 100 or top 1% get unique titles like “Master Forgemaster,” “Phantasm Champion,” etc.  
+3. **GvG Resource Race**  
+   - 3-day event. Each guild competes to gather the most combined seeds/wood/ore. The top 3 guilds per bracket (silver, gold, platinum) earn progressively better forging tokens.
+
+---
+
+### 13.10 **Section 13 Conclusion**  
+Leaderboards and PvP inject a competitive spark into the puzzle-RPG’s core loops, providing long-term goals for advanced and social players. Asynchronous puzzle duels, GvG events, and tiered rewards encourage strategic team building, synergy gear investment, and forging upgrades. All these systems are feasible for a single developer through data-driven design and periodic server updates, ensuring a steady stream of engagement and revenue from both competitive and cooperative features.
+
+---
+
+> **End of Section 13**. *(Awaiting your “next” prompt for Section 14.)*
+
+
+**SECTION 14: ADVANCED CODE INTEGRATION & MODULES**  
+*(Ultra-Granular Developer-Level Detail)*  
+
+---
+
+### 14.1 **Module Breakdown & Responsibilities**  
+1. **MultiRegionManager**  
+   - **Purpose**: Handles data for the 10 Regions, each containing 5 Sublocations. Tracks node unlocks, boss states, and Hard/Remixed modes.  
+   - **Key Functions**:  
+     - `LoadRegionData(regionID)`: Retrieves node/spawn data from JSON.  
+     - `CheckRegionCompletion()`: Evaluates 70% node clearance or boss defeats to unlock next region.  
+     - `ApplyHardMode()`: Ups enemy stats, modifies Corrupted gem spawn rates, etc.  
+2. **BoardManager (Puzzle Logic)**  
+   - **Purpose**: Core puzzle-combat engine for the 8×8 grid and 4×4 forging puzzle.  
+   - **Key Functions**:  
+     - `InitializeBoard(config)`: Spawns gems per data-driven rates (elemental, Radiant, Corrupted).  
+     - `CheckMatches()`: Detects matches, increments combo meter, triggers chain reactions.  
+     - `ApplyCorruptedEvolution()`: Runs a timer to evolve Corrupted gems through Phases 1–3.  
+     - `TriggerPhantasmSurge()`: Handles Surge effects (remove 2 Corrupted, +10% damage, Radiant spawns).  
+3. **RealmManager (Realm Tier Progression)**  
+   - **Purpose**: Governs the four districts (Timberland, Miner’s Gulch, Seed Grove, Arcane Bloom), plus any expansions.  
+   - **Key Functions**:  
+     - `LoadTierData(districtID)`: Reads upgrade costs, synergy perks from data.  
+     - `UpgradeTier(districtID, targetTier)`: Checks resource/gold requirements, applies synergy boosts.  
+     - `ProcessDailyMinigame(districtID)`: Awards resources, handles offline accumulation.  
+4. **AmplificationManager (Arcane Gear Infusion)**  
+   - **Purpose**: Manages forging puzzle, gear data, infusion success calculations.  
+   - **Key Functions**:  
+     - `LoadGearData(element, rarity)`: Retrieves base cost, synergy effect, success rate.  
+     - `StartForgingPuzzle()`: Launches the 4×4 puzzle with time limit, calculates final success.  
+     - `ApplyInfusionResult()`: Upgrades or grants gear item, processes forging XP, logs any failures.  
+5. **HeroGachaManager & HeroMasteryManager**  
+   - **Purpose**: Oversees hero summoning, star rates/pity systems, hero leveling, mastery trees.  
+   - **Key Functions**:  
+     - `PerformGachaPull(bannerID)`: Consumes premium gems, randomizes hero outcome with pity logic.  
+     - `AwardHeroExp(heroID, amount)`: Levels hero if thresholds are reached.  
+     - `UnlockMasteryNode(heroID, nodeID)`: Validates mastery points, applies synergy bonuses.  
+6. **QuestManager (Daily, Weekly, Story Arcs)**  
+   - **Purpose**: Central system for all quest types—main story, side arcs, daily tasks, guild missions.  
+   - **Key Functions**:  
+     - `LoadQuestData(questID)`: Retrieves objectives, rewards, gating conditions.  
+     - `CheckObjectiveCompletion(questID)`: Confirms if the player’s actions satisfy each objective.  
+     - `GrantQuestRewards(questID)`: Awards items, XP, synergy tokens, etc.  
+7. **GuildManager (Co-Op & Resource Gifting)**  
+   - **Purpose**: Manages guild membership, guild grove, guild boss fights, resource gifting.  
+   - **Key Functions**:  
+     - `DonateResources(playerID, resourceType, amount)`: Updates guild bank, tallies contribution points.  
+     - `StartGuildBossFight(playerID)`: Spawns an asynchronous boss instance.  
+     - `SubmitGuildBossDamage(playerID, damage)`: Applies damage to the shared guild boss HP pool.  
+8. **LiveOpsManager**  
+   - **Purpose**: Toggles daily/weekly events, forging weekend buffs, elemental day cycles, or seasonal expansions.  
+   - **Key Functions**:  
+     - `ActivateEvent(eventID)`: Applies data flags that modify spawn rates, forging success, synergy combos.  
+     - `DeactivateEvent(eventID)`: Reverts to default settings.  
+     - `ScheduleEvent(startTime, endTime, eventParams)`: Automates event lifecycle with minimal manual input.  
+
+---
+
+### 14.2 **Data Structures & Storage**  
+1. **JSON / Scriptable Objects**  
+   - **Regions.json**: Sublocation IDs, node data, enemy pools, affixes.  
+   - **Gear.json**: Arcane Gear Infusion details (element, rarity, cost, base success, synergy effect).  
+   - **Heroes.json**: Star rating, role, element, base stats, mastery tree references.  
+   - **Quests.json**: Quest IDs, objectives array, reward array.  
+   - **Events.json**: Timed buffs or environment changes for live ops.  
+2. **Database or Server-Side**  
+   - **Player Profile**: current realm tiers, hero roster, gear inventory, quest progression, guild info.  
+   - **Guild Data**: guild membership, guild grove level, shared resource bank, guild boss HP.  
+   - **Analytics Tables**: node clearance rates, forging success logs, daily retention metrics.  
+
+---
+
+### 14.3 **Real-Time Puzzle Logic vs. Server Validation**  
+1. **Local Puzzle Execution**  
+   - Gem matching, combo meter, Phantasm Surge triggers happen client-side for responsiveness.  
+   - **Potential Exploit Risk**: Some anti-tamper checks or random seeds might be used to reduce cheating.  
+2. **Server Checks**  
+   - When a puzzle node is cleared, the client sends an encrypted result to the server: “Node X cleared, Y damage dealt, Z HP left, final rewards.”  
+   - The server can re-check the synergy/gear data to ensure no impossible results. (Light re-simulation or sanity checks.)  
+
+3. **Guild Boss & Leaderboard**  
+   - Higher-level content requires server-side logging.  
+   - If the server detects abnormal damage patterns, it might flag the account for review or revalidate forging synergy stats.  
+
+---
+
+### 14.4 **UI & Scene Management**  
+1. **Scene Flow**  
+   - Town Hub (Adventurer’s Haven) → Sublocation Map → Puzzle Node → Battle Result → Return to Sublocation Map → Return to Town.  
+   - **Arcane Flow Transitions** are overlay animations rather than separate scenes, maintaining a quick sense of continuity.  
+2. **UI Panels**  
+   - **Main HUD**: hero portraits, HP bar, combo meter, skill triggers.  
+   - **Forge UI**: gear list, forging puzzle window, infusion result popup.  
+   - **Realm Tier UI**: four district panels, each showing upgrade bars, daily minigame start, offline resource claims.  
+3. **Adaptive Audio Layers**  
+   - The `AudioManager` module crossfades from base theme to a “combo intensity” layer at combo≥20, or a “Phantasm Surge” layer once Surge triggers, etc.  
+
+---
+
+### 14.5 **Performance & Optimization Targets**  
+1. **Mobile Devices**  
+   - Aim for **30–60 FPS** on mid-range devices.  
+   - Keep memory usage under ~500 MB by reusing gem sprites, limiting heavy 3D assets, and applying texture compression.  
+2. **Loading & Asset Bundles**  
+   - Regions can share background textures. Sublocations differ mainly in color/lighting variations.  
+   - A single developer can pack new region art into downloadable asset bundles if needed.  
+3. **Network Usage**  
+   - Asynchronous design ensures minimal data transfer.  
+   - Only send major updates on node clearance, forging completion, or guild boss submission.  
+
+---
+
+### 14.6 **Back-End & LiveOps Tools**  
+1. **Admin Panel**  
+   - Web-based dashboard to toggle forging weekend event, set elemental day multipliers, or adjust resource drop rates server-side.  
+   - Provide immediate hotfixes for economy balancing.  
+2. **Analytics**  
+   - Track daily active users, new user retention, average forging attempts per day, orchard/district upgrades, guild donation rates.  
+   - Identify bottlenecks (e.g., if too few players reach Tier 3 in Timberland, lower the cost or raise wood/seed drops).  
+3. **LiveOps Scheduling**  
+   - A cron-like system triggers events (e.g., “Every Friday 00:00 UTC → start forging weekend. Sunday 23:59 UTC → end event.”).  
+   - Single developer can manage a monthly calendar of events with minimal manual intervention.  
+
+---
+
+### 14.7 **Testing & QA**  
+1. **Unit Tests**  
+   - Each module has test cases: forging puzzle logic, synergy combos, realm resource accumulation, hero gacha draws.  
+   - Validate boundary conditions (e.g., forging success at 100%, or a node with 100% Corrupted gem spawn).  
+2. **Integration Tests**  
+   - End-to-end scenario: Player logs in, collects daily resources, attempts forging puzzle, does puzzle-combat node, triggers quest updates, logs out. Check the entire pipeline is stable.  
+3. **Beta Branch**  
+   - For major updates, a small subset of players might test new region expansions, synergy gear families, or guild features.  
+   - The single dev reviews feedback and implements hotfixes before global release.  
+
+---
+
+### 14.8 **Security & Anti-Cheat Layers**  
+1. **Basic Checks**  
+   - If a forging attempt claims 100% success from a minimal puzzle performance, the server can recalculate or challenge the result.  
+   - If an offline orchard accrues more resources than possible (e.g., thousands instead of tens), the server corrects it.  
+2. **Encryption**  
+   - Low-level encryption on local save data or forging puzzle seeds.  
+   - The puzzle board’s random seed can be partially server-generated to prevent manipulation.  
+3. **Ban / Warning System**  
+   - If repeated suspicious logs appear, the account is flagged for manual review.  
+   - A single developer can quickly investigate via server logs or analytics triggers.  
+
+---
+
+### 14.9 **Future-Proofing**  
+1. **Scalable Regions**  
+   - Architecture easily supports new data sets for expansions, gear families, synergy buffs.  
+   - Hard-coded region IDs are avoided; the system loops over an array of region definitions.  
+2. **Hero Gacha Updates**  
+   - Banners are stored in a `Banners.json` with start/end dates, featured hero IDs, adjusted rate-ups.  
+   - A single dev can add new heroes or “limited-time variants” (costume versions) in the same data schema.  
+3. **Live Co-Op Potential**  
+   - If real-time co-op is desired, the core puzzle logic can remain local while a simple server channel synchronizes wave states. This is a larger project but still building on existing modules.
+
+---
+
+### 14.10 **Section 14 Conclusion**  
+A well-structured modular approach ensures each system (puzzle board, forging, realm tiers, guild) remains self-contained yet connected via shared data references. From code-level modules like `BoardManager` and `AmplificationManager` to overarching `LiveOpsManager` tools, everything aligns to a single-developer pipeline. Hotfix-friendly JSON data, robust logging, and partial server validation mitigate exploits while allowing swift balancing and live event deployment. This coding blueprint provides the backbone for a scalable, feature-rich puzzle-RPG capable of consistent expansions and revenue spikes.
+
+---
+
+> **End of Section 14**. *(Awaiting your “next” prompt for Section 15.)*
+
+**SECTION 15: INCREMENTAL TUTORIAL & ONBOARDING SEQUENCE**  
+*(Ultra-Granular Developer-Level Detail)*  
+
+---
+
+### 15.1 **Tutorial Philosophy**  
+1. **Incremental Introduction**  
+   - Rather than a single, lengthy tutorial at game start, present short pop-ups and guidance **only** when a new feature is first unlocked.  
+   - Maintain pacing so players aren’t overwhelmed: puzzle basics first, then forging, then Realm Tier Progression, then guild features.  
+
+2. **Single-Developer Strategy**  
+   - Each tutorial step is data-defined, with triggers like “player reaches Tier 1 in Timberland” or “first forging attempt.”  
+   - The developer can easily add or tweak these steps by editing a small **Tutorial.json** file that references game events.  
+
+---
+
+### 15.2 **Early Game Onboarding**  
+1. **Initial Puzzle Basics**  
+   - **Trigger**: On the very first node.  
+   - **Pop-Up**: Explains gem matching (3+ same color), Radiant wildcard, and Corrupted gem hazards in simple bullet points.  
+   - **Hands-On Segment**: A forced short puzzle scenario with fewer Corrupted gems, a relaxed HP drain, and guaranteed Radiant spawns to demonstrate combo building.  
+
+2. **Town Hub & Realm Tier Introduction**  
+   - **Trigger**: After clearing the first couple puzzle nodes, the player is guided to Oakrest’s **Adventurer’s Haven**.  
+   - **Pop-Up**: “Welcome to the Town! Here’s where you can manage Districts, forging, guilds, and more.”  
+   - **Realm Tier**: Prompt to visit **Timberland District** at Tier 0, show daily minigame for wood.  
+
+3. **Hero Summoning & Party Setup**  
+   - **Trigger**: Upon acquiring enough premium gems or receiving a free “Beginner Summon Ticket.”  
+   - **Pop-Up**: Explains the hero gacha banner, star ratings, and how to slot heroes into a 3-hero party.  
+   - **Optional Step**: A short sub-tutorial about synergy combos (mono element vs. multi element).  
+
+---
+
+### 15.3 **Mid-Game Tutorials**  
+1. **Arcane Gear Infusion**  
+   - **Trigger**: The first time the player enters the **Workshop Node** with enough resources for forging.  
+   - **Pop-Up**: “Arcane Gear Infusion lets you craft powerful items. Complete the 4×4 forging puzzle to boost success rates!”  
+   - **Hands-On Segment**: A guided forging attempt using a free or heavily discounted recipe.  
+   - **Explanation**: Outlines forging XP, infusion success percentage, synergy effects (e.g., removing Corrupted gems).  
+
+2. **Realm Tier Upgrades & Tier 3 Milestones**  
+   - **Trigger**: When the player accumulates enough resources to upgrade Timberland or another district from Tier 2 to Tier 3.  
+   - **Pop-Up**: “Tier 3 unlocks a major power boost, such as the 4th hero slot in Timberland District. Collect seeds/wood/ore to upgrade!”  
+   - **Hands-On Segment**: Prompt to gather resources from daily minigames, reinforcing the cycle of daily chores → forging → puzzle-combat.  
+
+3. **Guild & Co-Op**  
+   - **Trigger**: Upon reaching a specified story milestone (e.g., clearing Region 1 or achieving Tier 1 in any district).  
+   - **Pop-Up**: “Join or create a guild to tackle guild bosses, share resources, and earn group rewards!”  
+   - **Tutorial Task**: “Send or receive 10 resources to/from guildmates,” “Challenge the guild boss.”  
+
+---
+
+### 15.4 **Late-Game & Special System Tutorials**  
+1. **Phantasm Surge Refresher**  
+   - **Trigger**: Once the player starts seeing bigger combos or hits Region 3.  
+   - **Pop-Up**: “Hitting a combo of 50 triggers Phantasm Surge, which removes Corrupted gems and boosts damage. Try focusing on large matches or Radiant combos!”  
+2. **Hard Mode / Endless Tower**  
+   - **Trigger**: When the player completes the normal mode of a region or meets a specified level threshold.  
+   - **Pop-Up**: “Hard Mode offers greater rewards but fiercer enemies. Prepare by upgrading your District Tiers or forging Legendary gear!”  
+   - **Hands-On Segment**: Possibly a short demonstration wave in the Endless Tower with on-screen tips about scaling hazards.  
+
+3. **Live Ops & Events**  
+   - **Trigger**: The first time an elemental day or forging weekend is active.  
+   - **Pop-Up**: “This weekend is a special forging event! Enjoy +10% success for Ember gear. Check the events panel in the Daily Planner!”  
+
+---
+
+### 15.5 **Daily Planner Highlight**  
+1. **Centralized Guidance**  
+   - The Daily Planner UI is introduced after the second or third puzzle node.  
+   - **Pop-Up**: “Check your Daily Planner for tasks, minigames, forging opportunities, and guild requests. Tap an item to jump directly there.”  
+2. **Single Tutorial Entry**  
+   - Minimizes the need for repeated instructions; whenever new tasks or events appear, the planner auto-updates.  
+   - Reinforces routine engagement: orchard chores (realm minigames), forging puzzle attempts, puzzle-combat node clears.  
+
+---
+
+### 15.6 **Quest Integration for Tutorials**  
+1. **Tutorial Quests**  
+   - Each tutorial pop-up can be framed as a mini-quest in the **QuestManager**.  
+   - Example: “Tutorial Quest #1: Win 1 puzzle node + Summon 1 hero,” rewarding small gold or forging XP.  
+2. **Rewarding Mastery Points**  
+   - Some tutorials can award mastery points or synergy shards, motivating players to follow through the entire tutorial step.  
+3. **Quest Flow**  
+   - Mark tutorial quests as “Auto-Complete” if the user has already performed the required action. (E.g., if they upgrade a district before the tutorial triggers, it’s auto-completed.)
+
+---
+
+### 15.7 **Progressive Difficulty Ramps**  
+1. **Soft Gating**  
+   - The game gently nudges players to forge better gear before tackling higher-level puzzle nodes.  
+   - Tutorials highlight the synergy between forging success rates, realm tier perks, and puzzle-combat synergy combos.  
+2. **Preventing Overwhelm**  
+   - By spacing out tutorials, players gain confidence in each system (puzzle-combat, forging, realm expansions, guild co-op) in manageable chunks.  
+
+---
+
+### 15.8 **UI/UX Best Practices**  
+1. **Clear & Minimal Pop-Ups**  
+   - Use short text lines, bullet points, or icons for clarity. Avoid heavy paragraphs.  
+   - Option to skip or “learn later” for experienced players.  
+2. **Highlight Effects**  
+   - When referencing a new button (e.g., “Workshop Node”), glow or outline that button on-screen to direct the user’s gaze.  
+3. **Disable Input**  
+   - Briefly lock other UI elements during critical tutorial steps, ensuring the user completes the intended action. Keep these lockouts short to avoid frustration.  
+
+---
+
+### 15.9 **Analytics & Iteration**  
+1. **Tutorial Completion Rate**  
+   - Track how many players drop off during each tutorial step or how many skip.  
+2. **Difficulty Spikes**  
+   - If analytics show many players fail to progress beyond Region 1 or Tier 1 upgrades, revise tutorials or lower resource costs.  
+3. **Event & Feature Tutorials**  
+   - For newly introduced expansions or synergy gear families, add a small pop-up tutorial triggered by the first relevant event.  
+
+---
+
+### 15.10 **Section 15 Conclusion**  
+A well-structured incremental tutorial ensures players gradually master every system—**Puzzle-Combat**, **Arcane Gear Infusion**, **Realm Tier Progression**, **Guild Co-Op**, and synergy combos—without feeling overwhelmed. By tying pop-ups to quest-like objectives in the **Daily Planner** and awarding small, meaningful rewards, the tutorial flow becomes seamlessly integrated with core gameplay loops. This approach maximizes accessibility, retention, and overall player satisfaction, all while minimizing development complexity through data-driven triggers and minimal-coded pop-up sequences.
+
+---
+
+> **End of Section 15**. *(Awaiting your “next” prompt for Section 16.)*
+
+**SECTION 16: PERFORMANCE & NETCODE OPTIMIZATION**  
+*(Ultra-Granular Developer-Level Detail)*  
+
+---
+
+### 16.1 **Mobile Platform Targets**  
+1. **Frame Rate Goals**  
+   - **Mid-Range Devices**: Aim for consistent **30–60 FPS** in puzzle-combat.  
+   - **High-End Devices**: Unlocked framerate if possible, but ensure stable performance even during large combos or Corrupted gem explosions.  
+2. **Memory Footprint**  
+   - Keep total memory usage under **500 MB** for a typical mid-range Android/iOS device.  
+   - Reuse gem sprites, backgrounds, and animations via texture atlases.  
+
+3. **Testing Matrix**  
+   - At least one older Android device (2–3GB RAM) and one mid-tier iOS device to confirm performance baselines.  
+   - Occasional checks on high-end devices to ensure no CPU or GPU spikes.
+
+---
+
+### 16.2 **Puzzle-Combat Optimization**  
+1. **Board Updates & Match Detection**  
+   - Use efficient data structures (e.g., a 2D array or list) for the 8×8 grid.  
+   - **Match-Finding Algorithm**: A single pass each time the player swaps gems, plus a cascade check.  
+   - Limit real-time collisions: the puzzle board can be updated in discrete steps, preventing overhead from continuous re-checking.  
+
+2. **Corrupted Gem Evolution**  
+   - Only update Corrupted gem phases every **1 second** or so, rather than checking constantly.  
+   - A simple timer system can queue “evolution events” to reduce repeated CPU calls.  
+
+3. **Particle & Visual Effects**  
+   - Keep swirl or explosion VFX short and reuse particle assets.  
+   - For mass combos, run a single combined effect rather than multiple overlapping ones if performance dips.
+
+---
+
+### 16.3 **Arcane Flow Transitions**  
+1. **Shader-Based vs. Fullscreen Video**  
+   - Prefer lightweight shader transitions or sprite-based swirl animations over heavy video assets.  
+   - Cache the swirl texture in memory for quick reuse on sublocation entry or wave transitions.  
+2. **Adaptive Quality Settings**  
+   - On lower-end devices, reduce swirl complexity, skip some blending layers, or shorten the transition animation.  
+   - Expose a “Low / Medium / High” graphics toggle in settings.
+
+---
+
+### 16.4 **Adaptive Audio Layers**  
+1. **Audio Channel Management**  
+   - Preload audio layers for base track, combo track, surge track, tension track.  
+   - Crossfade them using the Unity audio mixer or a similar system.  
+2. **Memory Budget**  
+   - Music tracks can loop seamlessly. Keep them under a few MB each by compressing at an acceptable quality (e.g., Vorbis ~96kbps).  
+   - Sound effects for gem matches, forging puzzle, etc. should be in short clips.  
+
+3. **Performance Tips**  
+   - Limit simultaneous SFX; if multiple combos occur in quick succession, pool the SFX or layer them at reduced volume to prevent audio chaos.  
+   - Fade out unnecessary tracks quickly once the event ends (e.g., tension track stops if HP recovers above 20%).
+
+---
+
+### 16.5 **Asynchronous Netcode**  
+1. **Minimal Real-Time Interaction**  
+   - Puzzle-combat is local. The server receives results after completion, so no heavy synchronization is needed.  
+   - Guild boss or PvP is also asynchronous: the server only processes damage logs or challenge results.  
+2. **Data Packet Size**  
+   - Each node completion or forging success might send a small JSON packet: `{"playerID":..., "nodeID":..., "damageDealt":..., "rewards":...}`.  
+   - Batching these packets or sending them at session end can reduce overhead, but careful with potential data loss if a player closes the app abruptly.  
+
+3. **Cheat Detection**  
+   - On receiving results, the server does a quick validity check (e.g., max possible damage, synergy levels, forging success probability) to flag anomalies.  
+   - Logs suspicious data for future review or auto-suspension if egregious.
+
+---
+
+### 16.6 **Server Architecture**  
+1. **Backend Framework**  
+   - A typical RESTful or small WebSocket-based approach is sufficient for asynchronous updates.  
+   - Leaderboards, guild data, quest progression stored in a simple relational or NoSQL database.  
+2. **Scaling**  
+   - Light data usage means one or a few cloud instances can handle thousands of concurrent users if the puzzle logic is client-side.  
+   - Optional load balancing if the player base grows significantly.  
+
+3. **Disaster Recovery**  
+   - Daily backups of database.  
+   - Store user data with versioning so updates or expansions do not corrupt old records.
+
+---
+
+### 16.7 **Edge Cases & Offline Play**  
+1. **Offline Resource Accumulation**  
+   - The user can collect offline orchard resources for up to 12 hours if they aren’t connected.  
+   - When they reconnect, the server calculates the difference based on the local last-login timestamp, validated by server time.  
+2. **Combat Without Connection**  
+   - Puzzle-combat can be done offline. The user’s results get queued and sent to the server once reconnected.  
+   - If a node requires an online check (e.g., guild boss), block that node if offline or store the attempt result for a brief period until reconnection.  
+
+3. **Potential Exploits**  
+   - Timestamps can be manipulated if purely local. The server compares server time vs. local time to ensure consistency.  
+   - If the difference is excessive, partial compensation or flags might be used.
+
+---
+
+### 16.8 **Client-Side Caching & Memory Management**  
+1. **Asset Bundles by Region**  
+   - Each region’s background, minion sprites, boss art can be in a single bundle ~10–20 MB.  
+   - Unload previous region bundles when the player moves far enough away to reduce memory.  
+2. **Persistent Data**  
+   - The user’s inventory, hero data, quest states are kept in memory if the app remains open.  
+   - Only flush them if memory constraints rise too high, then reload from local or server upon demand.  
+
+3. **Garbage Collection Minimization**  
+   - Object pooling for gem sprites, VFX, or forging puzzle elements.  
+   - Reuse idle objects instead of constantly instantiating/destroying.
+
+---
+
+### 16.9 **Testing & Profiling**  
+1. **Profiler Tools**  
+   - Unity Profiler, Xcode Instruments, or Android Studio for analyzing CPU, GPU, memory usage.  
+   - Identify bottlenecks in puzzle cascade logic, forging puzzle load, or swirl transitions.  
+2. **Performance Benchmarks**  
+   - Test worst-case scenario: multiple chain combos, mass Radiant gem spawns, Phantasm Surge back-to-back, extra layering of audio.  
+   - Check guild boss fights with large HP and repeated wave transitions for load spikes.
+
+3. **Continuous Monitoring**  
+   - Log average frame times, memory usage on typical mid-range devices each patch.  
+   - If a patch introduces new VFX or forging mechanics, ensure no major regression in performance.
+
+---
+
+### 16.10 **Section 16 Conclusion**  
+A focus on efficient puzzle-combat updates, lightweight Arcane Flow Transitions, strategic audio layering, and asynchronous netcode ensures the puzzle-RPG runs smoothly on mainstream mobile devices. By caching assets regionally, minimizing repeated effect overhead, and offloading heavy tasks to data-driven logic, a single developer can maintain performance targets. Proper validation checks and server synchronization further safeguard fair play while allowing offline or low-bandwidth usage. This foundation guarantees a stable, scalable, and enjoyable experience crucial for player retention and monetization success.
+
+---
+
+> **End of Section 16**. *(Awaiting your “next” prompt for Section 17.)*
+
+**SECTION 17: FINAL INTEGRATION & FULL GAMEPLAY LOOP**  
+*(Ultra-Granular Developer-Level Detail)*  
+
+---
+
+### 17.1 **High-Level Loop Recap**  
+1. **Daily Login → Town Hub (Adventurer’s Haven)**  
+   - Player collects offline **Realm Tier Progression** resources (wood, ore, seeds, blossoms).  
+   - Checks the **Daily Planner** for tasks (daily minigames, forging attempts, puzzle-combat nodes, guild boss participation).  
+   - Potentially visits the **Guild Tavern** for resource gifting or Boss fights.  
+
+2. **Realm Tier Progression & Resource Usage**  
+   - The player upgrades District Tiers if they have enough gold + resources, unlocking synergy boosts or feature milestones (like the 4th hero slot at Timberland Tier 3).  
+   - Plays each District’s **daily minigame** for additional wood, ore, seeds, or blossoms.  
+
+3. **Arcane Gear Infusion (Workshop Node)**  
+   - The player attempts the 4×4 forging puzzle to craft or upgrade gear (Rare → Epic → Legendary).  
+   - Success rates vary based on puzzle performance, District Tiers, forging passes, and event buffs.  
+   - Gear synergy (e.g., removing Corrupted gems, spawning Radiant gems) fuels puzzle-combat effectiveness.  
+
+4. **Puzzle-Combat Nodes**  
+   - The user selects a sublocation from one of the 10 Regions. Fights standard or elite minions, culminating in a boss node.  
+   - Real-time matching with Corrupted gem evolution, Radiant wildcard synergy, and **Phantasm Surge** triggers.  
+   - Earns gold, forging mats, hero XP, skill XP. Nodes respawn after 8 hours with slight randomization.  
+
+5. **Hero Progression & Party Building**  
+   - Summons new heroes from the gacha banner or levels existing ones, investing Mastery Points for synergy perks.  
+   - Tweaks party composition (mono-element for +10% damage vs. multi-element for extended Surge).  
+   - Equips Arcane Gear Infusion items to augment puzzle board strategies.  
+
+6. **Guild & Co-Op**  
+   - Donates resources to the guild’s shared **Guild Grove**, raises tiers for collective buffs.  
+   - Fights asynchronous guild bosses for forging tokens, synergy shards, or bonus gold.  
+   - Possibly engages in GvG resource races or cameo “Guest Hero Summon” from guildmates.  
+
+7. **Live Ops & Events**  
+   - Weekly elemental days (Monday = Ember, Tuesday = Cascade, etc.).  
+   - Forging weekends or seasonal holiday events add extra success rates or special gear.  
+   - Endless Tower or Hard Mode expansions for endgame challenge.  
+
+8. **Overarching Story & Quest Arcs**  
+   - Branching region arcs require puzzle nodes + forging tasks + realm upgrades to complete.  
+   - Rewards typically include hero XP, forging items, synergy gear tokens, or quest keys to unlock boss nodes.  
+   - Daily/weekly quests guide players to remain active in forging, puzzle-combat, and guild cooperation.  
+
+---
+
+### 17.2 **Full Developer Roadmap**  
+1. **Core Systems Launch**  
+   - Puzzle board logic, basic forging, Tier 0–4 for each District, main Regions (1–10).  
+   - Hero gacha with pity counters.  
+   - Basic guild functions: resource gifting, guild boss, guild grove.  
+   - Incremental tutorials and daily tasks.  
+
+2. **Post-Launch Additions**  
+   - Hard/Remixed modes, Endless Tower, advanced synergy gear sets, potential Tier 5 expansions, new heroes and banners.  
+   - Seasonal events, forging weekends, GvG competitions, asynchronous PvP or leaderboards.  
+   - Cosmetic expansions for the Player Room, puzzle board skins, hero skins.  
+
+3. **Long-Term Live Ops**  
+   - Rotating hero banners every 2 weeks, forging synergy weekends, monthly seasonal passes, quarterly expansions with new Regions or District Tiers.  
+   - Ongoing data-driven balancing to maintain monetization and smooth progression for new and veteran players alike.  
+
+---
+
+### 17.3 **Ensuring Seven-Figure Monthly Revenue**  
+1. **Core Monetization Drivers**  
+   - **Gacha Summons**: star-rated heroes with pity systems encourage repeated pulls.  
+   - **Arcane Gear Infusion**: forging passes, skip tokens, resource bundles for quick progression or guaranteed synergy.  
+   - **Realm Resource Passes**: daily orchard minigame boosters.  
+   - **Battle Passes**: 14-day cycles with premium track rewards, forging tokens, guaranteed heroes.  
+   - **Cosmetics**: puzzle board themes, avatar skins, hero costumes.  
+
+2. **Retention & Engagement**  
+   - **Quest System**: daily/weekly tasks, storyline arcs, synergy-based forging challenges.  
+   - **Guild Features**: asynchronous bosses, donation-based grove upgrades, resource sharing, GvG events.  
+   - **Live Ops**: elemental days, forging weekends, seasonal expansions.  
+   - **Endgame Content**: Hard modes, Endless Tower, heroic tales, advanced synergy combos.  
+
+3. **User Acquisition & Marketing**  
+   - Vibrant puzzle-combat with real-time gem matches, distinct from typical turn-based match-3.  
+   - High-quality anime/painterly style art with flashy Arcane Flow Transitions, layered music.  
+   - Cross-promo with other puzzle or RPG titles, limited-time collaboration hero banners for spikes in revenue.  
+
+---
+
+### 17.4 **Final Blueprint Cohesion**  
+1. **All Systems Interlocked**  
+   - Puzzle-combat performance is enhanced by forging gear, which requires realm resources.  
+   - Realm Tier Progression daily minigames yield resources that feed forging.  
+   - Forging synergy items drastically improve puzzle capabilities, letting players defeat harder nodes or guild bosses.  
+   - Quests push players to upgrade District Tiers, craft gear, and recruit heroes, which in turn unlock more puzzle efficiency.  
+   - Guild cooperation further boosts resource flow, synergy bonuses, and fosters social retention.  
+
+2. **Data-Driven Maintenance**  
+   - A single developer can easily tweak spawn rates, forging costs, synergy percentages, or event parameters.  
+   - No heavy re-coding for expansions: simply add new Region or Tier data, new synergy gear entries, new quest arcs.  
+
+3. **Continuous Live Ops Loop**  
+   - Weekly cycles of element buffs, forging weekends, rotating limited-time hero banners.  
+   - Seasonal expansions or thematic events every 1–3 months, fueling bursts of spending and new content engagement.  
+   - Leaderboards, guild events, and Hard/Remix modes keep endgame players busy and monetizing.  
+
+
