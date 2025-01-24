@@ -1,0 +1,138 @@
+**ANALYTICS & TELEMETRY EVENT DEFINITIONS (FOR SYNERGY EXPANSIONS, CAMEO ILLUSIONS USAGE, FORGING COMBOS, DAILY TASKS, ETC.)**
+
+Below is a **detailed guide** on setting up analytics and telemetry in your puzzle-RPG. The focus is on **event definitions** for synergy expansions, cameo illusions usage hooking, forging combos, daily tasks, and other key points in the user flow. No code is shown—only best practices and recommended structures for a robust analytics pipeline.
+
+---
+
+## 1. **Choosing an Analytics Platform**
+
+1. **Common Choices**  
+   - **Unity Analytics**: Built into the editor, recommended for simpler integration.  
+   - **Firebase Analytics**: More advanced user property segmentation, real-time data.  
+   - **GameAnalytics**, **Amplitude**, or **Mixpanel**: specialized or more advanced solutions.
+2. **Integration**  
+   - Usually, you embed an SDK or Unity package that handles event logging.  
+   - For synergy expansions cameo illusions usage hooking triggers or forging combos, you add calls to log events at relevant code points.
+
+---
+
+## 2. **High-Level Event Types**
+
+1. **Core Progression Events**  
+   - E.g., “PuzzleNodeClear,” “ForgeItemSuccess,” “RealmTierUpgrade,” “GuildBossDamage,” “MinionDefeat,” etc.  
+2. **User Interaction / UI**  
+   - E.g., “OpenShop,” “OpenForge,” “GachaPull.”  
+3. **Monetization**  
+   - “PurchaseSuccess,” “PurchaseCancel,” “SkipTokenUsed,” “BattlePassActivated.”  
+4. **System**  
+   - “GameStart,” “SessionEnd,” “DailyReset,” cameo illusions usage hooking cameo triggers.
+
+---
+
+## 3. **Detailed Event Definitions**
+
+Below are recommended event definitions for synergy expansions, cameo illusions usage hooking, forging combos, daily tasks, etc.
+
+### 3.1 Synergy Expansions  
+- **Event Name**: “Synergy_Expansion_Trigger”  
+- **Parameters**:
+  - `realmTier` (int): the user’s realm tier at the time  
+  - `expansionName` (string): name of the synergy expansion or orchard≥Tier gating replacement  
+  - `action` (string): e.g., “UnlockTier” or “ActivateBuff”  
+  - `timestamp` (long or date)
+
+### 3.2 Cameo Illusions Usage  
+- **Event Name**: “Cameo_Illusion_Summon”  
+- **Parameters**:
+  - `cameoID` (string): which cameo illusions usage hooking hero or effect  
+  - `triggerCause` (string): e.g., forging success, synergy expansions cameo illusions usage hooking threshold, puzzle surge, etc.  
+  - `puzzleNode` or `regionID` if relevant
+
+### 3.3 Forging Combos  
+- **Event Name**: “Forge_Attempt” and “Forge_Result”  
+- **Parameters** for **Forge_Attempt**:
+  - `itemID` (string): the forging item data name  
+  - `puzzlePerformance` (int): minigame performance score  
+  - `realmTier` (int): synergy expansions gating tier  
+- **Parameters** for **Forge_Result**:
+  - `itemID` (string)  
+  - `success` (bool)  
+  - `timestamp` (long or date)
+
+### 3.4 Daily Tasks  
+- **Event Name**: “Daily_Task_Complete”  
+- **Parameters**:
+  - `taskID` (string): which daily or weekly quest  
+  - `resourceGained` (string): e.g., “Wood: 10”  
+  - `timeToComplete` (float in seconds)
+
+### 3.5 Gacha & Monetization  
+- **Event Name**: “Gacha_Pull”  
+  - `gachaType` (string): single pull or 10-pull  
+  - `resultStars` (int array or string)  
+- **Event Name**: “InAppPurchase”  
+  - `productID` (string)  
+  - `price` (float)  
+  - `currency` (string) (e.g., “USD”)  
+
+---
+
+## 4. **Event Structure & Frequency**
+
+1. **Focus on Key Funnels**  
+   - Avoid spamming every single gem match; keep it minimal. Log final outcomes (combo≥50 leading to cameo illusions usage hooking or synergy expansions triggers, forging success/fail, daily tasks).  
+2. **Parameter Depth**  
+   - Keep custom parameters succinct. E.g., “realmTier,” “regionID,” “timestamp.” Overly complex structures can hamper analytics clarity.  
+3. **Event Caps**  
+   - If you log too many events (e.g., every cameo illusions usage hooking swirl), you risk overhead or data noise. Balance detail vs. performance.
+
+---
+
+## 5. **User Properties & Segmentation**
+
+1. **Properties**  
+   - “RealmTierHighestUnlocked”: track the highest realm expansion the user has.  
+   - “HasCameoIllusionsUnlocked”: boolean if cameo illusions usage hooking is unlocked.  
+   - “TotalForgeSuccesses”: integer for forging combos completions.  
+2. **Segments**  
+   - You can segment players who reached synergy expansions Tier 3 vs. those who haven’t.  
+   - Monitor cameo illusions usage hooking triggers frequency among whales vs. free-to-play users.
+
+---
+
+## 6. **Integration Workflow**
+
+1. **Where to Log**  
+   - Insert calls in key code blocks: forging synergy combos manager, cameo illusions usage hooking manager, synergy expansions gating.  
+   - E.g., upon forging success, call `Analytics.LogEvent(Forge_Result, parametersMap);`  
+2. **Testing**  
+   - Use Unity Editor or test builds to confirm events appear in your analytics dashboard.  
+3. **Dashboards & Queries**  
+   - In Firebase, for example, you might see daily aggregator for cameo illusions usage hooking triggers or synergy expansions orchard≥Tier upgrades.
+
+---
+
+## 7. **Privacy & Data Minimization**
+
+1. **User Consent**  
+   - Respect GDPR/CCPA by providing an opt-out or a minimal data approach.  
+   - Don’t log personal info beyond anonymized analytics.  
+2. **Appropriate Data**  
+   - Keep synergy expansions cameo illusions usage hooking logging purely gameplay—avoid real personal data.
+
+---
+
+## 8. **Post-Processing & Insights**
+
+1. **Daily Retention**  
+   - Check how synergy expansions or forging synergy combos correlate with daily tasks completion.  
+2. **Feature Usage**  
+   - If cameo illusions usage hooking is rarely triggered, consider rebalancing synergy expansions thresholds.  
+3. **Revenue**  
+   - Link “InAppPurchase” events to total synergy expansions orchard≥Tier gating or cameo illusions usage hooking draws. Fine-tune the store.
+
+---
+
+**END: Analytics & Telemetry Event Definitions**  
+
+*(Stop here. Await “Next” for Localization instructions.)*

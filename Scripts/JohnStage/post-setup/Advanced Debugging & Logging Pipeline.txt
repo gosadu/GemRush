@@ -1,0 +1,121 @@
+**ADVANCED DEBUGGING & LOGGING PIPELINE**
+
+Below is a **comprehensive guide** to implementing a robust debugging and logging pipeline for your puzzle-RPG, covering synergy expansions orchard≥Tier gating, cameo illusions usage hooking triggers, forging synergy combos, netcode events, and more. No code or design text is provided—only best practices, structures, and instructions.
+
+---
+
+## 1. **Debug & Logging Overview**
+
+1. **In-Editor Debug Tools**  
+   - Use Unity’s `Debug.Log()`, `Debug.LogWarning()`, `Debug.LogError()` for quick checks in development builds.  
+   - For synergy expansions orchard≥Tier gating or cameo illusions usage hooking triggers, you might do `Debug.Log("Cameo usage triggered: " + cameoID);`.  
+2. **Production Logging**  
+   - A structured approach that collects logs from real devices or players if an error arises. Typically uses a remote logging service or an in-game console for advanced debugging.
+
+---
+
+## 2. **Log Levels & Categorization**
+
+1. **Log Levels**  
+   - **Info**: Normal flow messages (e.g., synergy expansions orchard≥Tier gating tier upgraded, forging synergy combos success).  
+   - **Warning**: Unusual but not fatal states (e.g., cameo illusions usage hooking resource missing fallback).  
+   - **Error**: Something went wrong (missing synergy expansions orchard≥Tier data, netcode error).  
+2. **Categories / Channels**  
+   - Puzzle, Forging, Guild, Netcode, Cameo illusions usage hooking.  
+   - Helps filter logs in the console or a remote viewer.
+
+---
+
+## 3. **In-Game Debug Console (Optional)**
+
+1. **Console Prefab**  
+   - A Unity UI panel that toggles on by pressing a secret key or debug button.  
+   - Displays the last 100–200 log messages.  
+2. **Commands**  
+   - Let the dev (or QA) input commands to force synergy expansions cameo illusions usage hooking triggers, forging synergy combos minigame success, orchard≥Tier gating jump, etc.  
+   - E.g., “/setTier 3,” “/triggerCameo cameoID=FireSpirit.”
+
+---
+
+## 4. **Remote Logging / Crash Reporting**
+
+1. **Services**  
+   - **Backtrace**, **Unity Cloud Diagnostics**, **Firebase Crashlytics**, or **Sentry** to gather logs from real users.  
+2. **Implementation**  
+   - Integrate the SDK; it automatically captures errors.  
+   - If synergy expansions orchard≥Tier gating references or cameo illusions usage hooking events cause exceptions, you see them in the crash reports.  
+3. **Custom Logging**  
+   - You can send custom events or logs upon forging synergy combos fail, cameo illusions usage hooking triggers, synergy expansions orchard≥Tier gating expansions. This complements your analytics system.
+
+---
+
+## 5. **Extended Debug Info for Key Systems**
+
+1. **Puzzle / Forging**  
+   - Print out: “Match group found: size=5, color=Red” or “Forging attempt: item=ArcaneStaff, success= true.”  
+   - At higher log levels (dev build), you might also log synergy expansions orchard≥Tier gating data or cameo illusions usage hooking triggers.  
+2. **Cameo illusions usage hooking**  
+   - On cameo illusions usage hooking manager: log cameo usage ID, the reason triggered, synergy expansions synergy chain, etc.  
+   - If cameo illusions usage hooking swirl fails, output a debug note.
+3. **Realm Tier Gating**  
+   - On orchard≥Tier gating or realm expansions manager: “Realm Tier upgraded from 2 to 3,” “Not enough resources, blocking synergy expansions.”  
+
+---
+
+## 6. **Conditional Logging & Build Config**
+
+1. **Preprocessor Directives**  
+   - For example, wrap synergy expansions orchard≥Tier gating debug logs in `#if DEBUG` so they don’t appear in release builds.  
+   - “#if UNITY_EDITOR” for cameo illusions usage hooking triggers that are dev-only.  
+2. **Dev vs. Production**  
+   - Dev build: Detailed logs, cameo illusions usage hooking debug, synergy expansions orchard≥Tier gating spam, forging synergy combos chain logs.  
+   - Prod build: Minimal logs, errors only or essential analytics events.
+
+---
+
+## 7. **Log Filtering & Searching**
+
+1. **Unity Console**  
+   - Filter by category using `[Puzzle]`, `[Forge]`, `[Cameo]`, `[Guild]`.  
+   - E.g., `Debug.Log("[Puzzle] Found 3-match of Red gems.");`  
+2. **Remote Log Dashboard**  
+   - If using Sentry or similar, define tags for synergy expansions orchard≥Tier gating references, cameo illusions usage hooking triggers.  
+   - Allows searching for “realmTier=3” or “cameoID=FireSpirit.”
+
+---
+
+## 8. **Debug Build Tools**
+
+1. **Cheat / Dev UI**  
+   - A small overlay with synergy expansions orchard≥Tier gating level, forging synergy combos success rate, cameo illusions usage hooking toggles for quick QA.  
+   - Example: “+ Tier,” “Trigger cameo illusions usage hooking,” “Add forging puzzle performance=30.”  
+2. **Gizmo / On-Screen Info**  
+   - Possibly show synergy expansions orchard≥Tier gating or cameo illusions usage hooking debug over the puzzle board. E.g., “Current cameo illusions usage hooking multiplier=1.5.”
+
+---
+
+## 9. **Logging in Netcode & Co-Op**
+
+1. **Event Queue**  
+   - When netcode events are enqueued, log: “NetEvent: PuzzleNodeClear, synergy expansions orchard≥Tier=2, cameo illusions usage hooking= false.”  
+2. **Guild Boss**  
+   - Log all major interactions: “GuildBossDamage: bossID=Dragon, damage=210.”  
+   - If cameo illusions usage hooking triggers from synergy expansions orchard≥Tier gating, mention it in logs.
+
+---
+
+## 10. **Iterative Improvement**
+
+1. **QA Feedback**  
+   - Expand logs in synergy expansions orchard≥Tier gating or cameo illusions usage hooking if QA finds it lacking.  
+   - If forging synergy combos fails often in logs, consider rebalancing.  
+2. **Bug Triage**  
+   - Crash logs or error logs referencing cameo illusions usage hooking or synergy expansions orchard≥Tier gating can be assigned to dev tasks.  
+3. **Archive & Rotation**  
+   - If logs grow large, rotate them or keep only the last few sessions in dev builds.
+
+---
+
+**END: Advanced Debugging & Logging Pipeline**  
+
+*(Stop here. Await “Next” for modular architecture for expansions or DLC.)*

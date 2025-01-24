@@ -1,0 +1,106 @@
+**STAGE 15 ASSET LIST**  
+*(Incremental Tutorial & Onboarding Sequence)*
+
+Below is a comprehensive catalog of **every** visual or audio asset required in **Stage 15** of the puzzle-RPG blueprint—no code or design text, only the **detailed asset list**. Each visual asset has a **5–7 line** generative image prompt; each audio asset has a **2–3 line** audio prompt. Stage 15 covers **incremental tutorials** that guide players through orchard expansions synergy (renamed Realm expansions), forging synergy combos, cameo illusions usage hooking, and puzzle combat at relevant unlock times.
+
+---
+
+### 1) **Tutorial Panel / Pop-up Background**  
+- **Usage**: A small overlay or pop-up panel displayed whenever a new tutorial step triggers (e.g., “Try forging!”). Should fit the AAA puzzle-RPG style, with mild runic edges.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A small fantasy-themed tutorial pop-up panel with ornate corners
+  2) Painted style, AAA puzzle-RPG polish
+  3) Subtle arcane swirl or runic motif behind the text area
+  4) Light pastel background for easy text readability
+  5) ~400×250 px, crisp edge lines
+  6) Transparent alpha border or 9-slice to scale if needed
+  7) Mild glow effect at corners, consistent with main UI
+  ```
+
+---
+
+### 2) **Tutorial Arrow / Highlight Indicators**  
+- **Usage**: Pointing arrows or pulsing rings to highlight UI buttons or features during the tutorial steps (like synergy expansions realm button, forging synergy combos node, cameo illusions usage hooking manager).  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A set of small animated arrows and circular highlight rings
+  2) Painted style edges, AAA puzzle-RPG color palette
+  3) Subtle arcane or swirling glow behind each arrow
+  4) Crisp lines at ~64×64 px for arrow, ~128×128 for ring
+  5) Gentle pulsing alpha channel to draw user attention
+  6) Transparent background for easy overlay
+  7) Warm golden or teal highlights consistent with main UI
+  ```
+
+---
+
+### 3) **Tutorial Step Icons**  
+- **Usage**: If each tutorial step needs a small icon or portrait to represent the feature being introduced (like forging, synergy expansions, cameo illusions usage hooking).  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A series of mini icons representing game features: forging hammer, orchard expansions crest, cameo swirl
+  2) Painted style, AAA puzzle-RPG detail, ~48×48 px
+  3) Subtle glow or arc around each icon
+  4) Crisp silhouette for easy recognition at small scale
+  5) Transparent alpha for layering near text
+  6) Consistent color scheme across the set
+  7) Light arcane pattern tying them together
+  ```
+
+---
+
+### 4) **Tutorial Onboarding SFX**  
+- **Usage**: A short, friendly chime or beep whenever a new tutorial step triggers, reinforcing synergy expansions references or cameo illusions usage hooking if introduced.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  A brief, gentle bell tone with a soft magical tail
+  ~0.5-second positivity chime
+  AAA puzzle-RPG user onboarding feedback
+  ```
+
+---
+
+### 5) **Tutorial Completion SFX**  
+- **Usage**: A slightly more celebratory cue when the user finishes a tutorial step, e.g., forging synergy combos introduction or cameo illusions usage hooking.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  A short ascending harp arpeggio, bright final note
+  ~1 second, indicating tutorial step complete
+  AAA puzzle-RPG sense of accomplishment
+  ```
+
+---
+
+### 6) **Overlay Fade / Dim Asset**  
+- **Usage**: When focusing on a single UI element, the rest of the screen dims. This is typically a semi-transparent black or gray overlay with alpha.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A semi-transparent dark overlay texture
+  2) Gradual fade from center to edges, ~75% opacity near corners
+  3) Painted style edges to match fantasy UI
+  4) AAA puzzle-RPG polish, no harsh lines
+  5) Crisp alpha channel for smooth transitional effect
+  6) Mellow color to ensure highlighted area stands out
+  7) ~1920×1080 scale, flexible or 9-slice for variety
+  ```
+
+---
+
+### 7) **Character / NPC Guide Portrait** (Optional)  
+- **Usage**: If your tutorial has a guiding NPC or cameo illusions usage hooking caretaker explaining steps, you might show a portrait or 2D sprite in the corner.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A friendly fantasy NPC sprite (e.g., a sage or caretaker)
+  2) Painted style, AAA puzzle-RPG quality, mild anime flair
+  3) Warm smile, arcane accessories (small staff or runic scroll)
+  4) Crisp lines around silhouette, transparent alpha
+  5) Enough detail to read well at ~200×300 px
+  6) Soft pastel color palette with subtle glow on arcane items
+  7) Minimal background or none for layering in tutorials
+  ```
+
+---
+
+**END OF STAGE 15 ASSET LIST**  
+*(Stop here. Await “Next” for Stage 16.)*

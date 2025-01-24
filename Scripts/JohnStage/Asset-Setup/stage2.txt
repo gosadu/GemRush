@@ -1,0 +1,113 @@
+**STAGE 2 ASSET LIST**  
+*(Puzzle-Combat Mechanics & Advanced Board Logic)*
+
+Below is a comprehensive catalog of **every** visual or audio asset required in **Stage 2** of the puzzle-RPG blueprint—no code or design/QA text, just the detailed asset list. Each visual asset has a **5–7 line** image prompt; each audio asset has a **2–3 line** audio prompt. Stage 2 introduces gem-based puzzle combat, Radiant/Corrupted gems, synergy references, and cameo illusions usage hooking if your board logic triggers special cameo synergy.  
+
+---
+
+### 1) **Puzzle Board Background**  
+- **Usage**: The main 8×8 board backdrop, providing a distinct environment behind the gems. It should not distract from the gems but convey a subtle arcane–fantasy flair.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A soft gradient fantasy backdrop for an 8×8 puzzle grid
+  2) Subtle magical symbols at edges, not cluttering center
+  3) Warm teal-to-violet color transition
+  4) Gentle painterly brushstrokes, AAA puzzle-RPG level of detail
+  5) Light arcane glow effect near corners
+  6) Semi-muted so gem colors stand out
+  7) Transparent or fade in center area for gem clarity
+  ```
+
+---
+
+### 2) **Gem Sprites (Red, Blue, Green, Yellow)**  
+- **Usage**: Core colored gems for puzzle-combat. Each color denotes synergy references or hero alignment. Typically ~64×64 resolution for clarity, optionally animated with a subtle idle shine.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) Four distinct gem sprites: red, blue, green, yellow
+  2) Slightly faceted surfaces, glossy finish
+  3) Each with a mild magical aura or subtle animated sparkle
+  4) Vibrant jewel-tone color palette
+  5) Crisp edges and a prismatic highlight
+  6) AAA puzzle-RPG style, coherent design across colors
+  7) Transparent background for 2D UI usage
+  ```
+
+---
+
+### 3) **Radiant Gem Sprite (Wildcard)**  
+- **Usage**: A special wildcard gem that can match any color, awarding synergy combo boosts. Requires a distinct prismatic or rainbow-like effect to stand out.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A rainbow-sparkling gem with refractive edges
+  2) Pulsing prismatic glow in the center
+  3) Slight animation frames for shifting color highlights
+  4) AAA puzzle-RPG style, ephemeral swirl in background
+  5) High contrast between gem facets, shimmering aura
+  6) Crisp outline for easy readability at small scale
+  7) Radiant “wildcard” vibe, eye-catching brilliance
+  ```
+
+---
+
+### 4) **Corrupted Gem Sprite (Hazard)**  
+- **Usage**: A malevolent gem that evolves over time, eventually locking adjacent gems. Typically dark, cracked visuals with a subtle pulsation.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A jagged, dark crystal with crackled neon veins
+  2) Faint red or purple glow pulsing inside
+  3) Corrupted fantasy aura, ominous arcane fissures
+  4) Slightly animated “throb” or flicker effect
+  5) AAA puzzle-RPG hazard gem, high detail
+  6) Transparent alpha channel for easy layering
+  7) Menacing presence compared to regular gems
+  ```
+
+---
+
+### 5) **Gem Match SFX**  
+- **Usage**: A short “pop” or “chime” whenever 3+ gems match and disappear. Crisp enough to be satisfying but not overbearing during chain combos.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  A bright, short chime with layered sparkles
+  Quick fade-out, high-frequency glitter to indicate success
+  AAA puzzle-RPG gem match feedback
+  ```
+
+---
+
+### 6) **Gem Drop / Cascade SFX**  
+- **Usage**: A soft whoosh or trickling sound each time new gems spawn or cascade into empty slots.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  Gentle cascading sound with a low whoosh and faint twinkle
+  Mid-volume, short tail, evoking falling crystals
+  AAA puzzle-RPG gem movement ambience
+  ```
+
+---
+
+### 7) **Puzzle BGM (Combat Theme)**  
+- **Usage**: An upbeat, loopable background track for standard puzzle-combat encounters, matching synergy references or cameo illusions hooking triggers if the cameo appears. Shouldn’t overshadow SFX.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  Mid-tempo orchestral-electronic fusion loop
+  Driving percussion, subtle heroic chord progressions
+  AAA puzzle-RPG tension with bright melodic flourishes
+  ```
+
+---
+
+### 8) **Board Rotation or Advanced Mechanic Cue SFX**  
+- **Usage**: A quick swirl or shifting sound effect if the puzzle board rotates or an advanced mechanic triggers. Helps differentiate normal gem matches from special events.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  A dynamic swirling cue with light windwhoosh and arcane twinkle
+  Quick, 1-second effect, rising then fading
+  AAA puzzle-RPG advanced board mechanic feedback
+  ```
+
+---
+
+**END OF STAGE 2 ASSET LIST**  
+*(Stop here. Await “Next” for Stage 3.)*

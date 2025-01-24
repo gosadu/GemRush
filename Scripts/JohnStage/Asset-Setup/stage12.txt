@@ -1,0 +1,117 @@
+**STAGE 12 ASSET LIST**  
+*(Post-Launch Expansions, Hard/Remixed Modes & Live Ops)*
+
+Below is a comprehensive catalog of **every** visual or audio asset required in **Stage 12** of the puzzle-RPG blueprint—no code or design text, only the **detailed asset list**. Each visual asset has a **5–7 line** generative image prompt; each audio asset has a **2–3 line** audio prompt. Stage 12 introduces **Hard/Remixed Regions**, seasonal or weekly **Live Ops events**, synergy expansions for new realms, cameo illusions usage hooking triggers if expansions unlock new cameo illusions, forging synergy combos enhancements, etc.
+
+---
+
+### 1) **Hard Mode Region Overlays**  
+- **Usage**: Variants of existing region icons or backgrounds with a more intense or ominous style (e.g., a “Crimson Tinge” overlay) indicating Hard/Remixed mode.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A set of region icon overlays tinted with darker, more menacing hues
+  2) Painted style, AAA puzzle-RPG detail
+  3) Sharp glowing cracks or runic lines emphasizing hard mode
+  4) Each icon retains its original silhouette but with corrupted/edgy flair
+  5) Crisp edges, 128×128 resolution
+  6) Subtle swirling aura or faint lightning arcs
+  7) Transparent backgrounds for layering over normal icons
+  ```
+
+---
+
+### 2) **Live Ops Event Banners**  
+- **Usage**: Seasonal or weekly event banners shown on the main menu or “Live Ops” panel. Could advertise forging weekend, synergy expansions, cameo illusions usage hooking events, etc.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) Bold fantasy-styled event banner templates with layered arcane motifs
+  2) Vibrant color-coded themes for each event type (fire forging, orchard synergy, cameo illusions cameo day)
+  3) Painted style, AAA puzzle-RPG marketing flair
+  4) Crisp textual placeholders or decorative frames
+  5) Mild swirl background with subtle runic glyphs
+  6) Transparent or corner fade for easy UI integration
+  7) Size around 1920×600 for splash or half that for in-game banners
+  ```
+
+---
+
+### 3) **ExpansionManager Realm Art**  
+- **Usage**: New realm silhouettes or backgrounds locked behind post-launch expansions. Possibly cameo illusions usage hooking if synergy expansions or forging synergy combos are heavily featured.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) Painted fantasy realm backdrops with dramatic landmarks (floating crystals, towering spires)
+  2) AAA puzzle-RPG level detail, exotic color palette (e.g., teal deserts, magenta clouds)
+  3) Subtle swirling arcane energies throughout
+  4) Crisp layered environment: foreground ruins, mid-plane flora, distant sky
+  5) Distinct silhouette for each new region to indicate advanced synergy expansions
+  6) Transparent or gentle fade around edges for in-game map usage
+  7) High-resolution (1920×1080) for full-screen or partial map segments
+  ```
+
+---
+
+### 4) **Seasonal / Weekend Boost Icons**  
+- **Usage**: Small icons or badges displayed when an event is active—like “+10% forging success” or “+25% orchard yields,” synergy expansions references.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A set of small circular or shield-like badges signifying seasonal buffs
+  2) Painted style, AAA puzzle-RPG polish
+  3) Each icon has a symbolic element: forging hammer, orchard tree, cameo swirl
+  4) Vibrant color-coded aura or mini runic glow at edges
+  5) ~64×64 resolution, crisp lines
+  6) Transparent alpha for layering near resource UI
+  7) Minimal text, purely visual buff indicators
+  ```
+
+---
+
+### 5) **Hard/Remixed Enemy Skins**  
+- **Usage**: Updated or “remixed” minion/boss sprites with different color palettes or added arcane cracks, signifying advanced difficulty.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) Alternate color skins for existing minions/boss, infusing them with dark or corrupted tones
+  2) Painted style, AAA puzzle-RPG detail
+  3) Subtle glows or chaotic runes indicating higher difficulty
+  4) Crisp linework preserving original silhouette
+  5) Mild swirling aura around limbs or weapon
+  6) Transparent backgrounds for wave encounters
+  7) Enough contrast to distinguish from normal mode
+  ```
+
+---
+
+### 6) **Live Ops / Seasonal Ambience**  
+- **Usage**: A short or looped audio track that plays during special events (e.g., forging weekend, synergy expansions cameo illusions usage hooking). Switches from the normal BGM to a seasonal vibe.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  Light, festive orchestral loop with a hint of chimes or bells
+  Subtle energy uplift, evoking special event atmosphere
+  AAA puzzle-RPG live ops theme
+  ```
+
+---
+
+### 7) **Hard Mode Encounter BGM**  
+- **Usage**: A more intense track for Hard/Remixed region battles, distinct from the normal puzzle-combat BGM to signal heightened difficulty.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  High-tempo orchestral-electronic fusion with strong percussion
+  Darker melodic undertone, amplifying tension
+  AAA puzzle-RPG advanced difficulty vibe
+  ```
+
+---
+
+### 8) **Expansion / Event Activation SFX**  
+- **Usage**: A quick fanfare or swirl that plays when a new expansion unlocks or a live ops event goes live.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  Triumphant 1-second burst of arcane swirl and sparkling chime
+  Upbeat, heralding a newly unlocked region or event
+  AAA puzzle-RPG expansion activation sound
+  ```
+
+---
+
+**END OF STAGE 12 ASSET LIST**  
+*(Stop here. Await “Next” for Stage 13.)*

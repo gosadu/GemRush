@@ -1,0 +1,132 @@
+**STAGE 8 ASSET LIST**  
+*(Monetization, Shops, & Economy Management)*
+
+Below is a comprehensive catalog of **every** visual or audio asset required in **Stage 8** of the puzzle-RPG blueprint—no code or design text, just the **detailed asset list**. Each visual asset has a **5–7 line** generative image prompt; each audio asset has a **2–3 line** audio prompt. Stage 8 introduces **premium currency**, **shop items**, **micro-passes**, skip tokens, cameo illusions usage hooking references if certain items trigger them, and synergy expansions references if forging synergy combos or orchard expansions gating appear in pass items.
+
+---
+
+### 1) **Premium Currency Icon**  
+- **Usage**: A distinctive icon representing the premium currency (e.g., Crystals, Gems) used in the shop. Displayed in UI top-bar and purchase screens.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A glossy gemlike crystal icon with subtle prismatic reflections
+  2) Semi-transparent edges, vibrant purple or teal core
+  3) Painted highlight details, AAA puzzle-RPG style
+  4) Crisp silhouette for easy readability at small UI scale
+  5) Slight swirling aura or sparkles around the crystal
+  6) Warm, luminescent glow, no harsh outlines
+  7) Transparent background for flexible interface placement
+  ```
+
+---
+
+### 2) **Shop UI Frame / Panels**  
+- **Usage**: Frames for the in-game shop menu, listing items such as micro-passes, skip tokens, forging resource bundles.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A series of ornate panel frames for a fantasy shop interface
+  2) Subtle metallic trim with arcane runic motifs
+  3) Painted style, AAA puzzle-RPG polish
+  4) Mild gradient in the interior, warm color scheme
+  5) Crisp corners, slight glow around edges
+  6) Transparent center or 9-slice design for scaling
+  7) Consistent design across all shop sub-panels
+  ```
+
+---
+
+### 3) **Micro-Pass / Battle Pass Icons**  
+- **Usage**: Small badges or tokens representing each pass (Forge Pass, Orchard Pass, Seasonal Pass). They appear in the shop item list or user’s active passes panel.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A set of stylized pass icons: forging-themed, orchard-themed, or general seasonal
+  2) Each icon shaped like a ticket or crest with fantasy ornamentation
+  3) Painted style, AAA puzzle-RPG detail
+  4) Bright color-coded highlights for different pass types
+  5) Subtle runic swirl or elemental symbol for forging or orchard expansions
+  6) Crisp silhouette, ~64×64 resolution for UI
+  7) Transparent backgrounds to layer over pass descriptions
+  ```
+
+---
+
+### 4) **Skip Token Icon**  
+- **Usage**: A distinct icon representing skip tokens that can fast-forward or bypass certain timers or node replays.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A small hourglass or clocklike icon with an arcane twist
+  2) Painted style, AAA puzzle-RPG vibe, transparent background
+  3) Subtle swirl or sparkle to convey magical time-skip
+  4) Crisp linework, ~64×64 for UI
+  5) Slight glow around hourglass edges
+  6) Warm color palette emphasizing rarity
+  7) Minimal but clear representation of skipping wait
+  ```
+
+---
+
+### 5) **Shop Item Thumbnails** (Resource Bundles, Gacha Tickets, etc.)  
+- **Usage**: Thumbnails shown in the shop for purchasing wood/metal bundles, forging pass, cameo illusions usage hooking cameo pass, synergy expansions references.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A variety of mini bundle icons: small crates of wood, sacks of metal ingots, or sparkling cameo ticket
+  2) Painted style, each ~80×80 px with AAA-level detail
+  3) Subtle arcane highlights on the cameo ticket variant
+  4) Crisp edges, partial glow to emphasize buyable goods
+  5) Unified color palette but distinct shapes
+  6) Transparent alpha background for easy layering on shop panels
+  7) Minimal text or labeling, purely visual depiction
+  ```
+
+---
+
+### 6) **Payment Integration Button / Icon** (Optional)  
+- **Usage**: A small UI element indicating real-money purchase or store link. Possibly “Buy Currency” button or “Payment” icon.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A coin stack or gem bag icon with a subtle gold border
+  2) Painted style, AAA puzzle-RPG, ~64×64
+  3) Faint gleam or shine suggesting premium purchase
+  4) Crisp silhouette for store UI
+  5) Warm toned highlights around edges
+  6) Slight swirling effect behind the icon
+  7) Transparent background to place over any scene
+  ```
+
+---
+
+### 7) **Shop / Purchase SFX**  
+- **Usage**: A short positive chime or beep confirming a successful purchase from the shop.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  A bright two-note chime with a subtle magical trill
+  Half-second, uplifting tone
+  AAA puzzle-RPG shop feedback
+  ```
+
+---
+
+### 8) **Battle Pass Activation SFX**  
+- **Usage**: A short fanfare or swirling arcane sound when a micro-pass or battle pass is activated.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  A quick triumphant flourish with a soft whoosh buildup
+  One-second burst of celebratory tone
+  AAA puzzle-RPG pass unlock feedback
+  ```
+
+---
+
+### 9) **Shop BGM / Store Ambience** (Optional)  
+- **Usage**: A light, cheerful background track in the shop interface, distinct from the main Town theme.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  Gentle, mid-tempo loop with bright strings and soft bells
+  Relaxed yet engaging store ambiance
+  AAA puzzle-RPG monetization theme
+  ```
+
+---
+
+**END OF STAGE 8 ASSET LIST**  
+*(Stop here. Await “Next” for Stage 9.)*

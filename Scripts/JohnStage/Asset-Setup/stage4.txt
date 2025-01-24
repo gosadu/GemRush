@@ -1,0 +1,114 @@
+**STAGE 4 ASSET LIST**  
+*(Arcane Gear Infusion & Crafting—formerly forging≥Arcane synergy combos)*
+
+Below is a comprehensive catalog of **every** visual or audio asset required in **Stage 4** of the puzzle-RPG blueprint—no code or design text, only the **detailed asset list**. Each visual asset has a **5–7 line** generative image prompt; each audio asset has a **2–3 line** audio prompt. Stage 4 covers **Arcane Gear Infusion**, the **Workshop** or **Forge** environment, synergy references, cameo illusions usage hooking on successful forging, and forging puzzle minigame assets.
+
+---
+
+### 1) **Workshop / Forge Scene Background**  
+- **Usage**: A dedicated background for the **Workshop** node or forging scene, where the user performs the forging puzzle (4×4). It should evoke a smithy or arcane lab.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A cozy, fantasy workshop interior with warm torchlight
+  2) Wooden beams, stone walls, subtle magical runes
+  3) An anvil or small arcane forging table at center
+  4) Gentle swirl of arcane energy near forging tools
+  5) AAA puzzle-RPG style, painterly with soft shadows
+  6) Glowing crystals or potions on shelves
+  7) Semi-muted background so UI puzzle stands out
+  ```
+
+---
+
+### 2) **Arcane Gear Icons** (Swords, Staffs, etc.)  
+- **Usage**: Icons representing forged gear—Ember swords, Cascade staffs, Terra armor, Zephyr bows, etc. Stage 4 references synergy combos.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A set of fantasy gear icons: swords, staves, bows, armor
+  2) Each item has an arcane glow or elemental motif (fire swirl, water droplet, etc.)
+  3) Crisp linework, high-res, painterly textures
+  4) Vibrant color-coded highlights for each element
+  5) Subtle runic inscriptions on metal surfaces
+  6) AAA puzzle-RPG synergy style, consistent shape language
+  7) Transparent backgrounds for UI
+  ```
+
+---
+
+### 3) **Forge Puzzle Gems**  
+- **Usage**: A separate set of 4×4 puzzle gems used in the forging minigame, distinct from the main puzzle combat gems. Usually color-coded for forging elements (Fire, Water, Earth, Wind, Arcane).  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) Five elemental gem sprites: Fire (red-orange), Water (blue), Earth (green-brown), Wind (pale yellow), Arcane (violet)
+  2) Each gem shape slightly differs to reflect its element
+  3) Soft glow or swirl texture inside each gem
+  4) Animated glint or highlight frames for a 4×4 forging puzzle
+  5) AAA puzzle-RPG quality, high contrast
+  6) Transparent alpha channel for easy layering
+  7) Cohesive style across all five
+  ```
+
+---
+
+### 4) **Mini-Forge Board / UI Frame**  
+- **Usage**: A small UI frame or border around the 4×4 forging puzzle, differentiating it from the main puzzle board.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A compact forging puzzle frame for a 4×4 grid
+  2) Ornate fantasy metal corners, arcane runes etched along edges
+  3) Subtle glow effects or color-coded highlights
+  4) AAA puzzle-RPG style, painterly yet crisp
+  5) Medium detail so the puzzle gems remain the focus
+  6) Consistent with workshop environment aesthetics
+  7) Transparent center area for gem display
+  ```
+
+---
+
+### 5) **Forging Success & Fail SFX**  
+- **Usage**: Two distinct sound effects—one for success (triumphant arcane flourish) and one for fail (metallic thud or arcane fizz).  
+1) **Forging Success SFX**  
+   - **Audio Generative Prompt (2–3 lines)**:
+     ```
+     A short, triumphant chime with faint sizzling arcane sparkles
+     Crisp mid-range metallic ring accent for forging
+     AAA puzzle-RPG forging success feedback
+     ```
+2) **Forging Fail SFX**  
+   - **Audio Generative Prompt (2–3 lines)**:
+     ```
+     A dull metallic thud with a brief downward whoosh
+     Soft low-frequency impact evoking disappointment
+     AAA puzzle-RPG forging failure cue
+     ```
+
+---
+
+### 6) **Workshop BGM** (Arcane Crafting Theme)  
+- **Usage**: A background track specifically for the forging puzzle or workshop scene, usually calmer than puzzle-combat but with a hint of tension.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  Mid-tempo mystical harp and soft string pads
+  Subtle rhythmic pulse suggesting focused crafting
+  AAA puzzle-RPG forging theme with minor arcane undertones
+  ```
+
+---
+
+### 7) **Cameo Illusions Summon VFX** (Optional)  
+- **Usage**: If an item forging success triggers cameo illusions usage hooking, a short swirl effect or ally cameo spawn. Stage 4 code references synergy combos cameo.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A brief swirl of shimmering arcane dust
+  2) Prismatic sparkles collecting into a humanoid silhouette
+  3) Soft vortex animation, ~2 seconds
+  4) AAA puzzle-RPG cameo illusions vibe
+  5) Smooth alpha transitions, partial transparency
+  6) Painted style with dynamic motion frames
+  7) Crisp edges, ephemeral magical glow
+  ```
+
+---
+
+**END OF STAGE 4 ASSET LIST**  
+*(Stop here. Await “Next” for Stage 5.)*

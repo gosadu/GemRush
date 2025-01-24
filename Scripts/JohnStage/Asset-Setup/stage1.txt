@@ -1,0 +1,102 @@
+**STAGE 1 ASSET LIST**  
+*(Multiregion World, Town Hub, and Sublocation Infrastructure)*
+
+Below is a comprehensive catalog of **every** visual or audio asset required in **Stage 1** of the puzzle-RPG blueprint—no code or Unity instructions, just the detailed asset list. Each visual asset has an explicit usage explanation and a **5–7 line** image prompt. Each audio asset has an explicit usage explanation and a **2–3 line** generative audio prompt.
+
+---
+
+### 1) **Town Hub Background**  
+- **Usage**: A main backdrop for the **TownHubScene**—the player’s starting location. Illustrates a welcoming fantasy outpost or small city, where synergy expansions (realm gating) eventually unlock new sublocations.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A cozy medieval-fantasy town square at mid-morning
+  2) Warm color palette with soft sunlight and gentle shadows
+  3) Subtle arcane flourishes on building signs or banners
+  4) Mild painterly style, AAA-level detail
+  5) Stone pathways, wooden stalls, modest fountain in center
+  6) Slight whimsical aura without overcrowded clutter
+  7) Background fits a puzzle-RPG town-hub user interface
+  ```
+
+---
+
+### 2) **Overworld/Realm Entry Icons**  
+- **Usage**: Small icons or mini-tiles representing each accessible region on the overworld map. Stage 1 only shows the first realm (Town region) plus locked placeholders for additional realms.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) Stylized realm icon set, each a shield-like badge
+  2) Simple flat-shaded color blocks with arcane motifs
+  3) Subtle fantasy detailing around edges
+  4) Warm pastel palette, easy to read at small sizes
+  5) Each badge silhouette slightly distinct (locked icons show a gray padlock overlay)
+  6) AAA puzzle-RPG consistency with mild highlight or glow
+  7) Crisp edges for a 2D user interface
+  ```
+
+---
+
+### 3) **Sublocation Icons/Thumbnails**  
+- **Usage**: For each Town sublocation (e.g., Tavern, Workshop, Player House, etc.), small icons or thumbnails on the hub screen.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A series of small sublocation icons for a medieval-fantasy town
+  2) Each icon has distinct shape: tavern mug, workshop anvil, house silhouette
+  3) Vibrant colors but not overly saturated
+  4) Subtle arcane swirl or motif tying them together
+  5) Painted texture, crisp lines, AAA puzzle-RPG style
+  6) Transparent backgrounds for easy UI layering
+  7) Slight gradient highlights to add depth
+  ```
+
+---
+
+### 4) **Simple Transition Overlay (Visual)**  
+- **Usage**: A fade or swirl overlay for scene transitions, lightly referenced in Stage 1 for going from the Town Hub to sublocations (Arcane Flow Transitions).  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) Minimal swirl overlay texture
+  2) Soft magical flourish in corners, semi-transparent
+  3) Gradient from light arcane purple to full transparent center
+  4) Subtle painterly style, not distracting
+  5) AAA-level polish for puzzle-RPG transitions
+  6) Crisp edges on swirl lines, alpha-channeled PNG
+  7) Gentle swirl arcs that fade gracefully
+  ```
+
+---
+
+### 5) **Town Theme (Audio)**  
+- **Usage**: The main BGM track looping in the Town Hub. Calm, welcoming vibe with a slight magical undertone, setting the stage for synergy expansions.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  A warm fantasy orchestral loop with gentle strings and light woodwind
+  Medium tempo, cozy ambiance, subtle uplifting melody
+  AAA puzzle-RPG town theme that evokes exploration and comfort
+  ```
+
+---
+
+### 6) **UI Click SFX**  
+- **Usage**: Button click or sublocation selection sound effect in the Town Hub’s UI. Distinct yet soft enough to be non-intrusive.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  Subtle, short click with a mild magical sparkle
+  Crisp high-end tone, slight chime finish
+  AAA puzzle-RPG interface feedback
+  ```
+
+---
+
+### 7) **Ambient Town Sound Loop (Audio)**  
+- **Usage**: Background ambience (light chatter, distant footsteps, soft breeze) playing under the main Town Theme or separately. Faint enough not to clash with BGM.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  Gentle medieval town ambiance: soft crowd murmurs, distant wagon wheels
+  Low-volume atmospheric loop, light breeze effect
+  AAA fantasy setting, subtle immersive background
+  ```
+
+---
+
+**END OF STAGE 1 ASSET LIST**  
+*(Stop here. Await “Next” for Stage 2.)*

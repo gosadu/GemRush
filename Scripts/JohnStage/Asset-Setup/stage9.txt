@@ -1,0 +1,102 @@
+**STAGE 9 ASSET LIST**  
+*(Branching Story & Quest System)*
+
+Below is a comprehensive catalog of **every** visual or audio asset required in **Stage 9** of the puzzle-RPG blueprint—no code or design text, only the **detailed asset list**. Each visual asset has a **5–7 line** generative image prompt; each audio asset has a **2–3 line** audio prompt. Stage 9 introduces **branching narratives**, quest objectives, synergy expansions references, cameo illusions usage hooking if certain story arcs demand it, and daily/weekly quest UIs.
+
+---
+
+### 1) **Quest Journal UI Frame**  
+- **Usage**: A panel or book-like interface to display branching story quests, daily/weekly tasks, synergy expansions references.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A fantasy-inspired journal UI panel with ornate page edges
+  2) Subtle golden corners, arcane scribbles for background texture
+  3) Painted style, AAA puzzle-RPG polish
+  4) Two-page spread format or single scroll style
+  5) Warm parchment tones with mild burnt edges
+  6) Crisp lines for quest titles and objectives
+  7) Transparent or 9-slice design for flexible scaling
+  ```
+
+---
+
+### 2) **Quest Icons / Markers**  
+- **Usage**: Small icons indicating quest status (in-progress, completed, branching path) on the overworld or in sublocations.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A set of quest markers: exclamation point, checkmark, branching swirl
+  2) Painted style, AAA puzzle-RPG level
+  3) Color-coded edges (yellow for in-progress, green for complete)
+  4) Glowing runic accent behind each symbol
+  5) ~48×48 resolution, crisp silhouette
+  6) Slight drop shadow for UI layering
+  7) Transparent background for easy overlay
+  ```
+
+---
+
+### 3) **Storyline Scene Illustrations**  
+- **Usage**: Optional story illustrations or key artwork for major quest arcs, highlighting synergy expansions or cameo illusions usage hooking if the plot demands.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A painted fantasy scene capturing pivotal quest moments
+  2) Rich lighting, detailed environment matching each storyline's theme
+  3) Subtle arcane glow or swirling motif signifying synergy expansions
+  4) AAA puzzle-RPG style, high narrative impact
+  5) Crisp linework, warm color palette
+  6) Soft background blur focusing on key characters
+  7) Transparent corners or wide aspect ratio for UI pop-ups
+  ```
+
+---
+
+### 4) **Quest Objective SFX**  
+- **Usage**: A short cue that plays when the player completes a quest objective (like defeating an enemy or collecting resources).  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  A quick rising chime with gentle arcane sparkles
+  About half a second, signaling objective progress
+  AAA puzzle-RPG quest feedback tone
+  ```
+
+---
+
+### 5) **Quest Completion Fanfare**  
+- **Usage**: A more celebratory sound upon fully completing a quest. Possibly cameo illusions usage hooking if `quest.cameoID` is set.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  A bright 1-second flourish of harp glissando and light bell
+  Uplifting, hinting at successful story advancement
+  AAA puzzle-RPG quest completion reward
+  ```
+
+---
+
+### 6) **Branching Choice UI Elements**  
+- **Usage**: If your branching story offers user choices, specialized buttons or overlays for each route (like “Ally with the Forest,” “Explore the Ruins”).  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A set of fantasy-themed choice buttons or overlays
+  2) Painted style, each with a faint runic border
+  3) AAA puzzle-RPG polish, ~200×60 px for text
+  4) Subtle glow effect for selected/highlighted states
+  5) Crisp line edges, gentle pastel color fill
+  6) Slight swirl motif in the background
+  7) Transparent alpha for layering on quest frames
+  ```
+
+---
+
+### 7) **Narration / Story BGM**  
+- **Usage**: A calm, story-driven track that plays during major quest dialogues or cutscene transitions, distinct from puzzle or Town themes.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  Light orchestral background with slow melodic strings
+  Subtle emotional undertone but not overwhelming
+  AAA puzzle-RPG narrative ambiance
+  ```
+
+---
+
+**END OF STAGE 9 ASSET LIST**  
+*(Stop here. Await “Next” for Stage 10.)*

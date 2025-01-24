@@ -1,0 +1,96 @@
+**STAGE 16 ASSET LIST**  
+*(Performance & Netcode Optimization)*
+
+Below is a comprehensive catalog of **every** visual or audio asset required in **Stage 16** of the puzzle-RPG blueprint—no code or design text, only the **detailed asset list**. Each visual asset has a **5–7 line** generative image prompt; each audio asset has a **2–3 line** audio prompt. Stage 16 focuses on **Performance** (object pooling, debug overlays) and **Netcode** (asynchronous events, basic cloud sync), with synergy expansions references or cameo illusions usage hooking if relevant. Typically, few brand-new assets are needed, but some minor visuals/SFX may be used for debugging or netcode confirmations.
+
+---
+
+### 1) **Object Pool Debug Icons**  
+- **Usage**: Small developer-facing icons or placeholders to identify pooled items (slash effects, cameo illusions usage hooking swirl, forging sparkles) in a debug interface.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A tiny set of colored square icons representing different pool categories
+  2) Painted style, AAA puzzle-RPG color palette
+  3) Crisp edges, ~32×32 px each
+  4) Simple symbolic shapes on each icon (spark, swirl, slash)
+  5) Transparent alpha for layering on a debug overlay
+  6) Minimal detail, focusing on quick recognition
+  7) Subtle runic border or corner swirl
+  ```
+
+---
+
+### 2) **Performance Overlay / Debug Panel**  
+- **Usage**: An optional in-game overlay to show FPS, memory usage, or cameo illusions usage hooking toggles. Possibly synergy expansions references if the dev wants to see real-time load.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A minimal fantasy-themed debug overlay panel with warm color trim
+  2) Painted corners, AAA puzzle-RPG style
+  3) Transparent background so game remains visible
+  4) Crisp lines for text readouts (FPS, Memory)
+  5) Slight arcane swirl or watermark behind the text area
+  6) ~300×200 px, flexible for developer toggles
+  7) Mild gold or silver edge highlight
+  ```
+
+---
+
+### 3) **Netcode Event Icons**  
+- **Usage**: Small UI indicators or notifications for asynchronous netcode events (e.g., “event queued,” “sync to cloud,” cameo illusions usage hooking triggers).  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A set of ~4 icons for netcode actions: upload, download, queue, success
+  2) Painted style, AAA puzzle-RPG color palette
+  3) Crisp silhouettes (arrow up, arrow down, plus sign, checkmark)
+  4) Subtle swirling or runic background
+  5) ~48×48 px, transparent alpha
+  6) Mild glow around edges to indicate active state
+  7) Consistent design bridging arcane fantasy with modern net arrows
+  ```
+
+---
+
+### 4) **Cloud Sync Confirmation Popup**  
+- **Usage**: A short visual or mini overlay that confirms the player’s data synced to or from a server.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A small fantasy pop-up with a soft swirl or arcane crest
+  2) Painted style, AAA puzzle-RPG corners
+  3) Crisp text area reading “Data Synced!” in center
+  4) ~300×150 px, transparent alpha
+  5) Warm color gradient, subtle glow at edges
+  6) Possibly a checkmark icon or net arrow integrated
+  7) Minimal detail so it’s quick, ephemeral
+  ```
+
+---
+
+### 5) **Pooling or Performance SFX**  
+*(Optional—usually no special SFX for performance. If desired, short cues for debugging or cameo illusions usage hooking references.)*  
+1) **Pooling Debug SFX**  
+   - **Usage**: A tiny beep or swirl when an item is reused from the pool—purely developer-facing.  
+   - **Audio Generative Prompt (2–3 lines)**:
+     ```
+     A very short beep with a soft magical flick
+     ~0.2 second, low-volume debug cue
+     AAA puzzle-RPG dev feedback
+     ```
+2) **Netcode Sync SFX**  
+   - **Usage**: A subtle chime if data sync finishes.  
+   - **Audio Generative Prompt (2–3 lines)**:
+     ```
+     A delicate ascending bell with a short echo
+     ~0.5 second, signifying successful cloud sync
+     AAA puzzle-RPG net event feedback
+     ```
+
+---
+
+### 6) **Asynchronous Co-op or Cameo Summon Placeholder**  
+- **Usage**: If cameo illusions usage hooking triggers in netcode co-op or asynchronous guild tasks, you might reuse cameo illusions swirl from prior stages. No new assets strictly needed—just reaffirming potential reuse.  
+- **No new visual prompt** if previously created cameo illusions swirl covers this.
+
+---
+
+**END OF STAGE 16 ASSET LIST**  
+*(Stop here. Await “Next” for Stage 17.)*

@@ -1,0 +1,82 @@
+**STAGE 17 ASSET LIST**  
+*(Final Integration & Full Gameplay Loop)*
+
+Below is a comprehensive catalog of **every** visual or audio asset required in **Stage 17** of the puzzle-RPG blueprint—no code or design text, only the **detailed asset list**. Each visual asset has a **5–7 line** generative image prompt; each audio asset has a **2–3 line** audio prompt. Stage 17 unifies **all** game systems—**daily tasks**, **forging synergy combos**, **puzzle combat**, **realm expansions**, **cameo illusions usage hooking**, **netcode**—into a final cohesive gameplay loop, but typically introduces **few new assets**. Instead, it reuses or references existing ones. Below are any final additions that might appear specifically for the **full integration** scenario.
+
+---
+
+### 1) **Final Daily Planner UI Frame**  
+- **Usage**: A centralized “Planner” panel or overlay that lists daily tasks, forging duties, synergy expansions references, cameo illusions usage hooking triggers, guild requests, and so forth in a single interface.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A large fantasy-styled panel with multiple task slots
+  2) Painted corners, runic swirl across the backdrop
+  3) AAA puzzle-RPG detail, subtle gold or silver trim
+  4) Crisp lines for daily quest bullet points
+  5) Transparent or pastel center for text clarity
+  6) Warm color palette that matches overall UI
+  7) 9-slice or scaleable design for flexible layout
+  ```
+
+---
+
+### 2) **Full Gameplay Loop / Loading Screen Illustration**  
+- **Usage**: An optional final loading screen or summary artwork reflecting the entire game’s synergy expansions, cameo illusions usage hooking heroes, forging synergy combos, puzzle board, etc. Showcases major characters or a collage of features.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A grand collage of puzzle gems, forging gear, hero portraits, and realm tier icons
+  2) Painted style, AAA puzzle-RPG highlight
+  3) Vibrant arcs of arcane energy connecting elements
+  4) Crisp detail focusing on synergy expansions references and cameo illusions swirl
+  5) Warm color transitions blending each corner (puzzle, forging, guild, realm)
+  6) High-resolution (1920×1080) for a splash or loading screen
+  7) Subtle layering so each feature stands out but feels unified
+  ```
+
+---
+
+### 3) **All-Systems Integration / Debug Icon**  
+- **Usage**: If a hidden dev overlay or final check is displayed, you might have one small icon indicating “Full Gameplay Loop Ready.” This is purely optional if you want a unique stamp.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A small stamp-like icon with a checkmark and swirling arcane lines
+  2) Painted style, AAA puzzle-RPG color palette
+  3) Crisp silhouette at ~64×64 px
+  4) Subtle glow or sparkle around the edges
+  5) Warm pastel or gold highlights
+  6) Transparent background for dev overlay usage
+  7) Symbolizes final integration across all stages
+  ```
+
+---
+
+### 4) **Final Game Completion / Loop Fanfare (Audio)**  
+- **Usage**: A short or optional jingle that plays after finishing the entire daily cycle or upon ultimate synergy expansions cameo illusions usage hooking completion. Typically not mandatory, but a finishing flourish.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  A spirited 1-second fanfare with shimmering strings and a bright final chord
+  Celebratory but concise, AAA puzzle-RPG daily cycle finale
+  ```
+
+---
+
+### 5) **Daily Reset or End-of-Day Jingle**  
+- **Usage**: An optional short audio cue that plays at the day’s rollover, signifying quests/daily tasks reset, synergy expansions references re-initialized.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  A calm, descending harp glissando followed by a soft chime
+  1-second restful tone indicating daily tasks reset
+  AAA puzzle-RPG day’s end vibe
+  ```
+
+---
+
+### 6) **Any Reused Assets from Previous Stages**  
+- **Usage**: Stage 17 heavily relies on existing synergy expansions references, cameo illusions usage hooking swirls, forging synergy combos effects, puzzle boards, etc. No new synergy or cameo illusions hooking assets are strictly required unless you want a special “Grand Finale” cameo illusions usage hooking swirl.  
+- **Note**: Typically, the game uses all previously described puzzle, forging, orchard expansions (realm expansions) art, cameo illusions usage hooking effects, guild co-op assets, etc.
+
+---
+
+**END OF STAGE 17 ASSET LIST**  
+
+This completes the final puzzle-RPG blueprint’s asset lists for all stages.

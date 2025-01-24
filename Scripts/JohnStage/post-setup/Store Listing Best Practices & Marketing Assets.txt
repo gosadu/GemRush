@@ -1,0 +1,132 @@
+**STORE LISTING BEST PRACTICES & MARKETING ASSETS**
+
+Below is a **detailed** guide to preparing your puzzle-RPG’s **store listing** (App Store, Google Play, Steam, etc.) alongside **marketing assets** that highlight synergy expansions, cameo illusions usage hooking, forging synergy combos, daily tasks, advanced puzzle combat, and more. No code or design text—only comprehensive instructions.
+
+---
+
+## 1. **Store Listing Fundamentals**
+
+1. **Clear, Engaging Description**  
+   - First 2–3 lines: Summarize the game’s unique selling point (e.g., synergy expansions forging combos, cameo illusions usage hooking, realm expansions).  
+   - Highlight key features: puzzle-combat depth, forging synergy combos, daily tasks, guild co-op, cameo illusions usage hooking.  
+   - Short bullet points with synergy expansions references can clarify “Arcane Gear Infusion,” “Tier Up Realm Districts,” “Summon Hero Cameos,” etc.
+
+2. **SEO & Keywords**  
+   - Use relevant keywords like “Puzzle RPG,” “Forge,” “Realm expansions,” “Guild Co-op,” “Cameo illusions usage hooking.”  
+   - Don’t spam—keep it natural. On Google Play, the short and full descriptions can help discoverability.
+
+3. **Language Localizations**  
+   - If supporting multiple languages, localize the store listing.  
+   - Reuse your synergy expansions orchard≥Tier gating text or cameo illusions usage hooking descriptions from the game.  
+
+---
+
+## 2. **App Icon & Feature Graphics**
+
+1. **App Icon**  
+   - Must be **iconic and recognizable** at small sizes. Possibly show a puzzle gem or forging hammer with subtle cameo illusions usage hooking swirl.  
+   - Use bold colors that stand out in a crowded store.  
+2. **Feature Graphic (Google Play)** or **Banner (App Store)**  
+   - ~1024×500 px or the required dimension.  
+   - Showcase the puzzle board, a forging synergy combos visual, cameo illusions usage hooking hero cameo, synergy expansions realm gate, etc.  
+   - Add minimal text or a short tagline.
+
+3. **Steam Capsule Images**  
+   - If on Steam, create vertical capsules, horizontal capsules, and main banner. Show key heroes, forging synergy combos, cameo illusions usage hooking swirl.  
+
+---
+
+## 3. **Screenshots & Trailers**
+
+1. **Screenshots**  
+   - Include **5–8** key screenshots demonstrating:  
+     1. Puzzle-Combat UI  
+     2. Forging synergy combos puzzle or Arcane Gear Infusion  
+     3. Realm expansions tier progression (formerly orchard expansions synergy)  
+     4. Guild boss or cameo illusions usage hooking event  
+     5. Shop / monetization interface (optional if you want transparency)  
+   - Each screenshot includes short captions explaining synergy expansions or cameo illusions usage hooking triggers.  
+2. **Video Trailer**  
+   - 30–60 seconds, with a quick montage of puzzle matches, forging synergy combos, cameo illusions usage hooking cameo, guild co-op boss fights.  
+   - Show the user interface so players see how synergy expansions orchard≥Tier gating or forging synergy combos actually work.  
+   - End with your game’s logo or main hero cameo illusions usage hooking swirl to brand it.
+
+---
+
+## 4. **Taglines & Copywriting**
+
+1. **Short Tagline**  
+   - E.g., “Forge Arcane Gear, Summon Hero Cameos, and Conquer Puzzle Realms!”  
+   - Emphasize synergy expansions or cameo illusions usage hooking in a short phrase.  
+2. **Bullet Points**  
+   - “\u2022 Master Realms: Grow from Tier 1–4, unlocking synergy expansions.  
+   - \u2022 Summon Hero Cameos: Turn the tide with illusions usage hooking.  
+   - \u2022 Forge Arcane Gear: 4×4 puzzle minigames for synergy combos.”  
+3. **Call to Action**  
+   - “Download Now and Start Your Realm Tier Journey!”  
+   - “Embark on your forging synergy combos quest!”
+
+---
+
+## 5. **Marketing Assets Beyond the Store**
+
+1. **Social Media Banners**  
+   - Twitter, Facebook, Instagram headers showcasing puzzle board, forging synergy combos, cameo illusions usage hooking swirl, synergy expansions orchard≥Tier gating references.  
+2. **Press Kit**  
+   - High-resolution images of heroes, synergy expansions realm backgrounds, cameo illusions usage hooking swirl, forging synergy combos gear icons.  
+   - A PDF or readme explaining key features, monetization approach, etc.  
+3. **Website / Landing Page**  
+   - If building a small official site, highlight synergy expansions orchard≥Tier gating, cameo illusions usage hooking heroes, forging synergy combos.  
+   - Provide direct store badges (Google Play, App Store) for easy downloads.
+
+---
+
+## 6. **Localization for Store Listings**
+
+1. **In the store console** (App Store Connect, Google Play Console), add localizations for each language.  
+2. Use the same key translations from your game’s main localization for synergy expansions orchard≥Tier gating references, cameo illusions usage hooking lines, forging synergy combos descriptions to keep branding consistent.  
+3. Check layout for languages with longer text.
+
+---
+
+## 7. **Compliance & Ratings in the Listing**
+
+1. **Age Rating**  
+   - From the “Legal & Compliance Steps,” mention the rating. E.g., ESRB E10+/PEGI 7.  
+2. **Disclaimers**  
+   - “In-app purchases available,” cameo illusions usage hooking references if it might appear as partial cameo illusions usage hooking disclaimers, synergy expansions orchard≥Tier gating references if it’s gating content.  
+3. **Preview Policy**  
+   - On iOS, Apple might review your synergy expansions cameo illusions usage hooking flow or forging synergy combos logic. Provide a test account or instructions if needed.
+
+---
+
+## 8. **Store Optimization & Frequent Updates**
+
+1. **ASO (App Store Optimization)**  
+   - Periodically update icon, screenshots, event banners for synergy expansions cameo illusions usage hooking events or forging synergy combos weekends.  
+2. **Seasonal Promotions**  
+   - Adjust store listing during forging synergy combos weekend, cameo illusions usage hooking cameo day, synergy expansions realm expansions.  
+3. **Changelog**  
+   - Provide thorough release notes: “v1.2: New cameo illusions usage hooking hero, synergy expansions forging combos buff, orchard≥Tier gating enhancements.”
+
+---
+
+## 9. **Marketing Analytics**
+
+1. **Tracking**  
+   - Use store or external analytics to track conversions from your trailer or screenshots.  
+   - Tweak the synergy expansions orchard≥Tier gating references or cameo illusions usage hooking highlight in your store listing to see if it increases downloads.  
+2. **A/B Testing**  
+   - On Google Play, consider “Store Listing Experiments” for different screenshots or synergy expansions cameo illusions usage hooking emphasis to see which yields higher conversion.
+
+---
+
+## 10. **Conclusion**
+
+By crafting a **clear store listing** with strong **visuals** (icon, screenshots, trailer) and **copy** that highlights synergy expansions orchard≥Tier gating references, cameo illusions usage hooking triggers, forging synergy combos, daily tasks, and puzzle-combat, you can capture user interest. Consistent marketing assets—**localized** for each audience—help your puzzle-RPG stand out in a crowded marketplace.
+
+---
+
+**END: Store Listing Best Practices & Marketing Assets**  
+
+*(Stop here. Await “Next” for Performance profiling & advanced optimization tips.)*

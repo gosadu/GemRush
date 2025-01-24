@@ -1,0 +1,101 @@
+**VERSION CONTROL & DEVOPS PIPELINE SETUP (WITH AUTOMATED BUILD & TEST PROCESS)**
+
+Below is an in-depth overview of how to structure and maintain your version control and DevOps pipeline for the puzzle-RPG project, ensuring continuous integration, automated builds, and consistent testing. This focuses solely on Version Control and a DevOps pipeline—no mention yet of QA, analytics, localization, etc.
+
+---
+
+## 1. **Repository & Branch Strategy**
+1. **Primary Repository (Git)**  
+   - Host your code and assets in a single Git repository (e.g., on GitHub or GitLab).  
+   - Keep large binary assets (e.g., high-res textures) in Git LFS if they exceed standard Git size limits.
+2. **Branch Structure**  
+   - **Main (or Master) Branch**: The stable, production-ready branch containing fully tested code.  
+   - **Develop Branch**: The main integration branch for ongoing features.  
+   - **Feature Branches**: Each new feature (e.g., cameo illusions usage hooking, synergy expansions gating) developed in its own branch. Merge into `develop` once feature is stable.  
+   - **Release Branches**: Optionally cut from `develop` for final polish before merging to `main`.
+3. **Commit Messages & Tagging**  
+   - Use a consistent format, e.g., “StageX_Feature: short description.”  
+   - Tag major releases or milestone builds with semantic versioning (`v0.3.0`, etc.).
+
+---
+
+## 2. **Automated Build Pipeline**
+1. **Choosing a CI/CD Service**  
+   - GitHub Actions, GitLab CI, or Jenkins. Ensure the service can run Unity builds.  
+2. **Unity Build Scripts**  
+   - Use the **Unity Editor Command Line** to build your project automatically. For instance:  
+     ```
+     unity -quit -batchmode -projectPath /path/to/YourProject \
+           -executeMethod BuildScript.PerformBuild \
+           -buildTarget Android \
+           -customBuildPath "./Builds/Android" ...
+     ```
+   - `BuildScript.PerformBuild` is a static C# method in a script within your Unity project that configures and triggers a build.
+3. **Pipeline Stages**  
+   - **Checkout Code**  
+     - The pipeline clones the repo, ensuring submodules (if any) and LFS are pulled.  
+   - **Install Unity / Use Unity Docker**  
+     - Either install Unity via a CI image or use a Docker container with a correct Unity version.  
+   - **Build**  
+     - Run the command line approach for each target platform (Android, iOS, PC, etc.).  
+   - **Artifacts**  
+     - Store the resulting `.apk`, `.ipa`, or `.exe` in pipeline artifacts.  
+     - Possibly auto-upload to a distribution platform (TestFlight, Google Play Internal Track, etc.).
+4. **Automated Versioning**  
+   - For each successful build on `develop`, increment a build number.  
+   - For official releases on `main`, update the minor/major version as needed.
+
+---
+
+## 3. **Automated Test Process**
+1. **Basic Setup**  
+   - Integrate the **Unity Test Framework** to run play mode or edit mode tests automatically.  
+   - Use the same pipeline to run `unity -runTests` with the `-testResults` argument to produce XML or JSON logs.
+2. **Test Categories**  
+   - **Edit Mode Tests**: Check your scripts that don’t require a scene to run. Perfect for synergy expansions logic, cameo illusions usage hooking manager initialization, forging combos logic, etc.  
+   - **Play Mode Tests**: Launch a minimal scene to test puzzle mechanics, realm expansions gating, net code stubs, etc.
+3. **Pipeline Integration**  
+   - In your CI config (e.g., GitHub Actions `.yml`), after building (or before building), run `-runTests`.  
+   - Parse the results. If tests fail, mark the pipeline as failed.
+4. **Nightly Full Test**  
+   - If many tests are time-consuming (like large integration tests or performance tests), schedule a nightly pipeline that runs the entire suite on multiple platforms.
+
+---
+
+## 4. **Branching & Build Example (Detailed)**
+1. **Feature Branch**  
+   - Developer works on synergy expansions cameo illusions usage hooking changes → commits to “feature/synergyCameo.”  
+   - Developer opens a Pull/Merge Request into `develop`.  
+2. **Continuous Integration**  
+   - The pipeline triggers:  
+     - Installs Unity  
+     - Runs the tests (edit mode + play mode)  
+     - If tests pass, merges can be approved.  
+3. **Develop to Main**  
+   - Once stable, merges from `develop` → `main`, pipeline triggers a production build.  
+   - Tag the commit (e.g., `v1.0.0`) if it’s a major release.  
+4. **Automated Distribution** (Optional)  
+   - If you’re building mobile versions, the pipeline can auto-deploy `.apk` to Google Play’s internal track or `.ipa` to TestFlight.
+
+---
+
+## 5. **Infrastructure & DevOps Tools**
+1. **Hosting**  
+   - Use GitHub/GitLab for code. Use their built-in CI if possible. Alternatively, Jenkins on your own server.  
+2. **Docker**  
+   - Maintain a Docker image with the correct Unity version, Android/iOS build support, allowing consistent pipelines.  
+3. **Slack / Discord Notifications**  
+   - Pipeline can send success/failure messages to Slack or Discord for the team.
+
+---
+
+## 6. **Benefits**
+- **Early bug detection**: Automated tests reveal synergy expansions cameo illusions usage hooking logic errors quickly.  
+- **Consistent builds**: Minimizes “it works on my machine” issues.  
+- **Faster releases**: A single dev can push changes, the pipeline auto-builds across multiple platforms, uploads artifacts to testers or store listings (in alpha/beta tracks).
+
+---
+
+**END: Version Control & DevOps Pipeline Setup**  
+
+*(Stop here. Await “Next” to proceed to Automated QA & integration tests instructions.)*

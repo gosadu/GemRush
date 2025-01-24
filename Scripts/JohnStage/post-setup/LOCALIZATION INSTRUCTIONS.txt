@@ -1,0 +1,127 @@
+**LOCALIZATION INSTRUCTIONS (EXTRACTING TEXT & IMPLEMENTING LANGUAGE SWITCHING)**
+
+Below is a detailed overview of how to localize your puzzle-RPG, focusing on **extracting text**, **implementing language switching**, and best practices. No code or design text is shown—only step-by-step instructions and insights for a Unity-based pipeline that covers synergy expansions references, cameo illusions usage hooking, forging synergy combos, realm expansions, etc.
+
+---
+
+## 1. **Project Preparation**
+
+1. **Identify All Localizable Text**  
+   - Search through UI, quest lines, synergy expansions orchard≥Tier gating text, forging synergy combos descriptions, cameo illusions usage hooking prompts, tutorial messages, etc.  
+   - Gather them in a single spreadsheet or CSV for initial reference (e.g., “heroSkillName,” “questTitle,” “forgeItemDesc,” etc.).
+
+2. **Unity Localization Package (Recommended)**  
+   - Install **Unity Localization** via Package Manager for a robust solution.  
+   - Alternatively, use your own system or a third-party plugin.  
+
+3. **Localization Folder Structure**  
+   - In `Assets/Localization/`, keep CSV, JSON, or custom table files that map keys to each language.  
+   - Example: “LocalizationTable_EN.csv,” “LocalizationTable_ES.csv,” etc.
+
+---
+
+## 2. **Extracting Text**
+
+1. **Replace Hardcoded Strings**  
+   - In your C# scripts or prefab text components, remove direct strings like `"Forge Item"` or `"Realm Tier 3"` and instead reference a key, e.g., `"LOC_FORGE_ITEM"`, `"LOC_REALM_TIER_3"`.  
+   - For synergy expansions orchard≥Tier gating references, cameo illusions usage hooking lines, forging synergy combos prompts, etc., define keys like `"LOC_CAMEO_TRIGGER_MSG"`, `"LOC_SYNERGY_EXPANSION_UNLOCKED"`.
+
+2. **Unity Localization Workflow**  
+   - If using the Localization package, create **String Tables**. Each table can hold a group of keys:  
+     - `UI_MainMenu.table`: keys for main menu text  
+     - `UI_Forge.table`: keys for forging synergy combos text  
+     - `UI_Realm.table`: keys for orchard≥Tier gating synergy expansions, cameo illusions usage hooking lines, etc.
+
+3. **Detect Hardcoded**  
+   - Search the entire project for string literals. If you find lines like `myText.text = "Complete Daily Task"`, replace with a localizable call, e.g., `myText.text = Localize("LOC_DAILY_TASK_COMPLETE")`.
+
+---
+
+## 3. **Implementing Language Switching**
+
+1. **Language Select UI**  
+   - Provide a dropdown or set of buttons (e.g., “English,” “Spanish,” “French”).  
+   - On selection, call `(Code omitted— focusing on instructions).SetLocale(LocaleIdentifier)` from the Localization package or your custom system.
+
+2. **Live Refresh**  
+   - Unity Localization can auto-refresh all localized text in the scene when the locale changes.  
+   - If using custom code, you may need to iterate over all text components to update strings.
+
+3. **Fallback Locale**  
+   - If a key is missing in the user’s chosen language, fallback to English or a default locale.  
+   - Always define a fallback for synergy expansions cameo illusions usage hooking lines or forging synergy combos descriptions so no text remains blank.
+
+---
+
+## 4. **Keys & Data Organization**
+
+1. **Consistent Key Naming**  
+   - E.g., `LOC_QUEST_{questID}_{field}`, `LOC_FORGE_{itemID}`, `LOC_CAMEO_{cameoID}_DESC`, etc.  
+   - This structure helps you quickly find synergy expansions orchard≥Tier gating lines or cameo illusions usage hooking references.
+
+2. **Handling Variables**  
+   - If a forging synergy combos text references “+{0} forging chance,” use placeholders: “LOC_FORGE_CHANCE: ‘+{0}% forging success’.”  
+   - This allows dynamic insertion of numbers or synergy expansions data in multiple languages.
+
+3. **Special Characters**  
+   - Test languages with accents or non-Latin scripts. Ensure your chosen font supports them or you embed multiple fonts for different scripts.
+
+---
+
+## 5. **File Formats & Tools**
+
+1. **Spreadsheet / CSV**  
+   - Many teams store localizable text in a spreadsheet, then export to CSV or JSON for Unity.  
+   - Tools like **Google Sheets** or **Excel** let translators fill in rows for each language.  
+2. **Unity Localization Tables**  
+   - The official approach uses **String Table Collections**. You can add entries in the Editor or import from CSV.  
+   - Each entry has an ID or key plus localized strings for each language.
+
+3. **Translation Process**  
+   - Send the CSV or JSON to translators. They fill out each line.  
+   - Re-import into Unity, or if you use a direct link (like Google Sheets plugin), you can fetch them automatically.
+
+---
+
+## 6. **Testing & QA in Each Language**
+
+1. **Language Switch Stress Test**  
+   - Switch to every available language in your dev build. Check cameo illusions usage hooking text, synergy expansions orchard≥Tier gating lines, forging synergy combos descriptions, daily tasks, etc.  
+2. **Long Strings / Overflow**  
+   - Some languages (e.g., German) can be longer. Ensure UI panels handle text wrapping or resizing.  
+3. **Right-to-Left (RTL)**  
+   - If you support Arabic/Hebrew, you must handle RTL text. The Unity Localization package or custom solution might need extra steps.
+
+---
+
+## 7. **Ongoing Maintenance**
+
+1. **Adding New Content**  
+   - Each new synergy expansions cameo illusions usage hooking line, forging synergy combos item, or realm expansions text must have a new localization key.  
+2. **Translating Updates**  
+   - Provide updated CSV to translators. Re-import into Unity.  
+3. **Versioning**  
+   - Keep a separate version or commit for updated language files so you can revert if needed.
+
+---
+
+## 8. **Localization for Asset Names or Audio** (Optional)
+
+1. **Localized Voice Over**  
+   - If cameo illusions usage hooking caretaker lines or synergy expansions orchard≥Tier gating scenes have voice lines, you must store them in localized audio tables.  
+2. **Localized Sprites**  
+   - Rarely, some images might contain text. Replace them with textless versions or have separate localized sprites.  
+3. **Cameo illusions usage hooking**  
+   - If cameo illusions usage hooking lines are spoken or shown in text, localize them in the same system.
+
+---
+
+## 9. **Summary**
+
+By properly extracting all text from synergy expansions orchard≥Tier gating references, cameo illusions usage hooking triggers, forging synergy combos messages, and daily tasks, you can deliver a multi-language AAA puzzle-RPG. The Unity Localization package (or an alternative) will dynamically load the correct language. Always test wrapping, fallback locales, and ensure no text remains hardcoded, especially for quest lines or cameo illusions usage hooking dialogues.
+
+---
+
+**END: Localization Instructions**  
+
+*(Stop here. Await “Next” for Legal & Compliance steps.)*

@@ -1,0 +1,111 @@
+**MODULAR ARCHITECTURE FOR EXPANSIONS OR DLC**
+
+Below is a comprehensive guide to structuring your puzzle-RPG project so that **future expansions**, **DLC**, or major feature additions—like synergy expansions orchard≥Tier gating, cameo illusions usage hooking, forging synergy combos, or new region content—can be integrated with minimal refactoring. No code or design text, just methodical instructions for a **modular** approach.
+
+---
+
+## 1. **Core Principles of Modular Design**
+
+1. **Self-Contained Modules**  
+   - Each major system (puzzle-combat, forging synergy combos, cameo illusions usage hooking, synergy expansions orchard≥Tier gating) should live in a distinct folder or assembly.  
+   - For example, `PuzzleModule/`, `ForgeModule/`, `CameoModule/`, `RealmExpansionModule/`.  
+2. **Minimal Interdependence**  
+   - Rely on **interface** or **event-based** connections, not direct references. If cameo illusions usage hooking triggers synergy expansions orchard≥Tier gating logic, do so via a manager event, not tight coupling in code.
+
+---
+
+## 2. **Assembly Definition Files**
+
+1. **Use Unity’s `.asmdef`**  
+   - Create separate assemblies for each major feature.  
+   - e.g., `PuzzleModule.asmdef`, `ForgeModule.asmdef`, `CameoModule.asmdef`.  
+   - This helps keep compile times down and ensures changes in cameo illusions usage hooking logic won’t recompile synergy expansions orchard≥Tier gating code if done properly.
+2. **Reference Graph**  
+   - For synergy expansions orchard≥Tier gating or forging synergy combos to talk to cameo illusions usage hooking, define a common interface in a shared assembly (e.g., `GameCoreInterfaces.asmdef`).  
+   - Each module references `GameCoreInterfaces` instead of referencing each other directly.
+
+---
+
+## 3. **Data-Driven Content**
+
+1. **External Data Configs**  
+   - Keep synergy expansions orchard≥Tier gating data, cameo illusions usage hooking thresholds, forging synergy combos recipes in ScriptableObjects or JSON files.  
+   - This means expansions or DLC can introduce new data sets without altering the code.  
+2. **Version Checks**  
+   - If you load data from DLC bundles, ensure you check version numbers. The game only loads synergy expansions orchard≥Tier gating data if it’s compatible with the user’s game version.
+
+---
+
+## 4. **Scene & Asset Bundles (DLC)**
+
+1. **Asset Bundles**  
+   - Unity supports **Asset Bundles** for distributing additional scenes, prefabs, or audio after initial release.  
+   - E.g., new synergy expansions orchard≥Tier gating region with cameo illusions usage hooking swirl or forging synergy combos puzzle variants can come in a separate asset bundle.  
+2. **Load Bundles at Runtime**  
+   - The user triggers “Download DLC pack for *SkyRealm* synergy expansions orchard≥Tier gating,” the game fetches an asset bundle containing the new region background, cameo illusions usage hooking swirl, forging synergy combos puzzle assets.  
+3. **Modular Scenes**  
+   - Each new synergy expansions orchard≥Tier gating region or cameo illusions usage hooking event can be a scene loaded additively. The core code references it via an interface or event.
+
+---
+
+## 5. **Interface / Event Communication**
+
+1. **EventBus / Message System**  
+   - When synergy expansions orchard≥Tier gating triggers a cameo illusions usage hooking cameo, post an event “OnCameoSummon(cameoID).”  
+   - The cameo illusions usage hooking module listens and spawns the swirl.  
+2. **Loose Coupling**  
+   - Avoid direct calls like `CameoManager.Summon(“SpiritID”)` inside synergy expansions orchard≥Tier gating code. Instead, synergy expansions orchard≥Tier gating posts an event or calls an interface method.  
+   - This means cameo illusions usage hooking can be part of a separate DLC module and still integrate seamlessly.
+
+---
+
+## 6. **Dependency Injection** (Optional)
+
+1. **DI Framework**  
+   - Tools like **Zenject** or custom injection can keep synergy expansions orchard≥Tier gating or cameo illusions usage hooking modules from referencing each other’s constructors directly.  
+2. **Module Manager**  
+   - A top-level “ModuleReference” (Stage 14 mention) can provide references to synergy expansions orchard≥Tier gating, cameo illusions usage hooking, forging synergy combos, etc., injected on scene load.  
+   - If you add a new cameo illusions usage hooking module or synergy expansions orchard≥Tier gating DLC module later, plug it in via the same injection pipeline.
+
+---
+
+## 7. **DLC & Expansions Delivery**
+
+1. **Multiple Approaches**  
+   - For mobile stores, expansions can be in-app purchases or free updates. For PC (Steam), expansions can be separate DLC packages.  
+2. **Content Unlock**  
+   - If orchard≥Tier gating synergy expansions is paid DLC, the user buys it, the server checks purchase, then your game’s synergy expansions manager sets `expansionEnabled=true` for that realm tier.  
+3. **Server/Cloud Sync**  
+   - Maintain a user record of expansions purchased. If cameo illusions usage hooking expansions are behind a paywall, store that data in the user’s account.
+
+---
+
+## 8. **Runtime Activation & Deactivation**
+
+1. **Partial Modules**  
+   - If cameo illusions usage hooking is an optional module or synergy expansions orchard≥Tier gating expansions come in expansions, your main code can check a config: `if (moduleEnabled) cameoModule.Init(); else cameoModule.Shutdown();`  
+2. **Scene-Focused**  
+   - If forging synergy combos expansions are not purchased, the forging puzzle scene is not loaded. The user sees a “Locked” UI instead.
+
+---
+
+## 9. **Maintenance & Updates**
+
+1. **Version Checking**  
+   - Each module can specify a `RequiredGameVersion`. If the user tries to load synergy expansions orchard≥Tier gating expansions that require version 1.5 but they’re on 1.4, show a prompt to update.  
+2. **Common Data Upgrades**  
+   - If synergy expansions cameo illusions usage hooking changes, ensure older modules remain functional or mark them deprecated.  
+3. **QA**  
+   - Test that disabling cameo illusions usage hooking or synergy expansions orchard≥Tier gating expansions does not break forging synergy combos or daily tasks.
+
+---
+
+## 10. **Summary**
+
+A **modular architecture** allows new synergy expansions orchard≥Tier gating references or cameo illusions usage hooking expansions to plug in easily—**loose coupling** with events/interfaces, **data-driven** design, **Asset Bundles** for DLC, and a **ModuleReference** aggregator for everything. This fosters **long-term** puzzle-RPG scalability without rewriting core systems each time you release expansions or cameo illusions usage hooking modules.
+
+---
+
+**END: Modular Architecture for Expansions or DLC**  
+
+This concludes all additional instructions.

@@ -1,0 +1,127 @@
+**STAGE 10 ASSET LIST**  
+*(Minion & Boss Encounters + Player Customization & Avatars)*
+
+Below is a comprehensive catalog of **every** visual or audio asset required in **Stage 10** of the puzzle-RPG blueprint—no code or design text, only the **detailed asset list**. Each visual asset has a **5–7 line** generative image prompt; each audio asset has a **2–3 line** audio prompt. Stage 10 focuses on **Minion & Boss encounters** in multi-wave fights plus **player avatar customization** for synergy expansions references or cameo illusions usage hooking if relevant.
+
+---
+
+### 1) **Minion Sprites / Illustrations**  
+- **Usage**: Varied minions in wave-based encounters. Typically 2D sprites or low-poly 3D models, each with distinct fantasy design.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A set of small fantasy creature sprites (goblins, slimes, boars)
+  2) Painted style, AAA puzzle-RPG detail
+  3) Each minion has a simple idle animation frame or subtle pose
+  4) Crisp silhouettes with mild arcane glow in eyes or weapons
+  5) Bright color palette but cohesive overall aesthetic
+  6) Transparent backgrounds for easy layering on encounter scene
+  7) ~128×128 resolution for in-battle clarity
+  ```
+
+---
+
+### 2) **Boss Illustrations / Animations**  
+- **Usage**: Larger, more detailed boss sprites or models with multi-wave transitions. Possibly cameo illusions usage hooking triggers on certain phases.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A towering fantasy boss creature sprite, multi-phase forms
+  2) Dramatic horns, glowing arcane veins, menacing stance
+  3) Painted high detail, AAA puzzle-RPG intimidation factor
+  4) Distinct color shift or morphological changes for each phase
+  5) Crisp lines, slight idle sway or occasional roar frames
+  6) Transparent background for layering in wave encounters
+  7) Vibrant visual cues to telegraph synergy expansions or cameo illusions usage hooking
+  ```
+
+---
+
+### 3) **Encounter Backgrounds**  
+- **Usage**: Scene backdrops for multi-wave fights. Each wave may use the same or a slight variant. Could show an arena, forest, dungeon, etc., matching synergy expansions theme.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A multi-layered fantasy battle backdrop with distant scenery
+  2) Painted style, moderate detail, AAA puzzle-RPG environment
+  3) Slight arcane shimmer in the sky or ground
+  4) Warm color palette for easy foreground readability
+  5) Subtle vantage point: a wide clearing or stone platform
+  6) Enough empty space in center for minions/boss
+  7) Crisp edges and mild painterly texture in background
+  ```
+
+---
+
+### 4) **HP / Wave Indicators**  
+- **Usage**: UI elements or icons showing each minion’s HP, wave count, synergy expansions references if realm gating modifies difficulty.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A compact wave counter UI element with stylized wave symbols
+  2) Painted style, arcane swirl behind wave number
+  3) Crisp rectangular or shield-like HP bars for each minion
+  4) AAA puzzle-RPG polish, subtle color shifting as HP drops
+  5) Transparent background for top-layering on encounter scene
+  6) Mild glow effect on full HP, turning red near low HP
+  7) Single consistent design for minion vs. boss HP
+  ```
+
+---
+
+### 5) **Player Avatar Portrait & Full-Body**  
+- **Usage**: Customizable player avatar (hair, face, clothing). If synergy expansions references, cameo illusions usage hooking might appear as a swirl around the avatar.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) An anime-fantasy styled player character sprite or model
+  2) Multiple variations for hair color/style, outfit themes
+  3) Painted detail, AAA puzzle-RPG vibe
+  4) Subtle arcane highlights or floating symbol near outfit
+  5) Crisp silhouette, bright eye catch, transparent background
+  6) Male/female options with cohesive style
+  7) Enough resolution to show customization elements (hair/clothes)
+  ```
+
+---
+
+### 6) **Avatar Customization UI**  
+- **Usage**: A panel where users select hair color, armor style, synergy expansions references, cameo illusions usage hooking if advanced gear is part of the avatar’s look.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A panel-style UI with modular preview of character
+  2) Painted style, warm color transitions
+  3) AAA puzzle-RPG design: ornamental corners, runic borders
+  4) Crisp icons for hairstyle, color palette, outfit
+  5) Subtle swirl behind the avatar preview
+  6) Transparent center for layering
+  7) Cohesive with main menu or forging UI frames
+  ```
+
+---
+
+### 7) **Minion Spawn / Defeat SFX**  
+1) **Spawn SFX**: A quick whoosh or subtle roar when each wave’s minion appears.  
+   - **Audio Generative Prompt (2–3 lines)**:
+     ```
+     A short airy whoosh layered with faint growl
+     Low-volume, ~1 second
+     AAA puzzle-RPG minion entrance effect
+     ```
+2) **Defeat SFX**: A dull thud or final grunt as minions or boss vanish.  
+   - **Audio Generative Prompt (2–3 lines)**:
+     ```
+     A brief muted impact sound with a fading grunt
+     ~0.5s, signifying enemy KO
+     AAA puzzle-RPG wave completion cue
+     ```
+
+---
+
+### 8) **Avatar Customization SFX**  
+- **Usage**: Soft clicks or twinkles when the user changes hair color/style, applying synergy expansions references.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  A gentle, bright chime with minimal reverb
+  0.25-second upward gliss to signify a style swap
+  AAA puzzle-RPG customization feedback
+  ```
+
+---
+
+**END OF STAGE 10 ASSET LIST**

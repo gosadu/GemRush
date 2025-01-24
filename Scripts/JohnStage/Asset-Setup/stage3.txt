@@ -1,0 +1,102 @@
+**STAGE 3 ASSET LIST**  
+*(Realm Tier Progression & Resource Systems)*
+
+Below is a comprehensive catalog of **every** visual or audio asset required in **Stage 3** of the puzzle-RPG blueprint—no code or design text, just the **detailed asset list**. Each visual asset has a **5–7 line** generative image prompt; each audio asset has a **2–3 line** audio prompt. Stage 3 covers **Realm Tier expansions** (formerly orchard expansions), **resource nodes**, daily minigames, synergy references, cameo illusions usage if relevant, etc.
+
+---
+
+### 1) **Realm Tier Emblems**  
+- **Usage**: Distinct icons or sigils representing each realm’s tier upgrade in the UI. Typically displayed near the “upgrade realm” button or in a realm progress panel.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) Ornate emblem set for fantasy realm tiers (Tier 1–4)
+  2) Each tier emblem shows incremental detailing (gold trim, arcane runes)
+  3) Vibrant color coding that intensifies with higher tiers
+  4) Crisp 2D design, high-resolution for UI scaling
+  5) Subtle swirling motifs or elemental patterns
+  6) AAA puzzle-RPG polish, slight luminous highlights
+  7) Transparent backgrounds for easy layering on a realm panel
+  ```
+
+---
+
+### 2) **Resource Icons** (Wood, Metal, Seeds, Essence, etc.)  
+- **Usage**: UI icons for the realm expansions resource system—collecting wood, metal, seeds, etc. Stage 3 specifically references daily tasks and synergy expansions.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A cohesive set of fantasy resource icons: wood logs, metal ingots, seed pouch, glowing essence
+  2) Each icon at ~128×128 resolution, crisp edges
+  3) Subtle arcane highlights to unify them visually
+  4) Painted style with warm color palette
+  5) Transparent background for UI layering
+  6) AAA puzzle-RPG aesthetic, high readability
+  7) Minimal shading but clear, distinct silhouettes
+  ```
+
+---
+
+### 3) **Daily Resource Node Sprites**  
+- **Usage**: In-stage or UI icons for each realm’s daily minigame node (like a “wood logging node,” “metal mining node,” “seed orchard node,” etc.).  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) Small sprite set depicting daily gather nodes: a log stump, ore vein, seed bush, arcane bloom
+  2) Cartoonish but AAA polish, gentle painterly shading
+  3) Clear shapes that pop on top of a 2D background
+  4) Subtle arcane swirl or glow effect if synergy expansions are relevant
+  5) 2–3 frames of idle animation (like a gentle sway) if possible
+  6) Warm color palette, matching puzzle-RPG style
+  7) Transparent backgrounds for scene placement
+  ```
+
+---
+
+### 4) **Tier Upgrade Transition VFX**  
+- **Usage**: A brief visual effect when the user upgrades a realm tier, possibly involving cameo illusions usage hooking if synergy triggers. Could be a swirl or bloom effect behind the realm emblem.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) An arcane swirl VFX overlay, gentle sparkles radiating outward
+  2) Soft gold or teal light beams, ~2-second duration
+  3) Painted fantasy swirl shapes, alpha-channeled
+  4) AAA puzzle-RPG style, mild luminous arcs
+  5) Slight particle burst at center
+  6) Subtle runic patterns that fade
+  7) Crisp edges, high-resolution for UI overlay
+  ```
+
+---
+
+### 5) **Realm Expansion BGM**  
+- **Usage**: A short looping background tune that plays during realm expansions or daily minigames, distinct from the Town Hub theme. Should evoke progress and mild excitement.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  A light and uplifting orchestral loop
+  Subtle harp arpeggios, gentle string chords
+  AAA puzzle-RPG realm expansion mood with warm progression
+  ```
+
+---
+
+### 6) **Resource Collect SFX**  
+- **Usage**: A quick chime or rustling sound when the user collects daily resources (wood, ore, seeds, etc.).  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  Short fantasy chime layered with soft rustle
+  Bright, pleasant tone, about half a second
+  AAA puzzle-RPG resource collection feedback
+  ```
+
+---
+
+### 7) **Tier Upgrade Fanfare SFX**  
+- **Usage**: A 1–2 second celebratory sound effect when a realm tier upgrade is successful, reinforcing synergy expansions or cameo illusions usage hooking if relevant.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  Brief triumphant brass flourish with a twinkle finale
+  Punchy and upbeat, ~2 seconds in length
+  AAA puzzle-RPG progression reward sound
+  ```
+
+---
+
+**END OF STAGE 3 ASSET LIST**  
+*(Stop here. Await “Next” for Stage 4.)*

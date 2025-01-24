@@ -1,0 +1,120 @@
+**AUTOMATED QA & INTEGRATION TESTS IN UNITY (UNITY TEST FRAMEWORK USAGE)**
+
+Below is a detailed guide on setting up and leveraging **Unity Test Framework** for automated QA and integration testing in your puzzle-RPG project. These steps assume you’ve already configured version control and a CI pipeline from the previous instructions. No code is included—only high-level instructions, best practices, and recommended structures.
+
+---
+
+## 1. **Unity Test Framework Overview**
+
+1. **Edit Mode Tests**  
+   - Run in the editor without entering play mode. Perfect for pure C# logic tests (e.g., synergy expansions gating math, cameo illusions usage hooking manager initialization).
+2. **Play Mode Tests**  
+   - Launches a minimal Unity scene to test in-engine mechanics (puzzle board combos, forging synergy combos).
+3. **Test Assemblies**  
+   - Usually placed in a `Tests/` folder, set up as **Edit Mode** or **Play Mode** test assemblies.  
+   - Unity sees these assemblies and displays them in the **Test Runner** window.
+
+---
+
+## 2. **Project Structure for Tests**
+
+1. **Folders**  
+   - Inside `Assets/Tests/`:  
+     - `EditMode/` for edit-mode tests.  
+     - `PlayMode/` for scene-based or integration tests.
+2. **Naming**  
+   - Each category can have relevant subfolders: “PuzzleTests,” “ForgeTests,” “CameoTests,” “NetcodeTests,” etc.  
+3. **Assembly Definition Files**  
+   - Each test folder typically has its own `.asmdef` referencing the main project’s assemblies so it can test their classes.
+
+---
+
+## 3. **Creating Edit Mode Tests**
+
+1. **Basic Steps**  
+   - In `Assets/Tests/EditMode/`, right-click → Create → **C# Test Script**.  
+   - Name it something like `TestSynergyGating.cs`.  
+2. **Scope**  
+   - Ideal for synergy expansions logic (like ensuring orchard≥Tier gating is correct), cameo illusions usage hooking default states, forging synergy combos math (successChance formula).
+3. **Sample**  
+   - A test might call methods from “RealmProgressionManager” or “MysticForgeManager” verifying they produce expected outcomes.  
+   - No scene is loaded—just pure function checks.
+
+---
+
+## 4. **Creating Play Mode Tests**
+
+1. **Minimal Scenes**  
+   - Set up a “TestPuzzleScene” or “TestGuildScene” that spawns the relevant managers.  
+   - In `Assets/Tests/PlayMode/`, create test scripts referencing these scenes.  
+2. **Test Steps**  
+   - A typical test might load “TestPuzzleScene,” wait for `[PuzzleBoardManager]` to initialize, match a few gems or trigger synergy cameo illusions usage hooking, then assert final states.  
+3. **Coroutines**  
+   - Many play mode tests use `UnityEngine.TestTools` with `[UnityTest]` and yield instructions, so you can wait frames or wait for certain conditions (like cameo illusions usage hooking swirl to appear).
+
+---
+
+## 5. **Integration Tests & QA Coverage**
+
+1. **Flow-based Scenarios**  
+   - For big synergy expansions or cameo illusions usage hooking scenarios, write a multi-step integration test:  
+     1. Load realm expansions scene.  
+     2. Upgrade realm tier.  
+     3. Collect daily resources.  
+     4. Attempt forging synergy combos.  
+     5. Confirm cameo illusions usage hooking triggers or synergy expansions gating is correct.  
+2. **Scene-based**  
+   - For example, a “QuestSystemIntegrationTest” that covers adding a new quest, completing an objective in puzzle, and verifying the quest completes with cameo illusions usage hooking if applicable.  
+3. **Performance Baseline**  
+   - You can run a script that times puzzle load or forging puzzle overhead. If above a threshold, flag it. (This is still partial—Unity Test Framework can handle it if you code a custom performance check.)
+
+---
+
+## 6. **Running Tests Automatically**
+
+1. **Local Test Runner**  
+   - **Window → General → Test Runner** in Unity: Run Edit Mode or Play Mode tests manually.  
+2. **CI Pipeline**  
+   - The DevOps script from previous instructions calls `unity -runTests -testPlatform editmode` or `-testPlatform playmode`.  
+   - Test logs are output as XML/JSON, displayed in your CI service.  
+3. **Fail Conditions**  
+   - If any test fails, the pipeline marks it as failed—ensuring no new synergy expansions cameo illusions usage hooking logic merges with a failing test.
+
+---
+
+## 7. **Recommended Test Approaches**
+
+1. **Unit Tests**  
+   - For synergy expansions math or cameo illusions usage hooking toggles, straightforward.  
+2. **Smoke Tests**  
+   - A minimal “does the puzzle board load, do we see forging synergy combos manager active, cameo illusions usage hooking manager?”  
+3. **Regression Tests**  
+   - Each new Stage or feature (like netcode, orchard≥Tier gating, forging synergy combos) gets a regression test script so you’re sure older features remain stable.  
+
+---
+
+## 8. **Debugging & Test Output**
+
+1. **Assertion Libraries**  
+   - Use Unity’s built-in `Assert.AreEqual()`, `Assert.IsTrue()`, etc.  
+2. **Logs**  
+   - If cameo illusions usage hooking triggers incorrectly, check logs or track synergy expansions gating logs in test.  
+3. **Clean Scenes**  
+   - For play mode integration tests, keep the test scene minimal. Only load the managers needed, plus relevant assets (like a single puzzle board or cameo illusions usage hooking swirl prefab) to reduce complexity.
+
+---
+
+## 9. **Maintaining QA Over Time**
+
+1. **Refactor Tests with Feature Growth**  
+   - If synergy expansions cameo illusions usage hooking evolves, update the cameo illusions usage hooking test scripts.  
+2. **Add Tests for Each Stage**  
+   - Keep naming consistent: “StageN_TestName” if that helps track coverage.  
+3. **Test Scenes**  
+   - If realm expansions require a separate scene, create or share a test scene with minimal overhead.
+
+---
+
+**END: Automated QA & Integration Tests in Unity**  
+
+*(Stop here. Await “Next” to proceed to Analytics & telemetry event definitions.)*

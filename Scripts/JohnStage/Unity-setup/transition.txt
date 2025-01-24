@@ -1,0 +1,290 @@
+Below is a **detailed**, **step-by-step** guide on creating and integrating a **persistent TransitionManager** into your existing puzzle-RPG codebase. It covers **advanced transitions** (fades, slides, masked wipes), hooking into synergy expansions (orchard≥Tier gating), cameo illusions usage hooking, forging combos, audio fade-outs, and additive scene loading. We provide **complete code snippets** in `C#`, as well as **Unity setup instructions** so you can seamlessly merge this with your current puzzle-RPG architecture.
+
+---
+
+# 1. **TransitionManager Prefab & Folder Structure**
+
+1. **Create a New Prefab**  
+   - In your project, go to `Assets/Prefabs/Managers/`.  
+   - Right-click → **Create** → **Prefab** (or **Empty Prefab**) → name it **`TransitionManager.prefab`**.
+
+2. **Add Canvas for Overlay**  
+   - Open the `TransitionManager.prefab` in prefab isolation mode.  
+   - Right-click inside it → **UI** → **Canvas** → rename it “`TransitionCanvas`.”  
+   - **Canvas** Settings:  
+     - **Render Mode**: Screen Space - Overlay (simpler) or Screen Space - Camera if you want advanced camera usage.  
+     - (Optional) Attach a **Canvas Scaler** if you want consistent scaling, but typically you can rely on your MainCanvas’s approach.  
+
+3. **Add Overlay Image**  
+   - Inside “`TransitionCanvas`,” right-click → **UI** → **Image**, name it “`TransitionOverlay`.”  
+   - **RectTransform**: stretch to full screen (anchor min = (0,0), anchor max = (1,1)).  
+   - Use a neutral color (black or white) with alpha=0 initially if you want fade transitions.
+
+4. **Attach an Animator**  
+   - On the root `TransitionManager` object, add **Animator**:  
+     - In the Inspector → **Add Component** → “Animator.”  
+   - Create an **Animator Controller** in `Assets/Animations/Transitions/TransitionManager.controller`.  
+   - Assign that controller to the `Animator` component’s **Controller** field.
+
+5. **Persisting Across Scenes**  
+   - In your puzzle-RPG code, you likely have a `ModuleReference` or a top-level manager initialization. Ensure you spawn or place this `TransitionManager.prefab` in your starting scene.  
+   - In the final code snippet below, we show how to call `DontDestroyOnLoad(gameObject)` so it remains persistent.
+
+---
+
+# 2. **SceneTransitionManager.cs (Full Code Snippet)**
+
+Below is a **fully fleshed-out** script you can attach to `TransitionManager` root. It references your overlay image, an animator, synergy expansions or cameo illusions usage hooking if needed, plus audio fade.
+
+```csharp
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using System;
+using System.Collections;
+
+[RequireComponent(typeof(Animator))]
+public class SceneTransitionManager : MonoBehaviour
+{
+    public static SceneTransitionManager Instance;
+
+    [Header("Overlay & Animator References")]
+    [Tooltip("The full-screen Image used for fade or wipe masks.")]
+    public Image overlayImage; 
+
+    [Tooltip("Animator controlling transitions.")]
+    public Animator transitionAnimator;
+
+    // Flag preventing multiple transitions from overlapping
+    private bool isTransitioning = false;
+
+    // Callback invoked at mid-transition (e.g., scene load or synergy cameo triggers)
+    private Action midTransitionCallback;
+
+    // Audio manager reference if you want fade-out
+    public AudioOverlayManager audioManager; // Hook your audio manager here if you have one.
+
+    void Awake()
+    {
+        if(Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        if(overlayImage != null)
+        {
+            // Make sure overlayImage is initially transparent
+            overlayImage.color = new Color(0f, 0f, 0f, 0f);
+        }
+    }
+
+    /// <summary>
+    /// Initiates a scene transition by triggering an animation.
+    /// </summary>
+    /// <param name="transitionTrigger">Name of the animator trigger (e.g. 'FadeOut', 'SlideLeft', 'MaskedWipe')</param>
+    /// <param name="onMidCallback">Callback to invoke at mid-transition (like scene load or cameo illusions usage hooking events)</param>
+    /// <param name="fadeOutAudio">If true, we also fade out BGM before the mid callback</param>
+    public void StartTransition(string transitionTrigger, Action onMidCallback, bool fadeOutAudio = false)
+    {
+        if(isTransitioning) 
+        {
+            Debug.LogWarning("[SceneTransitionManager] Transition requested while another transition is in progress. Ignoring.");
+            return;
+        }
+
+        isTransitioning = true;
+        midTransitionCallback = onMidCallback;
+
+        // Fade out audio if requested
+        if(fadeOutAudio && audioManager != null)
+        {
+            audioManager.FadeOut(1f); // e.g., a 1 second fade
+        }
+
+        // Trigger the animator
+        transitionAnimator.SetTrigger(transitionTrigger);
+    }
+
+    /// <summary>
+    /// Called via Animation Event in the middle of the transition clip.
+    /// Typically around 50% or when the screen is fully covered.
+    /// </summary>
+    public void OnMidTransitionEvent()
+    {
+        // At this moment, the screen is presumably covered (fade or mask).
+        // We safely run the callback
+        midTransitionCallback?.Invoke();
+        midTransitionCallback = null; // Clear to avoid repeated calls
+    }
+
+    /// <summary>
+    /// Called at the end of the transition clip via Animation Event.
+    /// This typically resets states or re-enables gameplay.
+    /// </summary>
+    public void OnTransitionEnd()
+    {
+        // Reset
+        isTransitioning = false;
+        // Optionally you can set transitionAnimator.SetTrigger("Idle") or something
+    }
+}
+```
+
+### Key Points:
+- We use `OnMidTransitionEvent()` as an **animation event** in your transition clip. At exactly ~0.5s, you can add an event calling `SceneTransitionManager.OnMidTransitionEvent()`.  
+- If synergy expansions orchard≥Tier gating or cameo illusions usage hooking triggers must occur at that moment, we place that code in `onMidCallback`.  
+- `StartTransition()` can fade out audio if needed.
+
+---
+
+# 3. **Setting Up Animator & Animation Clips**
+
+1. **Animator Controller**  
+   - In `Assets/Animations/Transitions/TransitionManager.controller`, create states for each transition style: 
+     - `FadeOut`, `FadeIn`, `SlideOutLeft`, `SlideInLeft`, `MaskedWipeOut`, `MaskedWipeIn`, etc.  
+2. **Clips**  
+   - Each clip might be ~1 second long. For `FadeOut`:
+     - Animate `overlayImage.color.a` from 0 → 1 over 0.5–1 second.  
+     - Insert an **Animation Event** at ~0.5s calling `OnMidTransitionEvent()`.  
+     - Insert another **Animation Event** at 1s calling `OnTransitionEnd()`.  
+3. **Transitions**  
+   - Possibly from an “Idle” state → `FadeOut` on trigger `"FadeOut"`. Then from `FadeOut` → back to “Idle” after the clip ends.  
+   - The user can replicate for “SlideLeft,” “MaskedWipe,” etc. If you do a masked wipe, you animate the mask or a custom shader property.
+
+---
+
+# 4. **Usage from Other Scripts**
+
+If synergy expansions orchard≥Tier gating logic or cameo illusions usage hooking manager wants to load a new scene:
+
+```csharp
+public void MoveToForgeScene()
+{
+    SceneTransitionManager.Instance.StartTransition("FadeOut", () => {
+        // Mid-transition callback
+        UnityEngine.SceneManagement.SceneManager.LoadScene("ForgeScene");
+        // If synergy expansions orchard≥Tier gating references needed, handle them here
+    },
+    fadeOutAudio: true);
+}
+```
+
+- The puzzle is paused or overshadowed as soon as fade begins. 
+- At ~0.5s, the screen is black → we do `SceneManager.LoadScene("ForgeScene")`. 
+- If you want synergy expansions orchard≥Tier gating references cameo illusions usage hooking to be triggered, you can do it inside the callback or after the scene loads.
+
+---
+
+# 5. **Additive Scene Loading Example**
+
+If you want cameo illusions usage hooking manager or synergy expansions orchard≥Tier gating references to remain from the old scene, do additive:
+
+```csharp
+public void LoadCameoSceneAdditively()
+{
+    SceneTransitionManager.Instance.StartTransition("SlideOutLeft", () => {
+        SceneManager.LoadScene("CameoScene", LoadSceneMode.Additive);
+        // Possibly disable old UI or orchard≥Tier gating references
+    }, fadeOutAudio: false);
+}
+```
+- The cameo illusions usage hooking scene is now loaded, your orchard≥Tier gating references remain in the main scene. 
+- Once cameo illusions usage hooking is done, you can do a “SlideInRight” to remove cameo illusions usage hooking or synergy expansions orchard≥Tier gating references from the overlay.
+
+---
+
+# 6. **Handling Cross-Fade Audio & Pausing Gameplay**
+
+- If your puzzle must be paused, call `PuzzleManager.Instance.PauseGame();` inside `StartTransition` or `OnMidTransitionEvent`. 
+- For cross-fades:
+  - If you want to fade out the old BGM while fading in new BGM, do so after `OnTransitionEnd()` in the new scene:
+    ```csharp
+    // In new scene's Start:
+    AudioOverlayManager.Instance?.FadeInNewTrack("ForgeBGM", 1f);
+    ```
+
+---
+
+# 7. **Potential Pitfalls**
+
+1. **Interruption**  
+   - If synergy expansions orchard≥Tier gating or cameo illusions usage hooking code calls `StartTransition` while another transition is ongoing, you risk partial overlap.  
+   - The script sets `isTransitioning = true` to block new transitions until `OnTransitionEnd()` resets it.
+
+2. **Animation Events**  
+   - Make sure the transitions have correct **animation events** in the **Animation** tab or they won’t call `OnMidTransitionEvent()`/`OnTransitionEnd()`. 
+   - Misspelling or mismatching event function names is a common error.
+
+3. **Shader or Material Setup** (for masked wipes)  
+   - If you do masked wipes, you need a shader that references a cutoff or mask texture. Animate that property in the Animator.  
+   - If you do not see the effect, confirm the material is assigned to the `overlayImage` or a child object with a RawImage.
+
+4. **UI Flicker**  
+   - Sometimes if you `LoadScene()` too early or outside the black overlay coverage, the user might glimpse the new scene half-loaded. Ensure your mid-event or fade is timed well.
+
+---
+
+# 8. **Integration with Current Code Setup**
+
+Given you already have:
+- **AudioOverlayManager** for BGM,
+- Possibly a **ModuleReference** with synergy expansions orchard≥Tier gating references, cameo illusions usage hooking manager, forging combos manager, etc.,
+
+**Steps**:
+
+1. **Place TransitionManager** in your initial scene (e.g., “TownHubScene”).  
+2. **Assign** `overlayImage` to the `TransitionOverlay`, **Animator** to your newly created `TransitionAnimator.controller` in the Inspector.  
+3. **Hook** references:
+   - Drag `AudioOverlayManager` object into the `audioManager` field.  
+   - If synergy expansions orchard≥Tier gating references or cameo illusions usage hooking manager need references to transitions, they can do:
+     ```csharp
+     SceneTransitionManager.Instance?.StartTransition("FadeOut", ...
+     ```
+   - In your `ModuleReference`, add a field for `SceneTransitionManager` if you prefer to see it in a single aggregator.
+
+4. **Animator**:
+   - Make states “FadeOut,” “FadeIn,” “SlideLeft,” etc. with triggers.  
+   - Insert **AnimationEvents** in each clip at desired times, calling `OnMidTransitionEvent()` and `OnTransitionEnd()`.
+5. **Test**:
+   - In synergy expansions orchard≥Tier gating references code or cameo illusions usage hooking code, call transitions to new puzzle scene or forging combos scene.  
+   - Validate no flicker, see correct fade or slide animations.
+
+---
+
+## 9. **Final Example: Fade + cameo illusions usage hooking** 
+**Full usage snippet**:
+```csharp
+// cameo illusions usage hooking manager calls:
+public void TriggerCameoReveal(string cameoID)
+{
+    SceneTransitionManager.Instance.StartTransition("MaskedWipeOut", () => {
+        // synergy expansions orchard≥Tier gating references or cameo illusions usage hooking logic
+        cameoIllusionManager.SummonCameo(cameoID);
+        // Possibly load cameo illusions usage hooking scene additively:
+        // SceneManager.LoadScene("CameoScene", LoadSceneMode.Additive);
+    },
+    fadeOutAudio: false);
+}
+```
+- This runs `MaskedWipeOut` animation.  
+- At ~0.5s, screen is masked → cameo illusions usage hooking manager reveals cameo illusions swirl or synergy expansions orchard≥Tier gating references are updated.  
+- At 1s, `OnTransitionEnd()` resets the overlay or returns to idle.
+
+---
+
+# 10. **Conclusion**
+
+A **persistent TransitionManager** with an **Animator** hosting fade, slide, or wipe states—triggered by a **StartTransition** method that fires mid-transition callbacks—is the cleanest approach to modern transitions. Integrate it with synergy expansions orchard≥Tier gating references or cameo illusions usage hooking triggers by hooking code in **OnMidTransitionEvent**. For forging combos or puzzle transitions, do the same.
+
+**Key Gains**:
+- No flicker if the overlay covers the screen at mid event.  
+- Minimal risk of partial transitions if you guard against re-triggers.  
+- Smoother user experience with cross-fade audio, cameo illusions usage hooking reveals, synergy expansions orchard≥Tier gating expansions, or forging combos scene changes all under a single advanced system.
+
+This fully merges with your puzzle-RPG code, reusing your existing orchard≥Tier gating synergy expansions references or cameo illusions usage hooking manager calls as needed in each transition’s callback—**resulting in a polished, cinematic experience**.

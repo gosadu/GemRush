@@ -1,0 +1,83 @@
+**STAGE 14 ASSET LIST**  
+*(Advanced Code Integration & Modules)*
+
+Below is a comprehensive catalog of **every** visual or audio asset required in **Stage 14** of the puzzle-RPG blueprint—no code or design text, only the **detailed asset list**. Each visual asset has a **5–7 line** generative image prompt; each audio asset has a **2–3 line** audio prompt. Stage 14 is primarily about **ModuleReference** and **IntegrationInitializer**, unifying all features (synergy expansions, cameo illusions usage hooking, forging combos, etc.). This stage usually does **not** add new game mechanics or content but **does** require certain generic, minimal assets to visually represent or confirm everything is integrated.
+
+---
+
+### 1) **Master Integration Icon**  
+- **Usage**: A small icon or emblem displayed in a debug or “all modules integrated” panel. Could appear in some final loading screen to show the systems are loaded.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A compact crest or badge symbolizing full system integration
+  2) Painted style, AAA puzzle-RPG polish
+  3) Soft swirl in the background, signifying synergy
+  4) Metallic trim with arcane runic highlights
+  5) Crisp lines at ~64×64 px
+  6) Transparent alpha for layering on UI
+  7) Warm color glow emphasizing “all-in-one” unity
+  ```
+
+---
+
+### 2) **Transition Banner / Pop-up**  
+- **Usage**: An optional banner or pop-up verifying everything is loaded—like an on-screen debug message if desired. Not strictly a new game feature, but a small visual if the integration aggregator displays a message.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A minimal fantasy pop-up panel with subtle runic frame
+  2) Painted corners, AAA puzzle-RPG vibe
+  3) Transparent center for text like “Integration Complete”
+  4) Crisp edges, gentle gold or silver shading
+  5) ~400×200 px
+  6) Slight arcane swirl behind the text area
+  7) Enough neutrality to fit across all systems
+  ```
+
+---
+
+### 3) **Debug/Module Reference UI**  
+- **Usage**: If you expose a developer-facing panel listing every manager (Realm, Puzzle, Gacha, Netcode, cameo illusions usage hooking). This panel is typically not user-facing, so it can be minimal.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A compact debug panel listing module references in a scrollable area
+  2) Painted style, AAA puzzle-RPG corners but simplified approach
+  3) Crisp textual placeholders for manager names
+  4) Subtle arcane swirl behind the list
+  5) Transparent or low-saturation background
+  6) Emphasizes easy readability for single-dev debugging
+  7) ~600×400 px for comfortable text space
+  ```
+
+---
+
+### 4) **All-Inclusive BGM** (Optional)  
+- **Usage**: Not strictly needed for advanced code integration, but if there’s a final “unified” or “master integration” fanfare used in a special event or loading screen, you might have a short jingle.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  A short, triumphant fanfare blending harp and light brass
+  1-second bright chord progression signifying system unity
+  AAA puzzle-RPG all-systems-ready cue
+  ```
+
+---
+
+### 5) **Final Integration SFX**  
+- **Usage**: A brief beep or swirl indicating the system aggregator has loaded. Typically for debugging or a hidden dev-level function.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  A quick high-tone beep with a faint arcane whoosh
+  ~0.25 second to confirm a module check complete
+  AAA puzzle-RPG integration debug effect
+  ```
+
+---
+
+### 6) **General Artwork Reuse**  
+*(Note: Stage 14 usually reuses existing assets since it’s about advanced module hooking, not new content.)*  
+- **Usage**: The code aggregator references synergy expansions, cameo illusions usage hooking, forging synergy combos, but no brand-new mechanics. So existing backgrounds, icons, or cameo illusions swirl from prior stages will be reused.  
+- **No Additional Prompts** needed beyond the small integration icon or minimal debug UI.
+
+---
+
+**END OF STAGE 14 ASSET LIST**  
+*(Stop here. Await “Next” for Stage 15.)*

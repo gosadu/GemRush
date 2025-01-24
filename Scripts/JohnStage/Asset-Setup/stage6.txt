@@ -1,0 +1,106 @@
+**STAGE 6 ASSET LIST**  
+*(Phantasm Surge & High-Combo Mechanics)*
+
+Below is a comprehensive catalog of **every** visual or audio asset required in **Stage 6** of the puzzle-RPG blueprint—no code or design text, only the **detailed asset list**. Each visual asset has a **5–7 line** generative image prompt; each audio asset has a **2–3 line** audio prompt. Stage 6 covers **Phantasm Surge** triggered by high combos, synergy references in the puzzle logic, cameo illusions usage hooking if the surge config says cameoTrigger=true.
+
+---
+
+### 1) **Surge Activation VFX**  
+- **Usage**: A visual overlay or effect that plays for 8 seconds when the puzzle’s combo meter hits the surge threshold (≥50 combos). Emphasizes the special powered-up state.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A dynamic swirling aura overlay, vibrant arcane streaks
+  2) High-energy prismatic glow around the edges
+  3) Slight animation loops over ~8 seconds
+  4) AAA puzzle-RPG style, painterly magic ribbons
+  5) Semi-transparent center so gems remain visible
+  6) Crisp swirling arcs in gold or purple highlights
+  7) Gentle pulsing effect that signals heightened puzzle power
+  ```
+
+---
+
+### 2) **Surge UI Indicator Icon**  
+- **Usage**: A small icon or meter on the puzzle UI that lights up when the Phantasm Surge is active. Could show a timer or glow.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A compact icon with swirling arcane energy
+  2) Crescent shape or circular gauge style
+  3) Glowing aura intensifies when Surge is active
+  4) Painted textures, AAA puzzle-RPG fidelity
+  5) Clear outline, ~64×64 pixel size for UI
+  6) Vibrant color shift from neutral to bright gold
+  7) Subtle animated shine rotating around edge
+  ```
+
+---
+
+### 3) **Corrupted Removal Flash** (Optional)  
+- **Usage**: If surge removes 2 Corrupted gems automatically, a brief flash or burst effect on those gems as they vanish.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A split-second arcane burst with a small shockwave ring
+  2) Flickering purple cracks turning to white light
+  3) Painted style, ephemeral, AAA puzzle-RPG finishing effect
+  4) Transparent background, about 0.3 second burst animation
+  5) Crisp lines, mild star-like spark at center
+  6) Subtle arcane swirl at the edges
+  7) High-contrast pop that quickly fades
+  ```
+
+---
+
+### 4) **Surge Activation SFX**  
+- **Usage**: An audio cue to highlight the moment Phantasm Surge triggers. Typically a powerful whoosh or rising chord indicating synergy expansions or cameo illusions usage hooking if cameo triggers.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  A sharp, rising arcane whoosh leading to a bright chime
+  Briefly triumphant, ~1 second total
+  AAA puzzle-RPG surge activation highlight
+  ```
+
+---
+
+### 5) **Surge Ambient Loop**  
+- **Usage**: A low-level background effect while the surge remains active (8 seconds). An ethereal hum or swirling arcane underscoring the puzzle’s boosted state.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  Soft, sustained magical hum with subtle sparkling overtone
+  Loopable, gentle swirl around mid-high frequencies
+  AAA puzzle-RPG ephemeral aura for surge duration
+  ```
+
+---
+
+### 6) **Cameo Illusions Summon Effect (If cameoTrigger=true)**  
+- **Usage**: If the SurgeConfig has cameoTrigger, a cameo illusions usage hooking swirl spawns. This can reuse or be a variant of earlier cameo illusions usage hooking VFX from forging synergy combos or just a unique surge cameo swirl.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A swirling cameo illusions portal in intense golden-lavender hues
+  2) Short 2-second burst of runic sparks converging to reveal a silhouette
+  3) Transparent alpha layering for puzzle overlay
+  4) AAA puzzle-RPG swirl with crisp line arcs
+  5) Painted style but with bright, dynamic glow
+  6) Subtle star cluster particles at edges
+  7) Animation loops quickly, then fades
+  ```
+
+---
+
+### 7) **Combo Meter UI** (Expanded)  
+- **Usage**: If you want a more advanced or fancy meter for combos leading up to surge. Possibly a set of small flame or arcane glyph building each time you match gems.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A horizontal arcane combo meter bar, from 0 to 50
+  2) Painted glyph increments that light up with each gem match
+  3) AAA puzzle-RPG style, subtle swirling runes behind the bar
+  4) Vivid color progression from dull gray to bright gold
+  5) Crisp boundary lines, ~200×30 pixel range
+  6) A small synergy crest glows at the far right to indicate Surge readiness
+  7) Transparent background for puzzle UI layering
+  ```
+
+---
+
+**END OF STAGE 6 ASSET LIST**  
+*(Stop here. Await “Next” for Stage 7.)*

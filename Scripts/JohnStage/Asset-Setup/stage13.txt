@@ -1,0 +1,117 @@
+**STAGE 13 ASSET LIST**  
+*(Leaderboards & Player-versus-Player (PvP) System)*
+
+Below is a comprehensive catalog of **every** visual or audio asset required in **Stage 13** of the puzzle-RPG blueprint—no code or design text, only the **detailed asset list**. Each visual asset has a **5–7 line** generative image prompt; each audio asset has a **2–3 line** audio prompt. Stage 13 focuses on **Leaderboards** for asynchronous or global ranking, plus a **PvPManager** for asynchronous or partial real-time PvP, synergy expansions references, cameo illusions usage hooking if synergy triggers in matches, etc.
+
+---
+
+### 1) **Leaderboard UI Frame / Panels**  
+- **Usage**: A panel to display top player scores, synergy expansions highlights, cameo illusions usage hooking references if some cameo summoning is teased. Possibly a scroll view with a fancy top-3 highlight.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A grand fantasy leaderboard panel with gold or silver trim
+  2) Painted style, AAA puzzle-RPG polish, subtle arcane swirl at edges
+  3) Rows for top 10 or more players, each row with name and score
+  4) Crisp linework separating each rank
+  5) Warm color palette, mild glowing accent for top 3
+  6) Transparent background or 9-slice for flexible scaling
+  7) Subtle runic or crest motif behind the ranks
+  ```
+
+---
+
+### 2) **PvP Defense Setup Icons**  
+- **Usage**: Small icons or toggles in the PvP defense screen (asynchronous), showing synergy multiplier or cameo illusions usage hooking cameo slot. Could be placeholders for synergy expansions references.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A set of mini UI icons denoting synergy multiplier, realm factor, hazard rate
+  2) Painted style, AAA puzzle-RPG clarity at ~32–48 px
+  3) Each icon shaped to reflect its data: synergy swirl, realm crest, hazard skull
+  4) Subtle arcs of color around the edges
+  5) Crisp lines, mild glow for active states
+  6) Transparent backgrounds for overlay in the PvP config panel
+  7) Warm, cohesive color scheme matching main UI
+  ```
+
+---
+
+### 3) **PvP Challenge UI Panels**  
+- **Usage**: A specialized screen or overlay for selecting an opponent (defender ID) and initiating a match. Possibly synergy expansions references or cameo illusions usage hooking triggers.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A fantasy-styled PvP panel with an arcane or scoreboard motif
+  2) Painted corners, swirling runes behind player selection fields
+  3) AAA puzzle-RPG style, bright highlight on “Challenge” button
+  4) Crisp, easy-to-read font areas for player IDs and synergy stats
+  5) Transparent or pastel background for layering over main scene
+  6) Warm color palette linking to global UI design
+  7) Subtle glowing edges to emphasize competitive vibe
+  ```
+
+---
+
+### 4) **PvP Combat or Async Duel Background**  
+- **Usage**: If your asynchronous PvP has a separate mini-battle screen, you might need a distinct background. It could reuse existing puzzle backgrounds, but a new one can add variety.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A stylized fantasy battleground set for duels or asynchronous clashes
+  2) Painted style, AAA puzzle-RPG quality
+  3) Soft swirling clouds or runic circle in the center
+  4) Crisp details near edges, leaving middle free for hero placements
+  5) Slight arcane glow in the terrain or sky
+  6) Warm but slightly intense color scheme to evoke PvP tension
+  7) Transparent corners or fade-out for puzzle overlay
+  ```
+
+---
+
+### 5) **Victory/Defeat Banners in PvP**  
+- **Usage**: The result screen or short overlay after an asynchronous challenge, synergy expansions references if cameo illusions usage hooking cameo wins the match.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) Two banner designs for “Victory” and “Defeat,” bright vs. dim themes
+  2) Painted style, AAA puzzle-RPG polish
+  3) Crisp glowing runic border for victory, cracked or dark border for defeat
+  4) Subtle swirling background with symbol or crest
+  5) ~500×200 px for in-game overlay
+  6) Warm gold-laced edges for victory, cold gray-laced edges for defeat
+  7) Transparent alpha for layering over final scoreboard
+  ```
+
+---
+
+### 6) **Leaderboard / PvP BGM** (Optional)  
+- **Usage**: A mild but slightly competitive track playing while viewing leaderboards or the asynchronous PvP menu.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  A mid-tempo orchestral loop with light marching percussion
+  Subtle but confident melody, evoking friendly rivalry
+  AAA puzzle-RPG competitive menu vibe
+  ```
+
+---
+
+### 7) **Challenge / Score Submission SFX**  
+- **Usage**: A short, decisive sound effect confirming that a PvP challenge took place or a score was submitted to the leaderboard.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  A firm metallic chime with a rising beep
+  ~0.5 second, signifying official challenge or score post
+  AAA puzzle-RPG leaderboard confirmation effect
+  ```
+
+---
+
+### 8) **Async Defense Setup SFX**  
+- **Usage**: A quick beep or swirl when the user configures synergy multiplier or hazard rate in their PvP defense.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  A gentle swirling click with a faint magical undertone
+  0.25-second feedback for setting defense parameters
+  AAA puzzle-RPG asynchronous defense setup
+  ```
+
+---
+
+**END OF STAGE 13 ASSET LIST**  
+*(Stop here. Await “Next” for Stage 14.)*

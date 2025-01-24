@@ -1,0 +1,117 @@
+**STAGE 5 ASSET LIST**  
+*(Hero Collection, Gacha, Masteries & Party Setup)*
+
+Below is a comprehensive catalog of **every** visual or audio asset required in **Stage 5** of the puzzle-RPG blueprint—no code or design text, only the **detailed asset list**. Each visual asset has a **5–7 line** generative image prompt; each audio asset has a **2–3 line** audio prompt. Stage 5 covers **hero summoning/gacha**, hero mastery trees, synergy references, cameo illusions usage hooking if certain heroes trigger cameos, and party UI assets.
+
+---
+
+### 1) **Hero Portrait Icons**  
+- **Usage**: Small bust portraits for hero selection panels, gacha reveals, party UI. Typically ~128×128 resolution.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A set of fantasy hero bust portraits: knight, mage, rogue, cleric, etc.
+  2) Subtle anime or stylized realism with AAA-level detail
+  3) Vibrant color palette highlighting each hero’s element
+  4) Distinct silhouettes, from armor shape to hairstyle
+  5) Painted textures, mild arcane glow around shoulders
+  6) Transparent background for UI layering
+  7) Crisp linework, cohesive puzzle-RPG style
+  ```
+
+---
+
+### 2) **Full-Body Hero Sprites or Models**  
+- **Usage**: If displaying the entire hero in a “detail” screen or cameo illusions usage hooking. More detailed than the portrait icons; could be 2D or 3D.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) Detailed full-body fantasy hero sprites or low-poly 3D models
+  2) Each reflecting an element: fire, water, earth, wind, etc.
+  3) AAA puzzle-RPG level of costume complexity with arcane motifs
+  4) Painted or stylized textures, vibrant but cohesive palette
+  5) Distinct silhouette: knight armor, mage robes, archer’s cloak
+  6) Subtle glowing runes or elemental swirl at feet
+  7) Crisp shading, consistent proportions across all heroes
+  ```
+
+---
+
+### 3) **Gacha Summon Animation VFX**  
+- **Usage**: Visual effect for the hero summoning/gacha reveal—could be swirling runes or a portal from which the hero emerges. Possibly cameo illusions usage hooking.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A swirling arcane portal with bright prismatic flares
+  2) Subtle cosmic starfield within the swirl
+  3) Painted fantasy style, AAA puzzle-RPG quality
+  4) ~3-second loopable sequence with runic glows
+  5) Translucent wave patterns pulsating outward
+  6) Vibrant color bursts to highlight the moment of summon
+  7) Crisp alpha edges for layering over a gacha UI
+  ```
+
+---
+
+### 4) **Mastery Tree Node Icons**  
+- **Usage**: Small icons representing mastery nodes (Offense, Defense, Support, etc.). Typically used in a skill tree UI.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A set of small circular mastery icons (offense sword, defense shield, support staff, utility gear)
+  2) Each icon has subtle arcane swirl or magical highlight
+  3) Painted style, ~64×64 resolution for in-UI clarity
+  4) Vibrant color coding: red for offense, blue for defense, green for support
+  5) AAA puzzle-RPG aesthetic, consistent shape language
+  6) Mild glow effect behind the icon art
+  7) Transparent background for skill tree overlays
+  ```
+
+---
+
+### 5) **Party Setup UI Frame**  
+- **Usage**: A panel or frame to display up to 4 heroes in the active party, synergy references if all heroes share an element, cameo illusions usage hooking for certain synergy combos.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A sleek horizontal party panel for 4 hero slots
+  2) Fantasy UI corners with subtle metallic or arcane trim
+  3) Painted detail but not overly distracting
+  4) AAA puzzle-RPG style, bright highlights around hero portraits
+  5) Space for synergy bonus indicators or cameo illusions usage hooking
+  6) Color-coded outlines for each hero’s element
+  7) Transparent center or well-defined slot outlines
+  ```
+
+---
+
+### 6) **Summon/Fanfare SFX** (Gacha Pull)  
+- **Usage**: Audio cue when performing a gacha pull, building up tension as the hero is revealed.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  Mystical rising chord with a final bright shimmer
+  Medium length (~2 seconds) evoking excitement and reveal
+  AAA puzzle-RPG hero summon fanfare
+  ```
+
+---
+
+### 7) **Hero Mastery UI SFX**  
+- **Usage**: A subtle “unlock” or “power-up” sound when the user invests mastery points. Possibly cameo illusions usage hooking if it triggers a synergy cameo.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  Short shimmering ping with a mild ascending arcane tone
+  Crisp high-frequency ring, 1-second tail
+  AAA puzzle-RPG skill unlock feedback
+  ```
+
+---
+
+### 8) **Party Confirm BGM** (Optional)  
+- **Usage**: A short loop or 2–3 second jingle upon finalizing the party composition or synergy cameo illusions usage hooking.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  Cheerful orchestral stinger with gentle harp and a soft brass flourish
+  Brief uplifting conclusion, ~3 seconds
+  AAA puzzle-RPG synergy party completion vibe
+  ```
+
+---
+
+**END OF STAGE 5 ASSET LIST**  
+*(Stop here. Await “Next” for Stage 6.)*

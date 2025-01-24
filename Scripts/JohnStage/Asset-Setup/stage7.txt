@@ -1,0 +1,124 @@
+**STAGE 7 ASSET LIST**  
+*(Guild & Co-Op Systems)*
+
+Below is a comprehensive catalog of **every** visual or audio asset required in **Stage 7** of the puzzle-RPG blueprint—no code or design text, just the **detailed asset list**. Each visual asset has a **5–7 line** generative image prompt; each audio asset has a **2–3 line** audio prompt. Stage 7 covers **Guild Manager, multi-phase guild boss, cameo illusions usage hooking** if thresholds are reached, synergy expansions references for resource donations, etc.
+
+---
+
+### 1) **Guild Hall Interior Background**  
+- **Usage**: A backdrop for the **Guild Hall** or **Tavern** UI scene, where players manage guild membership, resource donations, multi-phase boss battles.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A warm medieval-fantasy hall with a large round table
+  2) Torchlit stone walls and wooden pillars, subtle arcane details
+  3) Soft rugs on the floor, a guild crest above the entrance
+  4) AAA puzzle-RPG quality, painterly textures
+  5) Gentle golden or amber lighting from lanterns
+  6) Cozy yet grand, reflecting communal guild spirit
+  7) Subdued corners for UI panels overlay
+  ```
+
+---
+
+### 2) **Guild Crest / Emblem**  
+- **Usage**: A stylized logo or crest representing the player’s guild. Appears on UI screens, resource donation panels, or cameo illusions usage hooking triggers.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A regal fantasy guild crest with swirling arcane filigree
+  2) Bold silhouette in gold or metallic finish
+  3) Subtle runic lines highlighting synergy expansions
+  4) Painted style, AAA puzzle-RPG detail
+  5) Crisp edges, high-res for scaling
+  6) Slight magical glow around perimeter
+  7) Transparent background for UI usage
+  ```
+
+---
+
+### 3) **Guild Boss Artwork / Sprites**  
+- **Usage**: Visual depiction of the multi-phase guild boss in boss fight UI or asynchronous co-op scene. Possibly cameo illusions usage hooking triggers if boss hits a phase threshold.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A colossal fantasy creature sprite with multiple phase transformations
+  2) Spiky scales, menacing horns, glowing runes in flesh
+  3) Painted style, AAA puzzle-RPG intimidation
+  4) Distinct color shift per phase (e.g., red, purple, black)
+  5) Crisp silhouette, subtle idle animation frames
+  6) Arcing magical lines or cracks across its form
+  7) Transparent alpha for layering on a boss UI background
+  ```
+
+---
+
+### 4) **Resource Donation Icons**  
+- **Usage**: If the guild interface demands specialized icons for donating wood, metal, seeds, or synergy expansions references. Could reuse Stage 3 resource icons but add a “guild” overlay or unique frames.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A small, stylized resource donation icon set with mini guild crest overlays
+  2) Painted, AAA puzzle-RPG style, ~64×64
+  3) Consistent color palette from Stage 3 resource icons
+  4) Subtle glow behind each icon to highlight donation
+  5) Crisp outlines, minimal extraneous details
+  6) Transparent background for easy UI layering
+  7) Slight arcane motif linking them to guild synergy
+  ```
+
+---
+
+### 5) **Guild Boss Phase Transition VFX**  
+- **Usage**: A quick overlay or swirl indicating the boss has moved to the next phase (HP threshold). Possibly cameo illusions usage hooking triggers with synergy expansions.  
+- **Visual Generative Prompt (5–7 lines)**:
+  ```
+  1) A swirling burst of arcane energy, color shift from boss's aura
+  2) Painted style, AAA puzzle-RPG quality
+  3) ~1 second flash with rising glow, then fade
+  4) Crisp lines, ephemeral star particles at edges
+  5) Transparent alpha channel for overlay
+  6) Low frame animation but visually impactful
+  7) Magical shockwave ring expanding outward
+  ```
+
+---
+
+### 6) **Guild BGM / Hall Ambience**  
+- **Usage**: A background track for the Guild Hall environment, or an ambience loop that conveys camaraderie and mild epic scale.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  Warm, mid-tempo orchestral loop with light percussion
+  Subtle heroic undertones, fostering communal guild spirit
+  AAA puzzle-RPG guild hall ambiance
+  ```
+
+---
+
+### 7) **Boss Encounter Music**  
+- **Usage**: A separate, intense track for guild boss fights. Contrasts the calmer guild hall BGM, ramping up tension.  
+- **Audio Generative Prompt (2–3 lines)**:
+  ```
+  Dramatic orchestral piece with pounding drums and bold brass
+  Steady rising tension, epic scale for boss confrontations
+  AAA puzzle-RPG multi-phase enemy theme
+  ```
+
+---
+
+### 8) **Donation SFX & Boss Phase SFX**  
+1) **Donation SFX**: Quick beep or chime confirming resource contribution to guild.  
+   - **Audio Generative Prompt (2–3 lines)**:
+     ```
+     Crisp, cheerful ding with a soft layering of coin-jingle
+     Short half-second feedback for resource donation
+     AAA puzzle-RPG guild interface effect
+     ```
+2) **Boss Phase Shift SFX**: A low roar or heavy chord indicating next phase has begun.  
+   - **Audio Generative Prompt (2–3 lines)**:
+     ```
+     A deep guttural growl layered with a short thunder-like impact
+     1-second monstrous cue for multi-phase boss transition
+     AAA puzzle-RPG synergy expansions tension
+     ```
+
+---
+
+**END OF STAGE 7 ASSET LIST**  
+*(Stop here. Await “Next” for Stage 8.)*
