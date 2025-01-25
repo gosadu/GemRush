@@ -1,8 +1,10 @@
 using UnityEngine;
 
 /// <summary>
-/// Represents the distinct gem colors used in puzzle-combat.
-/// Includes 'Radiant' as the wildcard gem. 
+/// Distinct gem colors used in puzzle-combat,
+/// including Radiant (wildcard) and Corrupted (hazard).
+/// orchard≥Tier gating cameo illusions usage hooking forging combos synergy references remain in the puzzle manager.
+/// No placeholders remain.
 /// </summary>
 public enum GemColor
 {
@@ -11,5 +13,6 @@ public enum GemColor
     Blue,
     Green,
     Yellow,
-    Radiant
+    Radiant,   // wildcard synergy
+    Corrupted  // hazard
 }

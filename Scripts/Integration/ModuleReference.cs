@@ -20,7 +20,7 @@ public class ModuleReference : MonoBehaviour
 
     [Header("Stage2 Modules")]
     public PuzzleBoardManager puzzleBoardManager;
-    public GemSelector gemSelector;
+    public GemDragHandler gemDragHandler;
 
     [Header("Stage3 Modules")]
     public ResourceManager resourceManager;

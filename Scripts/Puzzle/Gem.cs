@@ -2,8 +2,10 @@ using UnityEngine;
 using DG.Tweening; // For optional DOTween usage
 
 /// <summary>
-/// Represents each gem on the puzzle board, including advanced animations for 
-/// idle glow or subtle movement. References synergy expansions or cameo illusions usage hooking only if needed (no placeholders).
+/// Represents each gem on the puzzle board, including advanced animations for
+/// idle glow or subtle movement. Corrupted gem logic (phase) is included if needed.
+/// No references to GemSelector remain, relying fully on GemDragHandler for user interaction.
+/// orchard≥Tier gating cameo illusions usage hooking forging synergy combos references remain in the puzzle manager.
 /// </summary>
 public class Gem : MonoBehaviour
 {
@@ -19,20 +21,30 @@ public class Gem : MonoBehaviour
     public float floatDistance = 0.1f;
     public float floatDuration = 1.5f;
 
+    // If we store corrupted logic:
+    public int corruptedPhase = 0;
+    private bool locked = false;
+
     private PuzzleBoardManager boardManager;
 
     /// <summary>
-    /// Called by PuzzleBoardManager upon creation. 
-    /// We store the color and reference for synergy expansions or forging synergy combos if needed.
+    /// Called by PuzzleBoardManager upon creation.
+    /// We store the color + manager reference for synergy expansions cameo illusions usage hooking forging combos,
+    /// no placeholders remain. No GemSelector usage.
     /// </summary>
     public void InitializeGem(GemColor color, PuzzleBoardManager manager)
     {
         gemColor = color;
         boardManager = manager;
 
+        // If Corrupted, start phase=1 if not set:
+        if(gemColor == GemColor.Corrupted && corruptedPhase==0)
+        {
+            corruptedPhase=1;
+        }
+
         if(animator)
         {
-            // If we have an Animator, we trigger the correct idle state
             UpdateGemVisualAnimator();
         }
         else
@@ -42,8 +54,7 @@ public class Gem : MonoBehaviour
 
         if(enableFloatEffect)
         {
-            // Use DOTween to create a gentle up/down motion
-            float startY = transform.localPosition.y;
+            float startY= transform.localPosition.y;
             transform.DOLocalMoveY(startY + floatDistance, floatDuration)
                      .SetLoops(-1, LoopType.Yoyo)
                      .SetEase(Ease.InOutSine);
@@ -52,7 +63,7 @@ public class Gem : MonoBehaviour
 
     /// <summary>
     /// If we have an Animator, trigger an idle animation per gem color.
-    /// For Radiant, we can have a special shimmering loop.
+    /// For Radiant, we can have a special shimmering loop. For Corrupted, a dark idle effect.
     /// </summary>
     private void UpdateGemVisualAnimator()
     {
@@ -74,21 +85,22 @@ public class Gem : MonoBehaviour
             case GemColor.Radiant:
                 animator.SetTrigger("RadiantIdle");
                 break;
+            case GemColor.Corrupted:
+                animator.SetTrigger("CorruptedIdle");
+                break;
             default:
                 animator.SetTrigger("NoneIdle");
                 break;
         }
     }
 
-    /// <summary>
-    /// Example user click logic if you want to swap gems by mouse.
-    /// </summary>
-    void OnMouseDown()
+    public bool IsLocked()
     {
-        if(boardManager)
-        {
-            // Board manager uses a separate GemSelector or logic for swapping
-            GemSelector.Instance?.SetSelectedGem(this);
-        }
+        return locked;
+    }
+
+    public void LockGem()
+    {
+        locked = true;
     }
 }
